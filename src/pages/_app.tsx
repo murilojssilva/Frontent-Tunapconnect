@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import { SessionProvider } from "next-auth/react"
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import { ThemeProvider } from '@mui/material/styles';
@@ -7,6 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '@/styles/config/createEmotionCache';
 import theme from '@/styles/config/theme';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -17,7 +19,7 @@ export interface MyAppProps extends AppProps {
 }
 
 export default function MyApp(props: MyAppProps) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const { Component, emotionCache = clientSideEmotionCache, pageProps: { session, ...pageProps } } = props;
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -26,7 +28,9 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Component {...pageProps} />
+        <AuthProvider session={session}>
+          <Component {...pageProps} />
+        </AuthProvider>
       </ThemeProvider>
     </CacheProvider>
   );
