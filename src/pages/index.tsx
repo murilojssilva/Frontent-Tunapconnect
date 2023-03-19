@@ -118,22 +118,3 @@ export default function SignIn() {
       </Container>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-
-  const session = await getSession(ctx)
-  console.log(session)
-  // if (session?.user?.token) {
-  //   return {
-  //     redirect: {
-  //       destination: '/painel',
-  //       permanent: false,
-  //     }
-  //   }
-  // }
-  
-  return {
-    props: {
-    }, // will be passed to the page component as props
-  }
-}

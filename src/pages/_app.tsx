@@ -56,13 +56,11 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider session={session}>
-          {
-            router.route !== '/' ? (
+          { router.route === '/' && <Component {...pageProps} /> }
+          { router.route !== '/' && (
             <Layout>
               <Component {...pageProps} />
             </Layout>
-            ): (
-              <Component {...pageProps} />
             )
           }
         
