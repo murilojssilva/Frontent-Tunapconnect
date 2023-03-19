@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
+import { getSession } from 'next-auth/react';
+import { GetServerSideProps } from 'next/types';
 
 function Copyright(props: any) {
   return (
@@ -40,6 +42,7 @@ export default function SignIn() {
     }
   });
   const { signIn } = useContext(AuthContext)
+
 
 
   function handleSignIn(data: SignInDataProps) {
@@ -113,6 +116,24 @@ export default function SignIn() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    // </ThemeProvider>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const session = await getSession(ctx)
+  console.log(session)
+  // if (session?.user?.token) {
+  //   return {
+  //     redirect: {
+  //       destination: '/painel',
+  //       permanent: false,
+  //     }
+  //   }
+  // }
+  
+  return {
+    props: {
+    }, // will be passed to the page component as props
+  }
 }

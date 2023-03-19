@@ -1,19 +1,20 @@
+import NextAuth from "next-auth"
 
-import { Session } from "next-auth"
-import { JWT } from "next-auth/jwt"
-
-/** Example on how to extend the built-in session types */
 declare module "next-auth" {
+  /**
+   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   */
   interface Session {
-    /** This is an example. You can find me in types/next-auth.d.ts */
-    accessToken: string
-  }
-}
-
-/** Example on how to extend the built-in types for JWT */
-declare module "next-auth/jwt" {
-  interface JWT {
-    /** This is an example. You can find me in types/next-auth.d.ts */
-    bar: number
+    user: {
+        name: string;
+        sub: 1,
+        msg: string;
+        token: string;
+        privilege: string;
+        id: number,
+        iat: number,
+        exp: number,
+        jti: string;
+    }
   }
 }

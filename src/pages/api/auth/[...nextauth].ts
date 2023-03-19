@@ -1,4 +1,3 @@
-import { APICore } from "@/lib/axios";
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -36,35 +35,28 @@ export default NextAuth({
         if (res.ok && user) {
           return user
         }
-        return null
+         return null
       }
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
-
-      if (token.sub) {
-        return token
-      } else {
-        throw new Error('Usuário inválido')
-      }
-      
+    async jwt({ token, user, account, profile }) {
+        return {
+          ...token,
+          ...user,
+        };  
     },
     async session({ session, token, user }) {
-      // console.log("session",session)
-      // console.log('token',token)
-      // console.log('user',user)
+      session.user = token as any;
 
-      if(!token.sub) {
-        throw new Error('Sessão inválida')
-      }
-
-      
-      return {...session, accessToken: token.sub}
+      return session;
     },
-    async redirect({ url, baseUrl }) {
-      return baseUrl
-    },
+    // async redirect({ url, baseUrl }) {
+    //   // Allows relative callback URLs
+    //   if (url.startsWith("/")) return `${baseUrl}${url}`
+    //   // Allows callback URLs on the same origin
+    //   else if (new URL(url).origin === baseUrl) return url
+    //   return baseUrl
+    // }
   },
-  debug: false,
 })

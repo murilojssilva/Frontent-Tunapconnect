@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -17,7 +16,11 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
+import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
+import { getSession } from 'next-auth/react';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import { GetServerSideProps } from 'next/types';
 
 
 function Copyright(props: any) {
@@ -85,16 +88,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+interface DashboardContentProps {
+  children: React.ReactNode
+}
+
+function DashboardContent({ children }: DashboardContentProps) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <>
       <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
@@ -144,7 +152,7 @@ function DashboardContent() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            <MainListItems />
             <Divider sx={{ my: 1 }} />
             {secondaryListItems}
           </List>
@@ -162,9 +170,10 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          {children}
+          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
+              
               <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
@@ -174,9 +183,10 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
+                  
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
+   
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
@@ -186,24 +196,42 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                 
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-         
+      
                 </Paper>
               </Grid>
             </Grid>
-            <Copyright sx={{ pt: 4 }} />
-          </Container>
+              <Copyright sx={{ pt: 4 }} justifyContent="flex-end"/>  
+          </Container> */}
         </Box>
       </Box>
-    </ThemeProvider>
+    </>
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
+interface LayoutProps {
+  children: React.ReactNode
 }
+
+export default function Layout({children}: LayoutProps) {
+  return <DashboardContent>{children}</DashboardContent>;
+}
+
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+//   const session = await getSession(ctx)
+// console.log(session)
+
+//   if (!session?.user?.token) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       }
+//     }
+//   }
+//   return {
+//     props: {
+//       result: ''
+//     }, 
+//   }
+// }
