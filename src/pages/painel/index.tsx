@@ -18,17 +18,27 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
 import { getSession, useSession } from 'next-auth/react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { GetServerSideProps } from 'next/types';
 import { apiCore } from '@/lib/api';
+import { apiCoreClient } from '@/lib/apiClient';
+
 
 export default function DashboardContent() {
-  const session = useSession()
+  const [company,setCompany] = useState()
+  // const session = useSession()
   
-  const api = new apiCore(session?.user?.token)
+  const api = new apiCore()
   
-  console.log(session)
+  useEffect(() => {
+    api.get('/company/2').then((response) => {
+      console.log(response)
+    })
+    // api.get('/company/2')
+  }, [])
+
+  
 
   return (
     <>
@@ -67,7 +77,6 @@ export default function DashboardContent() {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const session = await getSession(ctx)
-console.log(session)
 
   if (!session?.user?.token) {
     return {
