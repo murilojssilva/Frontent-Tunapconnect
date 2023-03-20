@@ -32,7 +32,7 @@ export default function DashboardContent() {
   const api = new apiCore()
   
   useEffect(() => {
-    api.get('/company/2').then((response) => {
+    api.get('/user/companies').then((response) => {
       console.log(response)
     })
     // api.get('/company/2')
