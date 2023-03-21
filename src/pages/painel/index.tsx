@@ -1,21 +1,8 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import MuiDrawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { DataGrid } from '@mui/x-data-grid'
 import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
 import { getSession, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
@@ -23,19 +10,38 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { GetServerSideProps } from 'next/types';
 import { apiCore } from '@/lib/api';
 import { apiCoreClient } from '@/lib/apiClient';
+import { Skeleton, Typography } from '@mui/material';
+import Title from '@/components/Title';
+import { ContainerItem } from '@/styles/pages/company';
 
+
+interface companyProps {
+  id: number;
+  name: string;
+  cnpj: string | null;
+  cpf: string | null;
+}
 
 export default function DashboardContent() {
-  const [company,setCompany] = useState()
-  // const session = useSession()
+  const [company, setCompany] = useState<companyProps[]>()
   
   const api = new apiCore()
   
   useEffect(() => {
     api.get('/user/companies').then((response) => {
+      const { data } = response.data
+      if(data.length > 0) {
+        setCompany(data.map((item: any) => {
+          return { 
+                id: item.id, 
+                name: item.name,
+                cnpj: item.cnpj,
+                cpf: item.cpf
+            }
+        }))
+      }
       console.log(response)
     })
-    // api.get('/company/2')
   }, [])
 
   
@@ -43,32 +49,29 @@ export default function DashboardContent() {
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                height: 180,
-              }}
-            >
-  
-            </Paper>
+      <Grid container spacing={3}>
+        {company && company.map((item, index) => {
+          return (
+            <Grid item xs={12} md={4} lg={4} key={`${item.id}-${index}`}>
+              <div>
+                <ContainerItem
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: 180,
+                }}
+              >
+                <Title>{item.name || 'Não informado'}</Title>
+                <Typography>{ item.cnpj || item.cpf }</Typography>
+                
+              </ContainerItem>
+              </div>
+             
+            </Grid>
+          )
+        })}
           </Grid>
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                height: 180,
-              }}
-            >
-  
-            </Paper>
-          </Grid>
-        </Grid>
       </Container>
     </>
   );
