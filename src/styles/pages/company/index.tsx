@@ -6,19 +6,15 @@ export const ContainerItem = styled(Paper)`
   transition: scale 0.5ms ease-in-out;
   &:hover{
     transform: scale(1.03);
-    background-color: rgb(85, 107, 214, 0.5);
+    background-color: rgb(85, 107, 214, 0.1);
     cursor: pointer;
-
+/* 
     color: white;
 
     h2 {
       color: white;
-    }
+    } */
   
-  }
-
-  h2:hover {
-    color: white;
   }
   
 `
