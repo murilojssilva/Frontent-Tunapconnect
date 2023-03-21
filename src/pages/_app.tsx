@@ -29,7 +29,6 @@ export default function MyApp(props: MyAppProps) {
 
   useEffect(() => {
     const handleStart = (url: string) => {
-      console.log(`Loading: ${url}`)
       NProgress.start()
     }
 

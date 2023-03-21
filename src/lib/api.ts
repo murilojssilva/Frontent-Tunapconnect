@@ -32,8 +32,6 @@ export class apiCore {
   }
 
   get(data: any) {
-    console.log(data)
-    console.log(process.env.NEXT_PUBLIC_APP_API_URL)
     return api.get(data)
   }
 } 
