@@ -18,10 +18,13 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
 import { getSession } from 'next-auth/react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { GetServerSideProps } from 'next/types';
 
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, AppState, getCompaniesListRequest, getCompanyRequest } from '@/redux';
+import { useRouter } from 'next/router';
 
 function Copyright(props: any) {
   return (
@@ -94,11 +97,43 @@ interface DashboardContentProps {
 
 function DashboardContent({ children }: DashboardContentProps) {
   const [open, setOpen] = React.useState(true);
+  const [companyName, setCompanyName] = useState<{name: string, cnpj: string}>()
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  const router = useRouter()
 
+  const companyState = useSelector<AppState>(state => state.company)
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    setCompanyName({
+      name: companyState.company.name,
+      cnpj: companyState.company.cnpj || companyState.company.cpf
+    })
+  },[companyState])
+
+  useEffect(() => {
+    const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
+
+    const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
+   
+    if (!companyState.company.cnpj || !companyLocalStorge) {
+      router.push('/company')
+    } 
+     
+    if (companyLocalStorge) {
+      const companyLocal = JSON.parse(companyLocalStorge)
+
+      if (companyLocal.id) {
+        dispatch(getCompanyRequest(companyLocal.id))
+      }
+
+    } 
+
+    console.log(companyLocalStorge)
+  },[])
 
   return (
     <>
@@ -128,7 +163,7 @@ function DashboardContent({ children }: DashboardContentProps) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {companyName?.name && `${companyName?.name} - ${companyName?.cnpj}`}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">

@@ -13,10 +13,10 @@ import { apiCoreClient } from '@/lib/apiClient';
 import { Skeleton, Typography } from '@mui/material';
 import Title from '@/components/Title';
 import { ContainerItem } from '@/styles/pages/company';
-import Layout from '@/Layout';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState, getCompaniesListRequest, getCompanyRequest } from '@/redux';
 import { StarTwoTone } from '@mui/icons-material';
+import { useRouter } from 'next/router';
 
 
 interface companyProps {
@@ -31,10 +31,19 @@ export default function DashboardContent() {
   const [company, setCompany] = useState<companyProps[]>()
   
   const api = new apiCore()
+  const router = useRouter()
   
   const companyState = useSelector<AppState>(state => state.company)
   const dispatch = useDispatch<AppDispatch>()
   console.log('stado', companyState)
+
+
+  function handleSelectCompany(companyId: number) {
+    dispatch(getCompanyRequest(companyId))
+    router.push('/service-schedules')
+  }
+
+
   useEffect(() => {
     api.get('/user/companies').then((response) => {
       const { data } = response.data
@@ -49,7 +58,6 @@ export default function DashboardContent() {
         }))
       }
     })
-    dispatch(getCompanyRequest(2))
 
   }, [])
 
@@ -89,7 +97,7 @@ export default function DashboardContent() {
           }
         {company && company.map((item, index) => {
           return (
-            <Grid item xs={12} md={4} lg={4} key={`${item.id}-${index}`}>
+            <Grid item xs={12} md={4} lg={4} key={`${item.id}-${index}`} onClick={() => handleSelectCompany(item.id)}>
               
                 <ContainerItem
                 sx={{

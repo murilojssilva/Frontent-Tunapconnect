@@ -8,7 +8,8 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
 
-
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, AppState, getCompaniesListRequest, getCompanyRequest } from '@/redux';
 
 type SignInDataProps = {
   username: string
@@ -23,6 +24,8 @@ export default function SignIn() {
   });
   const { signIn } = useContext(AuthContext)
 
+    const companyState = useSelector<AppState>(state => state.company)
+  const dispatch = useDispatch<AppDispatch>()
 
 
   function handleSignIn(data: SignInDataProps) {

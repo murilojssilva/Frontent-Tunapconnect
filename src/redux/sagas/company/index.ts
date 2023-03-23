@@ -1,4 +1,3 @@
-
 import { apiCore } from '@/lib/api';
 import { call, put } from '@redux-saga/core/effects';
 import { all, takeLatest } from 'redux-saga/effects';
@@ -14,7 +13,7 @@ const companyRequest = async (companyId: number) => {
   try {
     const request = await api.get(`/company/${companyId}`)
     // const request = await api.get(`/user/companies`)
-     request.data.data
+    request.data.data
     companyApi = {
       id: request.data.data.id,
       name: request.data.data.name,
@@ -22,6 +21,10 @@ const companyRequest = async (companyId: number) => {
       cnpj: request.data.data.cnpj
     }
     
+    localStorage.setItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string, JSON.stringify(companyApi))
+
+
+
     return true
   } catch (error) {
     errorApi = error
