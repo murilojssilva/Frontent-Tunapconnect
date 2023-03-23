@@ -11,6 +11,7 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { signOut} from 'next-auth/react';
 import { useRouter } from 'next/router';
 
+import Link from 'next/link'
 
 const routerMenu = [
   {
@@ -25,18 +26,22 @@ export const MainListItems = () => {
 
   return (
   <React.Fragment>
-    <ListItemButton style={{background: 'rgba(85,107,214)'}}>
-      <ListItemIcon>
-        <DashboardIcon style={{color: 'white'}}/>
-      </ListItemIcon>
-      <ListItemText primary="Empresas" style={{color: 'white'}}/>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AccessTimeFilledOutlinedIcon />
-      </ListItemIcon>
-      <ListItemText primary="Agendamento" />
-    </ListItemButton>
+    <Link href='/company'>
+      <ListItemButton style={{background: 'rgba(85,107,214)'}}>
+        <ListItemIcon>
+          <DashboardIcon style={{color: 'white'}}/>
+        </ListItemIcon>
+        <ListItemText primary="Empresas" style={{color: 'white'}}/>
+      </ListItemButton>
+    </Link>
+    <Link href='/service-schedules'>
+      <ListItemButton>
+        <ListItemIcon>
+          <AccessTimeFilledOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Agendamento" />
+      </ListItemButton>
+    </Link>
     <ListItemButton>
       <ListItemIcon>
         <MonetizationOnOutlinedIcon />
