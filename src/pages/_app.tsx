@@ -1,6 +1,5 @@
 
 import * as React from 'react';
-import { getSession, SessionProvider } from "next-auth/react"
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import { ThemeProvider } from '@mui/material/styles';
@@ -14,6 +13,8 @@ import { useRouter } from 'next/router';
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import Layout from '@/Layout';
+import { Provider } from 'react-redux';
+import { wrapper } from '@/redux';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -22,10 +23,13 @@ export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-export default function MyApp(props: MyAppProps) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps: { session, ...pageProps } } = props;
+const MyApp = ({Component, ...rest}:AppProps) => {
+   const {store, props} = wrapper.useWrappedStore(rest);
+  const { emotionCache = clientSideEmotionCache, pageProps: { session, ...pageProps } } = props;
   
-  const router = useRouter()
+   const router = useRouter()
+   
+   
 
   useEffect(() => {
     const handleStart = (url: string) => {
@@ -48,24 +52,33 @@ export default function MyApp(props: MyAppProps) {
   }, [router])
   
   return (
+    
     <CacheProvider value={emotionCache}>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AuthProvider session={session}>
+        <Provider store={store}>
+          <AuthProvider session={session}>
+          
           { router.route === '/' && <Component {...pageProps} /> }
           { router.route !== '/' && (
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+              <Layout>
+                <Component {...props.pageProps} />
+              </Layout>
             )
           }
         
+          {/* <Component {...pageProps} /> */}
         </AuthProvider>
+        </Provider>
+        
       </ThemeProvider>
-    </CacheProvider>
+      </CacheProvider>
   );
 }
 
+export default MyApp 
+
+// export default wrapper.withRedux(MyApp) 

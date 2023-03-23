@@ -125,7 +125,7 @@ const session = await getSession(ctx)
   if (session?.user?.token) {
     return {
       redirect: {
-        destination: '/painel',
+        destination: '/company',
         permanent: false,
       }
     }

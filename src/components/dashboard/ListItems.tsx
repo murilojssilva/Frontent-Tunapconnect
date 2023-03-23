@@ -9,14 +9,23 @@ import AccessTimeFilledOutlinedIcon from '@mui/icons-material/AccessTimeFilledOu
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { signOut} from 'next-auth/react';
+import { useRouter } from 'next/router';
 
+
+const routerMenu = [
+  {
+    name: 'company',
+    path: '/company',
+    children: [],
+  }
+]
 
 export const MainListItems = () => {
-  
-  
+  const router = useRouter
+
   return (
   <React.Fragment>
-    <ListItemButton style={{background: ' rgba(85,107,214)'}}>
+    <ListItemButton style={{background: 'rgba(85,107,214)'}}>
       <ListItemIcon>
         <DashboardIcon style={{color: 'white'}}/>
       </ListItemIcon>
