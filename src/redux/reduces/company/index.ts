@@ -1,5 +1,5 @@
 import { CompanyType } from './../../actions/company/index';
-import * as types from '../../types'
+import * as types from '../../constants'
 
 
 interface CompanyState {
@@ -21,7 +21,7 @@ const initialState: CompanyState = {
 
 export const companyReducer = (state = initialState, action: {
   type: string,
-  payload: CompanyType
+  payload: CompanyType | number
 }) => {
   switch (action.type) {
     case types.GET_COMPANY_REQUEST:
@@ -29,8 +29,10 @@ export const companyReducer = (state = initialState, action: {
         ...state,
         loading: true,
         company: {
-          ...action.payload,
-          id: action.payload
+          id: action.payload,
+          name: '',
+          cnpj: '',
+          cpf: ''
         },
         error: ''
       }

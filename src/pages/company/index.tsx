@@ -26,6 +26,7 @@ interface companyProps {
   cpf: string | null;
 }
 
+
 export default function DashboardContent() {
   const [company, setCompany] = useState<companyProps[]>()
   
@@ -48,7 +49,7 @@ export default function DashboardContent() {
         }))
       }
     })
-    dispatch(getCompanyRequest('2'))
+    dispatch(getCompanyRequest(2))
 
   }, [])
 

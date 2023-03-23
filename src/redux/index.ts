@@ -33,4 +33,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unkn
 
 // export default store
 export * from './actions'
-export * from './types'
+export * from './constants'

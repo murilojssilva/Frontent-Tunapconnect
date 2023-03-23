@@ -1,8 +1,8 @@
-import * as types from '../../types'
+import * as types from '../../constants'
 
 interface getCompanyRequestReturn {
   type: string
-  payload: string
+  payload: number
 }
 interface getCompaniyRequestSuccessReturn {
   type: string
@@ -36,7 +36,7 @@ export type CompanyType = {
 
 //**** one ******//
 
-export function getCompanyRequest(companyId: string):getCompanyRequestReturn {
+export function getCompanyRequest(companyId: number):getCompanyRequestReturn {
   return {
     type: types.GET_COMPANY_REQUEST,
     payload: companyId

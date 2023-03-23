@@ -3,17 +3,24 @@ import { apiCore } from '@/lib/api';
 import { call, put } from '@redux-saga/core/effects';
 import { all, takeLatest } from 'redux-saga/effects';
 import { CompanyType, getCompaniesListRequest, getCompaniesListRequestSuccess, getCompaniesListRequestFailure, getCompanyRequestSuccess, getCompanyRequestFailure } from '../../actions'
-import * as types from './../../types/index'
+import * as types from '../../constants/index'
 
 let companyApi: CompanyType
 let errorApi: any
 const api = new apiCore()
 
-const companyRequest = async (companyId: number) => { 
+const companyRequest = async (companyId: number) => {
+  console.log(companyId)
   try {
     const request = await api.get(`/company/${companyId}`)
     // const request = await api.get(`/user/companies`)
-    companyApi = request.data
+     request.data.data
+    companyApi = {
+      id: request.data.data.id,
+      name: request.data.data.name,
+      cpf: request.data.data.cpf,
+      cnpj: request.data.data.cnpj
+    }
     
     return true
   } catch (error) {
