@@ -21,6 +21,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
 
 type SignInDataProps = {
   username: string
@@ -91,7 +93,7 @@ export default function SignIn() {
         <Grid container spacing={3}>
           <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', }}>
-            <Stack direction="row" spacing={1} sx={{ mb: 1 }} justifyContent="space-between" >
+            <Stack direction="row" spacing={1} sx={{ mb: 1 }} justifyContent="space-between" alignItems="center">
               <Box>
                 <TextField
                   label="Procura"
@@ -99,6 +101,11 @@ export default function SignIn() {
                   defaultValue="Small"
                   size="small"
                 />
+                {/* <Button size="large" variant="contained" endIcon={<SearchIcon />} /> */}
+        
+                <IconButton aria-label="search" color="primary" sx={{marginLeft: 1}}>
+                  <SearchIcon />
+                </IconButton>
               </Box>
               <Box>
                 <Button size="large" variant="contained" onClick={() => console.log('click')} sx={{alignSelf: 'flex-end'}}>
