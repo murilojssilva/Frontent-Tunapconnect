@@ -93,7 +93,12 @@ export default function SignIn() {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', }}>
             <Stack direction="row" spacing={1} sx={{ mb: 1 }} justifyContent="space-between" >
               <Box>
-                <TextField id="outlined-basic" label="Procurar..." variant="outlined" />
+                <TextField
+                  label="Procura"
+                  id="outlined-size-small"
+                  defaultValue="Small"
+                  size="small"
+                />
               </Box>
               <Box>
                 <Button size="large" variant="contained" onClick={() => console.log('click')} sx={{alignSelf: 'flex-end'}}>
