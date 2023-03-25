@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState, getCompanyRequest } from '@/redux';
@@ -102,21 +102,19 @@ function DashboardContent({ children }: DashboardContentProps) {
   const companyState = useSelector<AppState>(state => state.company)
   const dispatch = useDispatch<AppDispatch>()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setCompanyName({
-      name: companyState.company.name,
-      cnpj: companyState.company.cnpj || companyState.company.cpf
+      name: companyState?.company?.name,
+      cnpj: companyState?.company?.cnpj || companyState?.company?.cpf
     })
   },[companyState])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
 
     const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
    
-    if (!companyState.company.cnpj || !companyLocalStorge) {
-      router.push('/company')
-    } 
+
      
     if (companyLocalStorge) {
       const companyLocal = JSON.parse(companyLocalStorge)
@@ -125,9 +123,11 @@ function DashboardContent({ children }: DashboardContentProps) {
         dispatch(getCompanyRequest(companyLocal.id))
       }
 
+    } else if (!companyState.company.cnpj || !companyLocalStorge) {
+      router.push('/company')
+      localStorage.removeItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
     } 
 
-    console.log(companyLocalStorge)
   },[])
 
   return (

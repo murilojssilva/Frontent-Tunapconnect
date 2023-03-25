@@ -12,7 +12,6 @@ const companyRequest = async (companyId: number) => {
   console.log(companyId)
   try {
     const request = await api.get(`/company/${companyId}`)
-    // const request = await api.get(`/user/companies`)
     request.data.data
     companyApi = {
       id: request.data.data.id,

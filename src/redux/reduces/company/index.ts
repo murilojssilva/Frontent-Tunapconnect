@@ -8,7 +8,17 @@ interface CompanyState {
   error: string
 }
 
-const initialState: CompanyState = {
+//  const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string) 
+
+let initialState: CompanyState 
+
+// if (companyLocalStorge) {
+//   console.log(companyLocalStorge)
+// } else {
+
+// }
+
+ initialState = {
   company: {
     id: undefined,
     name: '',
