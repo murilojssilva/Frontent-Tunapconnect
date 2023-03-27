@@ -31,7 +31,10 @@ export class apiCore {
     })
   }
 
-  get(data: any) {
+  get(data: string) {
     return api.get(data)
+  }
+  delete(data: string) {
+    return api.delete(data)
   }
 } 
