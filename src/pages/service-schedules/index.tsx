@@ -35,87 +35,6 @@ type SignInDataProps = {
   password: string
 }
 
-// const columns: GridColDef[] = [
-//   {
-//     field: 'id',
-//     headerName: 'Número',
-//     headerClassName: 'super-app-theme--header',
-//     width: 90,
-//     type: 'number',
-//     align: 'center',
-//   },
-//   {
-//     field: 'client',
-//     headerName: 'Cliente',
-//     headerClassName: 'super-app-theme--header',
-//     width: 210,
-//     align: 'left',
-//   },
-//   {
-//     field: 'plate',
-//     headerName: 'Placa',
-//     headerClassName: 'super-app-theme--header',
-//     width: 90,
-//   },
-//   {
-//     field: 'chassis',
-//     headerName: 'Chassis',
-//     headerClassName: 'super-app-theme--header',
-//     width: 200,
-//   },
-//   {
-//     field: 'technical_consultant',
-//     headerName: 'Responsavél',
-//     headerClassName: 'super-app-theme--header',
-//     // type: 'number',
-//     width: 110,
-//   },
-//   {
-//     field: 'typeEstimate',
-//     headerName: 'Tipo Orçamento',
-//     headerClassName: 'super-app-theme--header',
-//     // type: 'number',
-//     width: 120,
-//   },
-//   {
-//     field: 'totalDiscount',
-//     headerName: 'Tipo Desconto',
-//     headerClassName: 'super-app-theme--header',
-//     // type: 'number',
-//     width: 110,
-//     align: 'center',
-//   },
-//   {
-//     field: 'total',
-//     headerName: 'Total Geral',
-//     headerClassName: 'super-app-theme--header',
-//     // type: 'number',
-//     width: 110,
-//     align: 'center',
-//   },
-//   {
-//     field: 'action',
-//     headerName: 'Ação',
-//     headerClassName: 'super-app-theme--header',
-//     sortable: false,
-//     width: 80,
-//     align: 'left',
-//     renderCell: (params: GridRenderCellParams) => {
-//       const onClick = (e:React.MouseEvent<HTMLElement>) => {
-//         e.stopPropagation(); 
-//         console.log(params.id)
-//         const apiGrid = GridApi()
-//         ActionDeleteConfirmations(parseInt(params.id as string))
-//       }
-//       return (
-//         <IconButton aria-label="search" color="warning" onClick={onClick} sx={{ marginLeft: 1, color: 'red' }}>
-//           <Delete />
-//         </IconButton>
-//       ) 
-//     },
-//   },
-// ];
-
 const api = new apiCore()
 
 
@@ -147,32 +66,43 @@ export default function ServiceSchedules() {
     width: 90,
     type: 'number',
     align: 'center',
+    sortable: false
   },
   {
     field: 'client',
     headerName: 'Cliente',
     headerClassName: 'super-app-theme--header',
-    width: 210,
+    flex: 1,
+    maxWidth: 230,
+     minWidth: 120,
     align: 'left',
+    sortable: false
   },
   {
     field: 'plate',
     headerName: 'Placa',
     headerClassName: 'super-app-theme--header',
     width: 90,
+    sortable: false
   },
   {
     field: 'chassis',
     headerName: 'Chassis',
     headerClassName: 'super-app-theme--header',
-    width: 200,
+    flex: 1,
+    maxWidth: 200,
+    minWidth: 120,
+    sortable: false
   },
   {
     field: 'technical_consultant',
     headerName: 'Responsavél',
     headerClassName: 'super-app-theme--header',
     // type: 'number',
-    width: 110,
+    flex: 1,
+    maxWidth: 120,
+    minWidth: 80,
+    sortable: false
   },
   {
     field: 'typeEstimate',
@@ -180,6 +110,7 @@ export default function ServiceSchedules() {
     headerClassName: 'super-app-theme--header',
     // type: 'number',
     width: 120,
+     sortable: false
   },
   {
     field: 'totalDiscount',
@@ -188,6 +119,7 @@ export default function ServiceSchedules() {
     // type: 'number',
     width: 110,
     align: 'center',
+    sortable: false
   },
   {
     field: 'total',
@@ -196,6 +128,7 @@ export default function ServiceSchedules() {
     // type: 'number',
     width: 110,
     align: 'center',
+    sortable: false
   },
   {
     field: 'action',
@@ -279,9 +212,9 @@ export default function ServiceSchedules() {
                   <SearchIcon />
                 </ButtonIcon>
               </Box>
-                <Box>
+                {/* <Box>
                   <MultipleSelectCheckmarks checkNames={filterChecked} handleChecked={handleChecked} />
-                </Box>
+                </Box> */}
               </Grid>
             <Grid item xs={12} md={4} lg={4} sx={{display: 'flex', flexDirection: 'column' , alignItems: 'center', justifyContent: 'center' }}>
                 <Button size="large" variant="contained" onClick={() => {}} sx={{ alignSelf: 'flex-end' }}>
@@ -311,7 +244,10 @@ export default function ServiceSchedules() {
                 <DataGrid
                   rows={rows}
                   columns={columns}
-                  autoHeight
+                autoHeight
+                columnHeaderHeight={70}
+                disableColumnMenu
+                
                   apiRef={apiRef}
                     initialState={{
                       pagination: {
@@ -325,14 +261,15 @@ export default function ServiceSchedules() {
                     console.log(id.id)
                     router.push(`/service-schedules/${id.id}`)
                   }}
-                  pageSizeOptions={[7]}
-                  disableRowSelectionOnClick
+                pageSizeOptions={[7]}
+                disableRowSelectionOnClick
+                disableColumnFilter
                 />
               </Box>
             </Paper>
           </Grid>
         </Grid>
-      <ActionAlerts isOpen={true} />
+      {/* <ActionAlerts isOpen={true} /> */}
     </Container>
     
   );
