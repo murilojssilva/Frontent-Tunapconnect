@@ -43,11 +43,21 @@ type SignInDataProps = {
 interface TableAppProps {
   columns: GridColDef[]
   rowsData: ServiceSchedulesListProps[]
+  handlePages: (nextPage: string) => void
+  pages:{current: number, next: boolean, previous: boolean}
 }
 
-export function TableApp({columns, rowsData}: TableAppProps) {
+declare module '@mui/x-data-grid' {
+  interface FooterPropsOverrides {
+    handlePages: (nextPage: string) => void
+    nextPage: boolean
+    previousPage: boolean
+  }
+}
+
+export function TableApp({columns, rowsData, handlePages, pages}: TableAppProps) {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
-  // const [page]
+
   // const [filterChecked, setFilterChecked] = useState<string[]>([
   //   'teste 1',
   //   'teste 2',
@@ -109,6 +119,9 @@ export function TableApp({columns, rowsData}: TableAppProps) {
                   slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     footer: CustomFooterStatusComponent
+                  }}
+                  slotProps={{
+                    footer: { nextPage: pages?.next, previousPage: pages?.previous, handlePages } 
                   }}
                   apiRef={apiRef}
                     initialState={{

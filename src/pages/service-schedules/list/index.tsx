@@ -8,7 +8,7 @@ import { GridColDef, GridRenderCellParams, useGridApiRef } from '@mui/x-data-gri
 
 
 import { getSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next/types';
+import next, { GetServerSideProps } from 'next/types';
 
 
 import Box from '@mui/material/Box';
@@ -44,7 +44,7 @@ const api = new apiCore()
 
 export default function ServiceSchedules() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
-  const [ pages, setPages] = useState<PagesProps>()
+  const [pages, setPages] = useState<{current: number, next: boolean, previous: boolean}>({current: 1, next: false, previous: false})
   // const [filterChecked, setFilterChecked] = useState<string[]>([
   //   'teste 1',
   //   'teste 2',
@@ -69,6 +69,10 @@ export default function ServiceSchedules() {
     setRows(rows.filter(row => row.id !== id))
   }
 
+
+  function handlePages(nextPage: string): void {
+    console.log('func handlePages', nextPage)
+  }
 
   const columns: GridColDef[] = [
   {
@@ -169,7 +173,16 @@ export default function ServiceSchedules() {
   useEffect(() => {
       api.get(`/service-schedule?company_id=${2}&limit=2&page=2`)
         .then((response) => {
-          console.log(response);
+          console.log(response.data);
+          // setPages(prevState => {
+          //   const {total_results, total_pages, current_page } = response.data
+   
+              
+          //   return {
+          //     current: response.data.current, 
+          //     next: response.data.total_results > response.data.total_pages
+          //   }
+          // })
           const resp = response.data.data
           setRows(resp.map((data: any) => ({
             id: data.id,
@@ -182,6 +195,8 @@ export default function ServiceSchedules() {
             total: 0
           })))
   
+        }).catch((err) => { 
+          setRows([])
         })
     
   },[])
@@ -266,7 +281,7 @@ export default function ServiceSchedules() {
         </Grid>
  
           <Grid item xs={12}>
-              <TableApp columns={columns} rowsData={rows} />
+          <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} />
           </Grid>
         </Grid>
       {/* <ActionAlerts isOpen={true} /> */}

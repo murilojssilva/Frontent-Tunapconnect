@@ -31,10 +31,6 @@ export class apiCore {
     })
   }
 
-  // get(data: string) {
-  //   return api.get(data)
-  // }
-
   get = (url:string, params?:any) => {
         let response;
         if (params) {
@@ -53,4 +49,8 @@ export class apiCore {
   delete(data: string) {
     return api.delete(data)
   }
+
+  create = (url:string, data: any) => {
+    return api.post(url, data);
+  };
 } 
