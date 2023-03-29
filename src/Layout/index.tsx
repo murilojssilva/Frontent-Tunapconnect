@@ -105,8 +105,11 @@ function DashboardContent({ children }: DashboardContentProps) {
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
+    
     setCompanyName({
+      //@ts-ignore
       name: companyState?.company?.name,
+      //@ts-ignore
       cnpj: companyState?.company?.cnpj || companyState?.company?.cpf
     })
   },[companyState])
@@ -124,7 +127,7 @@ function DashboardContent({ children }: DashboardContentProps) {
       if (companyLocal.id) {
         dispatch(getCompanyRequest(companyLocal.id))
       }
-
+      //@ts-ignore
     } else if (!companyState.company.cnpj || !companyLocalStorge) {
       router.push('/company')
       localStorage.removeItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
