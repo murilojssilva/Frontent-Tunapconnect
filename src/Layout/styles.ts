@@ -12,8 +12,8 @@ const myColors = {
 export const ListItemButton = styled(ListItemB)(({ theme }) => ({
   color: '#1C4961',
   background: '#ffff',
-  margin: 6,
-  borderRadius: 4,
+  margin: '10px 20px',
+  borderRadius: 1,
   '& span': {
      color: '#1C4961',
   },
@@ -21,13 +21,8 @@ export const ListItemButton = styled(ListItemB)(({ theme }) => ({
      color: '#1C4961',
   },
   '&:not(.Mui-selected):hover': {
-    background: alpha('#1C4961', 0.3)
+    background: alpha('#1C4961', 0.2)
   },
-  // '&:not(.Mui-selected)': {
-  //   '&:hover': {
-  //     background: alpha('#1C4961', 0.3)
-  //   },
-  // },
   '&.Mui-selected': {
     background: alpha('#1C4961', 1),
     '& span': {
@@ -37,8 +32,7 @@ export const ListItemButton = styled(ListItemB)(({ theme }) => ({
       color: '#fff',
     },
     '&:hover': {
-      background: alpha('#1C4961', 1)
+      background: alpha('#1C4961', 0.9)
     },
   },
-
 }))
