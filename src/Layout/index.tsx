@@ -14,12 +14,14 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems';
+
 import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState, getCompanyRequest } from '@/redux';
 import { useRouter } from 'next/router';
+import { MainListItems, secondaryListItems } from './ListItems';
+
 
 function Copyright(props: any) {
   return (
@@ -102,14 +104,14 @@ function DashboardContent({ children }: DashboardContentProps) {
   const companyState = useSelector<AppState>(state => state.company)
   const dispatch = useDispatch<AppDispatch>()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setCompanyName({
       name: companyState?.company?.name,
       cnpj: companyState?.company?.cnpj || companyState?.company?.cpf
     })
   },[companyState])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
 
     const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
@@ -137,6 +139,8 @@ function DashboardContent({ children }: DashboardContentProps) {
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
+              color: 'white',
+              backgroundColor:'#1C4961'
             }}
           >
             <IconButton
@@ -154,7 +158,7 @@ function DashboardContent({ children }: DashboardContentProps) {
             <Typography
               component="h1"
               variant="h6"
-              color="inherit"
+              color='white'
               noWrap
               sx={{ flexGrow: 1 }}
             >

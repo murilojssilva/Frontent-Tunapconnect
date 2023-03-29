@@ -5,19 +5,19 @@ import Button from '@mui/material/Button';
 
 
 export const ButtonIcon = styled(IconButton)(({ theme }) => ({
-  color: teal[50],
-  background: teal[900],
+  color: 'white',
+  background: '#1C4961',
   borderRadius: 4,
   '&:hover': {
-    background: alpha(teal[900], 0.7)
+    background: alpha('#1C4961', 0.7)
   }
 }))
 
 export const ButtonAdd = styled(Button)(({ theme }) => ({
-  color: teal[50],
-  background: teal[900],
+  color: 'white',
+  background: '#1C4961',
   borderRadius: 4,
   '&:hover': {
-    background: alpha(teal[900], 0.7)
+    background: alpha('#1C4961', 0.7)
   }
 }))

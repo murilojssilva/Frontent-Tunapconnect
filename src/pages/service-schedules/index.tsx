@@ -54,7 +54,6 @@ export default function ServiceSchedules() {
 
 
   const handleDelete = (id: number) => {
-    console.log(`Delete ${id}`);
     setRows(rows.filter(row => row.id !== id))
   }
 

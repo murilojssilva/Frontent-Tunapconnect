@@ -205,7 +205,7 @@ export default function ServiceSchedules() {
 
       api.get(`/service-schedule?company_id=${2}&limit=2&page=2`, router.query)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         const resp = response.data.data
         setRows(resp.map((data: any) => ({
           id: data.id,
@@ -220,7 +220,6 @@ export default function ServiceSchedules() {
       }).catch((error) => { 
         setRows([])
       })
-    console.log(router.query)
   }, [router.query])
 
 
