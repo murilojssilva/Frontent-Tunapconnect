@@ -225,7 +225,7 @@ export default function ServiceSchedules() {
         
 
           <Grid item xs={12}>
-              <TableApp columns={columns} rowsData={rows} />
+              {/* <TableApp columns={columns} rowsData={rows} /> */}
     
           </Grid>
         </Grid>
