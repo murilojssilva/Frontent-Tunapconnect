@@ -114,26 +114,26 @@ function DashboardContent({ children }: DashboardContentProps) {
     })
   },[companyState])
 
-  useEffect(() => {
-    const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
+  // useEffect(() => {
+  //   const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
 
-    const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
+  //   const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
    
 
      
-    if (companyLocalStorge) {
-      const companyLocal = JSON.parse(companyLocalStorge)
+  //   if (companyLocalStorge) {
+  //     const companyLocal = JSON.parse(companyLocalStorge)
 
-      if (companyLocal.id) {
-        dispatch(getCompanyRequest(companyLocal.id))
-      }
-      //@ts-ignore
-    } else if (!companyState.company.cnpj || !companyLocalStorge) {
-      router.push('/company')
-      localStorage.removeItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
-    } 
+  //     if (companyLocal.id) {
+  //       dispatch(getCompanyRequest(companyLocal.id))
+  //     }
+  //     //@ts-ignore
+  //   } else if (!companyState.company.cnpj || !companyLocalStorge) {
+  //     router.push('/company')
+  //     localStorage.removeItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
+  //   } 
 
-  },[])
+  // },[])
 
   return (
     <>
