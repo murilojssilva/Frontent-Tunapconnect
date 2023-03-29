@@ -1,39 +1,42 @@
 import * as React from 'react';
 import { useForm } from "react-hook-form";
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-import { DataGrid, GridApi, GridColDef, GridRenderCellParams, GridValueGetterParams,GridKeyValue, useGridApiRef } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams, useGridApiRef } from '@mui/x-data-grid';
 
 
-import { AuthContext } from '@/contexts/AuthContext';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '@/redux';
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import { MultipleSelectCheckmarks } from '@/components/MultipleSelectCheckmarks';
-import { ButtonIcon } from '@/styles/pages/service-schedules/styles';
+
+import { ButtonAdd, ButtonIcon } from '@/styles/pages/service-schedules/styles';
 import { ServiceSchedulesListProps } from '@/types/service-schedule';
 import { apiCore } from '@/lib/api';
 import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
-import ActionAlerts from '@/components/ActionAlerts';
+
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations';
 import { useRouter } from 'next/router';
 import { TableApp } from '@/components/TableApp';
+import Title from '@/components/Title';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, AppState } from '@/redux';
 
-type SignInDataProps = {
-  username: string
-  password: string
+type SearchFormProps = {
+  search: string
+}
+
+type PagesProps = {
+  search: string
 }
 
 const api = new apiCore()
@@ -41,20 +44,28 @@ const api = new apiCore()
 
 export default function ServiceSchedules() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
-  const [filterChecked, setFilterChecked] = useState<string[]>([
-    'teste 1',
-    'teste 2',
-    'teste 3',
-    'teste 4'
-  ])
+  const [ pages, setPages] = useState<PagesProps>()
+  // const [filterChecked, setFilterChecked] = useState<string[]>([
+  //   'teste 1',
+  //   'teste 2',
+  //   'teste 3',
+  //   'teste 4'
+  // ])
 
   const router = useRouter()
 
-  const apiRef = useGridApiRef();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    defaultValues: {
+      search: ''
+    }
+  });
+
+  function onSubmitSearch(data: SearchFormProps) {
+    router.push('/service-schedules/list?search=' + data.search)
+  }
 
 
   const handleDelete = (id: number) => {
-    console.log(`Delete ${id}`);
     setRows(rows.filter(row => row.id !== id))
   }
 
@@ -99,7 +110,6 @@ export default function ServiceSchedules() {
     field: 'technical_consultant',
     headerName: 'Responsavél',
     headerClassName: 'super-app-theme--header',
-    // type: 'number',
     flex: 1,
     maxWidth: 120,
     minWidth: 80,
@@ -109,7 +119,6 @@ export default function ServiceSchedules() {
     field: 'typeEstimate',
     headerName: 'Tipo Orçamento',
     headerClassName: 'super-app-theme--header',
-    // type: 'number',
     width: 120,
      sortable: false
   },
@@ -142,7 +151,6 @@ export default function ServiceSchedules() {
       const onClick = (e:React.MouseEvent<HTMLElement>) => {
         e.stopPropagation(); 
         const id = params.id;
-        console.log(params.id)
         ActionDeleteConfirmations(id as number, handleDelete)
       }
       return (
@@ -154,26 +162,35 @@ export default function ServiceSchedules() {
   },
   ];
 
-
-
-
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
-    defaultValues: {
-      searchText: '',
-    }
-  });
-
-
-
   // function handleChecked(checked: string[] | []) {
   //   setFilterChecked(checked)
-      
-    
   // }
 
   useEffect(() => {
-    api.get('/service-schedule?company_id=2&limit=1&page=1')
+      api.get(`/service-schedule?company_id=${2}&limit=2&page=2`)
+        .then((response) => {
+          console.log(response);
+          const resp = response.data.data
+          setRows(resp.map((data: any) => ({
+            id: data.id,
+            client: data.client.name,  
+            plate: data.client_vehicle.plate,
+            chassis: data.client_vehicle.chasis,
+            technical_consultant: data.technical_consultant.name,
+            typeEstimate: 'não definido',
+            totalDiscount: 0,
+            total: 0
+          })))
+  
+        })
+    
+  },[])
+
+  useEffect(() => {
+
+      api.get(`/service-schedule?company_id=${2}&limit=2&page=2`, router.query)
       .then((response) => {
+        console.log(response);
         const resp = response.data.data
         setRows(resp.map((data: any) => ({
           id: data.id,
@@ -185,9 +202,12 @@ export default function ServiceSchedules() {
           totalDiscount: 0,
           total: 0
         })))
-
+      }).catch((error) => { 
+        setRows([])
       })
-  },[])
+    console.log(router.query)
+  }, [router.query])
+
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -197,16 +217,26 @@ export default function ServiceSchedules() {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
             <Grid container spacing={3}>
               <Grid item xs={8} md={8} lg={8} sx={{display: 'flex', alignItems: 'center'}}>
-              <Box sx={{flexWrap: "nowrap", display: 'flex', flex: 1}}>
+                <Box
+                  component='form'
+                  onSubmit={handleSubmit(onSubmitSearch)}
+                  sx={{ flexWrap: "nowrap", display: 'flex', flex: 1 }}
+                >
                 <TextField
                   label="Procura"
                   id="outlined-size-small"
                   // defaultValue="Pro"
                   size="small"
-                  sx={{flex: 1, width: '100%'}}
-                />
-        
-                <ButtonIcon aria-label="search" color="primary" sx={{marginLeft: 1}}>
+                    sx={{ flex: 1, width: '100%' }}
+                    {...register("search")}
+                  />
+                  
+                  <ButtonIcon
+                    type='submit'
+                    aria-label="search"
+                    color="primary"
+                    sx={{ marginLeft: 1 }}
+                  >
                   <SearchIcon />
                 </ButtonIcon>
               </Box>
@@ -215,19 +245,28 @@ export default function ServiceSchedules() {
                 </Box> */}
               </Grid>
             <Grid item xs={12} md={4} lg={4} sx={{display: 'flex', flexDirection: 'column' , alignItems: 'center', justifyContent: 'center' }}>
-                <Button size="large" variant="contained" onClick={() => {}} sx={{ alignSelf: 'flex-end' }}>
+                <ButtonAdd
+                  size="large"
+                  variant="contained"
+                  sx={{ alignSelf: 'flex-end' }}
+                  startIcon={<AddCircleOutlineIcon />}
+                >
+                  
+                
                   Adicionar novo
-                </Button>
+                </ButtonAdd>
               </Grid>
             </Grid>  
           </Paper>
         </Grid>
-       
-        
-
+        <Grid item xs={12}>
+          <Title>
+            Lista de orçamentos
+          </Title>
+        </Grid>
+ 
           <Grid item xs={12}>
               <TableApp columns={columns} rowsData={rows} />
-    
           </Grid>
         </Grid>
       {/* <ActionAlerts isOpen={true} /> */}

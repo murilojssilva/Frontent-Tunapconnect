@@ -45,8 +45,6 @@ export default function SignIn() {
 
 
   function handleSignIn(data: SignInDataProps) {
-    
-    
     signIn(data);
   }
 

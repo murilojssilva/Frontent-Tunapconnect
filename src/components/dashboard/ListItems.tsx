@@ -34,7 +34,7 @@ export const MainListItems = () => {
         <ListItemText primary="Empresas" style={{color: 'white'}}/>
       </ListItemButton>
     </Link>
-    <Link href='/service-schedules'>
+    <Link href='/service-schedules/list'>
       <ListItemButton>
         <ListItemIcon>
           <AccessTimeFilledOutlinedIcon />

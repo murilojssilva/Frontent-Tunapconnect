@@ -31,9 +31,25 @@ export class apiCore {
     })
   }
 
-  get(data: string) {
-    return api.get(data)
-  }
+  // get(data: string) {
+  //   return api.get(data)
+  // }
+
+  get = (url:string, params:any) => {
+        let response;
+        if (params) {
+            var queryString = params
+                ? Object.keys(params)
+                      .map((key) => key + '=' + params[key])
+                      .join('&')
+                : '';
+            response = api.get(`${url}?${queryString}`, params);
+        } else {
+            response = api.get(`${url}`, params);
+        }
+        return response;
+    };
+
   delete(data: string) {
     return api.delete(data)
   }

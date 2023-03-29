@@ -9,7 +9,6 @@ let errorApi: any
 const api = new apiCore()
 
 const companyRequest = async (companyId: number) => {
-  console.log(companyId)
   try {
     const request = await api.get(`/company/${companyId}`)
     request.data.data

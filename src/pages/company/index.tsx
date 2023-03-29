@@ -35,12 +35,10 @@ export default function DashboardContent() {
   
   const companyState = useSelector<AppState>(state => state.company)
   const dispatch = useDispatch<AppDispatch>()
-  console.log('stado', companyState)
-
 
   function handleSelectCompany(companyId: number) {
     dispatch(getCompanyRequest(companyId))
-    router.push('/service-schedules')
+    router.push('/service-schedules/list')
   }
 
 
