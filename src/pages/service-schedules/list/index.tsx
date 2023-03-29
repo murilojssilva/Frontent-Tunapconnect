@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import Container from '@mui/material/Container';
 
-import { GridColDef, GridRenderCellParams, useGridApiRef } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams, GridValueGetterParams, useGridApiRef } from '@mui/x-data-grid';
 
 
 import { getSession } from 'next-auth/react';
@@ -74,6 +74,13 @@ export default function ServiceSchedules() {
     console.log('func handlePages', nextPage)
   }
 
+
+  const formatNumber = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  })
+
   const columns: GridColDef[] = [
   {
     field: 'id',
@@ -124,7 +131,8 @@ export default function ServiceSchedules() {
     headerName: 'Tipo Orçamento',
     headerClassName: 'super-app-theme--header',
     width: 120,
-     sortable: false
+    sortable: false,
+    
   },
   {
     field: 'totalDiscount',
@@ -133,7 +141,9 @@ export default function ServiceSchedules() {
     // type: 'number',
     width: 110,
     align: 'center',
-    sortable: false
+    sortable: false,
+    valueGetter: (params: GridValueGetterParams) =>
+      `${formatNumber.format(params.row.totalDiscount) || ''}`
   },
   {
     field: 'total',
@@ -142,7 +152,9 @@ export default function ServiceSchedules() {
     // type: 'number',
     width: 110,
     align: 'center',
-    sortable: false
+    sortable: false,
+        valueGetter: (params: GridValueGetterParams) =>
+      `${formatNumber.format(params.row.total) || ''}`
   },
   {
     field: 'action',
