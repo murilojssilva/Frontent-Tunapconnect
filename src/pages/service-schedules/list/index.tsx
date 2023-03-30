@@ -42,7 +42,7 @@ type PagesProps = {
 const api = new apiCore()
 
 
-export default function ServiceSchedules() {
+export default function ServiceSchedulesList() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
   const [pages, setPages] = useState<{current: number, next: boolean, previous: boolean}>({current: 1, next: false, previous: false})
   // const [filterChecked, setFilterChecked] = useState<string[]>([
@@ -183,37 +183,6 @@ export default function ServiceSchedules() {
   // }
 
   useEffect(() => {
-      api.get(`/service-schedule?company_id=${2}&limit=2&page=2`)
-        .then((response) => {
-          console.log(response.data);
-          // setPages(prevState => {
-          //   const {total_results, total_pages, current_page } = response.data
-   
-              
-          //   return {
-          //     current: response.data.current, 
-          //     next: response.data.total_results > response.data.total_pages
-          //   }
-          // })
-          const resp = response.data.data
-          setRows(resp.map((data: any) => ({
-            id: data.id,
-            client: data.client.name,  
-            plate: data.client_vehicle.plate,
-            chassis: data.client_vehicle.chasis,
-            technical_consultant: data.technical_consultant.name,
-            typeEstimate: 'não definido',
-            totalDiscount: 0,
-            total: 0
-          })))
-  
-        }).catch((err) => { 
-          setRows([])
-        })
-    
-  },[])
-
-  useEffect(() => {
 
       api.get(`/service-schedule?company_id=${2}&limit=2&page=2`, router.query)
       .then((response) => {
@@ -276,6 +245,9 @@ export default function ServiceSchedules() {
                   variant="contained"
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
+                  onClick={() => {
+                    router.push('/service-schedules/create')
+                  }}
                 >
                   
                 
