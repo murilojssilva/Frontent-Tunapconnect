@@ -30,11 +30,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import ptBR from 'date-fns/locale/pt-BR';
-import dayjsPluginUTC from 'dayjs-plugin-utc'
+
 
 
 const api = new apiCore()
@@ -73,7 +71,6 @@ export default function ServiceSchedulesCreate() {
             color: client_vehicle.color,
             plate: client_vehicle.plate
           })
-          dayjs.extend(dayjsPluginUTC)
           const promisedDate = dayjs(new Date(promised_date))
           console.log(dayjs(promisedDate))
           setVisitDate(promisedDate)
