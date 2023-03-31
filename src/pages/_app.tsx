@@ -13,8 +13,9 @@ import { useRouter } from 'next/router';
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import Layout from '@/Layout';
-import { Provider } from 'react-redux';
-import { wrapper } from '@/redux';
+import { CompanyProvider } from '@/contexts/CompanyContext';
+
+
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -23,33 +24,32 @@ export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-const MyApp = ({Component, ...rest}:AppProps) => {
-   const {store, props} = wrapper.useWrappedStore(rest);
-  const { emotionCache = clientSideEmotionCache, pageProps: { session, ...pageProps } } = props;
+const MyApp = (props:MyAppProps) => {
+  const { Component,emotionCache = clientSideEmotionCache, pageProps: { session, ...pageProps } } = props;
   
    const router = useRouter()
    
    
 
-  useEffect(() => {
-    const handleStart = (url: string) => {
-      NProgress.start()
-    }
+  // useEffect(() => {
+  //   const handleStart = (url: string) => {
+  //     NProgress.start()
+  //   }
 
-    const handleStop = () => {
-      NProgress.done()
-    }
+  //   const handleStop = () => {
+  //     NProgress.done()
+  //   }
 
-    router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleStop)
-    router.events.on('routeChangeError', handleStop)
+  //   router.events.on('routeChangeStart', handleStart)
+  //   router.events.on('routeChangeComplete', handleStop)
+  //   router.events.on('routeChangeError', handleStop)
 
-    return () => {
-      router.events.off('routeChangeStart', handleStart)
-      router.events.off('routeChangeComplete', handleStop)
-      router.events.off('routeChangeError', handleStop)
-    }
-  }, [router])
+  //   return () => {
+  //     router.events.off('routeChangeStart', handleStart)
+  //     router.events.off('routeChangeComplete', handleStop)
+  //     router.events.off('routeChangeError', handleStop)
+  //   }
+  // }, [router])
   
   return (
     
@@ -59,8 +59,10 @@ const MyApp = ({Component, ...rest}:AppProps) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Provider store={store}>
-          <AuthProvider session={session}>
+        <AuthProvider session={session}>
+          <CompanyProvider>
+            
+         
           
           { router.route === '/' && <Component {...pageProps} /> }
           { router.route !== '/' && (
@@ -70,9 +72,9 @@ const MyApp = ({Component, ...rest}:AppProps) => {
             )
           }
         
-          {/* <Component {...pageProps} /> */}
+            {/* <Component {...pageProps} /> */}
+            </CompanyProvider>
         </AuthProvider>
-        </Provider>
         
       </ThemeProvider>
       </CacheProvider>

@@ -1,44 +1,37 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 
-import { MainListItems, secondaryListItems } from '@/components/dashboard/ListItems'
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { GetServerSideProps } from 'next/types';
 import { apiCore } from '@/lib/api';
-import { apiCoreClient } from '@/lib/apiClient';
 import { Skeleton, Typography } from '@mui/material';
 import Title from '@/components/Title';
 import { ContainerItem } from '@/styles/pages/company';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState, getCompaniesListRequest, getCompanyRequest } from '@/redux';
-import { StarTwoTone } from '@mui/icons-material';
+
 import { useRouter } from 'next/router';
+import { CompanyContext } from '@/contexts/CompanyContext';
 
 
 interface companyProps {
-  id: number;
-  name: string;
-  cnpj: string | null;
+  id: number 
+  name: string 
+  cnpj: string | null
   cpf: string | null;
 }
 
 
 export default function DashboardContent() {
-  const [company, setCompany] = useState<companyProps[]>()
+  const [company, setCompany] = useState<companyProps[] | []>()
   
   const api = new apiCore()
   const router = useRouter()
-  
-  const companyState = useSelector<AppState>(state => state.company)
-  const dispatch = useDispatch<AppDispatch>()
+  const {createCompany} = useContext(CompanyContext)
 
-  function handleSelectCompany(companyId: number) {
-    dispatch(getCompanyRequest(companyId))
-    router.push('/service-schedules/list')
+
+  function handleSelectCompany(newCompany: companyProps) {
+    createCompany(newCompany)
   }
 
 
@@ -55,6 +48,8 @@ export default function DashboardContent() {
             }
         }))
       }
+    }).catch((err) => { 
+      setCompany([])
     })
 
   }, [])
@@ -95,7 +90,7 @@ export default function DashboardContent() {
           }
         {company && company.map((item, index) => {
           return (
-            <Grid item xs={12} md={4} lg={4} key={`${item.id}-${index}`} onClick={() => handleSelectCompany(item.id)}>
+            <Grid item xs={12} md={4} lg={4} key={`${item.id}-${index}`} onClick={() => handleSelectCompany(item)}>
               
                 <ContainerItem
                 sx={{

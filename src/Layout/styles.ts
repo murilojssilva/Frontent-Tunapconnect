@@ -12,7 +12,7 @@ const myColors = {
 export const ListItemButton = styled(ListItemB)(({ theme }) => ({
   color: '#1C4961',
   background: '#ffff',
-  margin: '10px 20px',
+  margin: '10px 0px',
   borderRadius: 1,
   '& span': {
      color: '#1C4961',

@@ -56,6 +56,7 @@ export const ButtonCenter = styled(IconButton)(({ theme }) => ({
   color: 'white',
   background: '#0E948B',
   borderRadius: 0,
+  padding: '5px 12px',
   '&:hover': {
     background: '#1ACABA',
   }

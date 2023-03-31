@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -15,12 +15,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState, getCompanyRequest } from '@/redux';
 import { useRouter } from 'next/router';
 import { MainListItems, secondaryListItems } from './ListItems';
+import { CompanyContext } from '@/contexts/CompanyContext';
 
 
 function Copyright(props: any) {
@@ -86,54 +85,34 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const mdTheme = createTheme();
-
 interface DashboardContentProps {
   children: React.ReactNode
 }
 
+type CompanyProps = {
+  id: number 
+  name: string 
+  cnpj: string | null
+  cpf: string | null;
+}
+
 function DashboardContent({ children }: DashboardContentProps) {
   const [open, setOpen] = React.useState(true);
-  const [companyName, setCompanyName] = useState<{name: string, cnpj: string}>()
+  const [companyName, setCompanyName] = useState<CompanyProps>()
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const router = useRouter()
+  const { company } = useContext(CompanyContext)
 
-  const companyState = useSelector<AppState>(state => state.company)
-  const dispatch = useDispatch<AppDispatch>()
+  const companyNameMemo = useMemo(() => companyName, [companyName])
 
   useEffect(() => {
-    
-    setCompanyName({
-      //@ts-ignore
-      name: companyState?.company?.name,
-      //@ts-ignore
-      cnpj: companyState?.company?.cnpj || companyState?.company?.cpf
-    })
-  },[companyState])
-
-  // useEffect(() => {
-  //   const companyLocalStorge = localStorage.getItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
-
-  //   const companyLocal = companyLocalStorge ? JSON.parse(companyLocalStorge) : ''
-   
-
-     
-  //   if (companyLocalStorge) {
-  //     const companyLocal = JSON.parse(companyLocalStorge)
-
-  //     if (companyLocal.id) {
-  //       dispatch(getCompanyRequest(companyLocal.id))
-  //     }
-  //     //@ts-ignore
-  //   } else if (!companyState.company.cnpj || !companyLocalStorge) {
-  //     router.push('/company')
-  //     localStorage.removeItem(process.env.NEXT_PUBLIC_APP_LOCALSTORAGE_NAME as string)
-  //   } 
-
-  // },[])
+    if (company) {
+      setCompanyName(company)
+    }
+  },[company])
 
   return (
     <>
@@ -165,7 +144,7 @@ function DashboardContent({ children }: DashboardContentProps) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              {companyName?.name && `${companyName?.name} - ${companyName?.cnpj}`}
+              {companyName && `${companyName?.name ?? 'Não informado'} - ${companyName?.cnpj ?? companyName.cpf}`}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -189,7 +168,7 @@ function DashboardContent({ children }: DashboardContentProps) {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <MainListItems />
+            <MainListItems opended={open} />
             <Divider sx={{ my: 1 }} />
             {secondaryListItems}
           </List>
@@ -208,37 +187,6 @@ function DashboardContent({ children }: DashboardContentProps) {
         >
           <Toolbar />
           {children}
-          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  
-                </Paper>
-              </Grid>
-   
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-      
-                </Paper>
-              </Grid>
-            </Grid>
-              <Copyright sx={{ pt: 4 }} justifyContent="flex-end"/>  
-          </Container> */}
         </Box>
       </Box>
     </>

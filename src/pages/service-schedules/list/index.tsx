@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useForm } from "react-hook-form";
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import Container from '@mui/material/Container';
 
@@ -28,8 +28,7 @@ import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations';
 import { useRouter } from 'next/router';
 import { TableApp } from '@/components/TableApp';
 import Title from '@/components/Title';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '@/redux';
+import { CompanyContext } from '@/contexts/CompanyContext';
 
 type SearchFormProps = {
   search: string
@@ -44,13 +43,11 @@ const api = new apiCore()
 
 export default function ServiceSchedulesList() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
-  const [pages, setPages] = useState<{current: number, next: boolean, previous: boolean}>({current: 1, next: false, previous: false})
-  // const [filterChecked, setFilterChecked] = useState<string[]>([
-  //   'teste 1',
-  //   'teste 2',
-  //   'teste 3',
-  //   'teste 4'
-  // ])
+  const [pages, setPages] = useState<{current: number, next: boolean, previous: boolean}>
+  ({current: 1, next: false, previous: false})
+  const [loadingData, setLoadingData] = useState(false)
+
+  const {company} = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -178,15 +175,14 @@ export default function ServiceSchedulesList() {
   },
   ];
 
-  // function handleChecked(checked: string[] | []) {
-  //   setFilterChecked(checked)
-  // }
 
-  useEffect(() => {
-
-      api.get(`/service-schedule?company_id=${2}&limit=2&page=2`, router.query)
+  useEffect(() => { 
+    console.log(company?.id)
+    if (!!company?.id) {
+      setLoadingData(true)
+      api.get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`, router.query)
       .then((response) => {
-        // console.log(response);
+        console.log(response);
         const resp = response.data.data
         setRows(resp.map((data: any) => ({
           id: data.id,
@@ -200,8 +196,9 @@ export default function ServiceSchedulesList() {
         })))
       }).catch((error) => { 
         setRows([])
-      })
-  }, [router.query])
+      }).finally(() => { setLoadingData(false)})
+    }
+  }, [router.query, company?.id])
 
 
   return (
@@ -211,7 +208,7 @@ export default function ServiceSchedulesList() {
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
             <Grid container spacing={3}>
-              <Grid item xs={8} md={8} lg={8} sx={{display: 'flex', alignItems: 'center'}}>
+              <Grid item xs={12} md={12} lg={8} sx={{display: 'flex', alignItems: 'center'}}>
                 <Box
                   component='form'
                   onSubmit={handleSubmit(onSubmitSearch)}
@@ -239,7 +236,7 @@ export default function ServiceSchedulesList() {
                   <MultipleSelectCheckmarks checkNames={filterChecked} handleChecked={handleChecked} />
                 </Box> */}
               </Grid>
-            <Grid item xs={12} md={4} lg={4} sx={{display: 'flex', flexDirection: 'column' , alignItems: 'center', justifyContent: 'center' }}>
+            <Grid item xs={12} md={12} lg={4} sx={{display: 'flex', flexDirection: 'column' , alignItems: 'center', justifyContent: 'center' }}>
                 <ButtonAdd
                   size="large"
                   variant="contained"
@@ -264,7 +261,7 @@ export default function ServiceSchedulesList() {
         </Grid>
  
           <Grid item xs={12}>
-          <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} />
+          <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} loading={loadingData} />
           </Grid>
         </Grid>
       {/* <ActionAlerts isOpen={true} /> */}
