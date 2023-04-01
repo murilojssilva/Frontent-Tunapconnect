@@ -28,8 +28,6 @@ import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations';
 import { useRouter } from 'next/router';
 import { TableApp } from '@/components/TableApp';
 import Title from '@/components/Title';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '@/redux';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -81,7 +79,7 @@ export default function ServiceSchedulesCreate() {
   useEffect(() => {
       api.get(`/service-schedule?company_id=${2}&limit=2&page=2`)
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           // setPages(prevState => {
           //   const {total_results, total_pages, current_page } = response.data
    

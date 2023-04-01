@@ -47,7 +47,7 @@ const memuList:memuListProps = [
 export const MainListItems = ({opended}: {opended: boolean}) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
-  console.log('aberto',opended)
+  // console.log('aberto',opended)
   useEffect(() => {
     setRouteActual(router.pathname)
   },[router])

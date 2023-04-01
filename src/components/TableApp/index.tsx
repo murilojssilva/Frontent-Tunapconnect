@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { TableDataGrid } from './styles';
 import { CustomNoRowsOverlay } from './NoRows';
 import { CustomFooterStatusComponent } from './FooterPaginate';
+import ActionAlerts from '../ActionAlerts';
 
 
 interface TableAppProps {
@@ -37,7 +38,7 @@ export function TableApp({columns, rowsData, handlePages, pages,loading}: TableA
   const router = useRouter()
 
   const apiRef = useGridApiRef();
-
+  // console.log('rowsData', rowsData)
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
       searchText: '',
@@ -97,6 +98,7 @@ export function TableApp({columns, rowsData, handlePages, pages,loading}: TableA
                 />
               </Box>
       </Paper>  
+      <ActionAlerts isOpen={true} />
       </>
   );
 }

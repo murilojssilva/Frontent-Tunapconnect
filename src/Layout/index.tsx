@@ -144,7 +144,7 @@ function DashboardContent({ children }: DashboardContentProps) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              {companyName && `${companyName?.name ?? 'Não informado'} - ${companyName?.cnpj ?? companyName.cpf}`}
+              {companyName && `${companyName?.name ?? 'Não informado'}`}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">

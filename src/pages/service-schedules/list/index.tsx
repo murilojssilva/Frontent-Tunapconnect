@@ -34,12 +34,11 @@ type SearchFormProps = {
   search: string
 }
 
-type PagesProps = {
-  search: string
-}
+// type PagesProps = {
+//   search: string
+// }
 
 const api = new apiCore()
-
 
 export default function ServiceSchedulesList() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
@@ -177,29 +176,30 @@ export default function ServiceSchedulesList() {
 
 
   useEffect(() => { 
-    console.log(company?.id)
+    // console.log(company?.id)
     if (!!company?.id) {
       setLoadingData(true)
-      api.get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`, router.query)
+      api.get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
       .then((response) => {
-        console.log(response);
+        // console.log(response.data.data);
         const resp = response.data.data
+        // console.log(resp)
         setRows(resp.map((data: any) => ({
-          id: data.id,
-          client: data.client.name,  
-          plate: data.client_vehicle.plate,
-          chassis: data.client_vehicle.chasis,
-          technical_consultant: data.technical_consultant.name,
+          id: data?.id  ?? 'Não informado',
+          client: data?.client?.name  ?? 'Não informado',  
+          plate: data?.client_vehicle?.plate ?? 'Não informado',
+          chassis: data?.client_vehicle?.chasis  ?? 'Não informado',
+          technical_consultant: data?.technical_consultant?.name ?? 'Não informado',
           typeEstimate: 'não definido',
           totalDiscount: 0,
           total: 0
         })))
       }).catch((error) => { 
+        console.error(error)
         setRows([])
       }).finally(() => { setLoadingData(false)})
     }
-  }, [router.query, company?.id])
-
+  }, [router,company?.id])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

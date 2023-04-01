@@ -74,5 +74,21 @@ export const ButtonRight = styled(Button)(({ theme }) => ({
   }
 }))
 
+
+export const ButtonSubmit = styled(Button)(({ theme }) => ({
+  color: 'white',
+  background: '#0E948B',
+  borderRadius: 4,
+  // borderTopRightRadius: 0,
+  // borderBottomRightRadius: 0,
+  // padding: '5px 16px',
+  flex: 1,
+  textTransform: 'none',
+  '&:hover': {
+    background: '#1ACABA',
+  }
+  
+}))
+
 export const DateTimePickerCard = styled(DateTimePicker)(({ theme }) => ({
 }))

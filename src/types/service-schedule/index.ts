@@ -12,6 +12,7 @@ export interface ServiceSchedulesListProps {
 
 
 export interface ClientInfor {
+    id: number
     name: string
     cpf: string
     telefone: string
@@ -20,6 +21,7 @@ export interface ClientInfor {
 }
 
 export interface ClientVehicle { 
+    id: number
     brand: string
     model: string
     vehicle: string
@@ -28,6 +30,6 @@ export interface ClientVehicle {
     plate: string
 }
 export interface TechnicalConsultant { 
-    id: string
+    id: number
     name: string
 }
