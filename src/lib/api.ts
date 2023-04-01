@@ -50,7 +50,12 @@ export class apiCore {
     return api.delete(data)
   }
 
-  create = (url:string, data: any) => {
+  create (url:string, data: any) {
     return api.post(url, data);
   };
+
+  update (url:string, data: any) {
+      return api.put(url, data);
+  };
+
 } 

@@ -39,6 +39,7 @@ import { CompanyContext } from '@/contexts/CompanyContext';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import 'date-fns/locale/pt-BR';
+import { formatDateTimePresentation, formatDateTimezone } from '@/ultis/formatDateTimezone';
 dayjs.locale('pt-br') 
 
 
@@ -87,12 +88,12 @@ export default function ServiceSchedulesEdit() {
 
   function onSave() { 
    const dataFormatted =  {
-    code: "test2",
-    // promised_date: dayjs.formatDate(),
-    // promised_date: 2022-04-29 16:30:00,
+    code: null,
+    promised_date:formatDateTimezone(`${visitDate}`),
+    // promised_date: "2023-04-29T16:30:00-04:00",
     technical_consultant_id: technicalConsultant?.id,
     client_id: client?.id,
-    vehicle_id: clientVehicle?.id,
+    client_vehicle_id: clientVehicle?.id,
     company_id: company?.id,
     chasis: clientVehicle?.chassis,
     plate: clientVehicle?.plate,
@@ -106,16 +107,18 @@ export default function ServiceSchedulesEdit() {
         //             products: [
         //                 {
         //                     product_id: 1,
-        //                     price: 000
+        //                     price: '000'
         //                 }
         //             ]
         //         }
         //     ]
         // }
         ]
-    }
-    // console.log(dataFormatted)
-    // console.log(dayjs.format(visitDate))
+   }
+      console.log(dataFormatted)
+    api.update('/service-schedule/' + router.query.id, dataFormatted)
+      .then(resp => console.log(resp))
+      .catch(err => console.error(err));
   }
 
   useEffect(() => {
@@ -160,10 +163,10 @@ export default function ServiceSchedulesEdit() {
                 console.error(err)
           })
       
-      if(company?.id) { 
+      if (company?.id) { 
         api.get(`/technical-consultant?company_id=${company?.id}`)
         .then(resp => {
-          // console.log(resp)
+          console.log(resp)
           setTechnicalConsultantsList(resp.data.data.map((item: TechnicalConsultant) => ({
             id: item.id,
             name: item.name
@@ -352,15 +355,16 @@ export default function ServiceSchedulesEdit() {
                   <InfoCardName>
                     Data da visita:
                   </InfoCardName>
+                 { isEditSelectedCard === 'schedule' &&
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="pt-br"
                   >
                     <DateTimePickerCard
-                      format="DD.MM.YYYY HH:mm"
+                      format="DD/MM/YYYY HH:mm"
                       slotProps={{ textField: { size: 'small' } }}
                       value={visitDate}
-                      readOnly={isEditSelectedCard !== 'schedule'}
+                      // readOnly={isEditSelectedCard !== 'schedule'}
 
                       onChange={(newValue: any) => {
                         // console.log(newValue)
@@ -368,11 +372,51 @@ export default function ServiceSchedulesEdit() {
                       }}
                     />
                     </LocalizationProvider>
-            
+                  }
+                  {
+                    isEditSelectedCard !== 'schedule' && (
+                      <ListItemCard>
+                        {visitDate ? (<InfoCardText>{formatDateTimePresentation(`${visitDate}`)}</InfoCardText>) : (
+                            <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
+                          )}
+                      </ListItemCard>
+                    )
+                  }
               </ListItemCard>
               
-            </List>
-              </Paper>
+              </List>
+              
+            </Paper>
+          <Grid item xs={12} md={5} lg={5}
+              alignSelf='flex-end'
+            >
+              
+                <Stack
+                  direction="row"
+                  alignSelf='flex-end'
+                  spacing={2}
+                >
+                {(wasEdited &&isEditSelectedCard === 'schedule')  && (
+                  <ButtonSubmit
+                    variant="contained"
+                    size='small'
+                    onClick={() => onSave()}
+                  >
+                    save
+                  </ButtonSubmit>
+                )}
+                { (wasEdited && isEditSelectedCard === 'schedule') &&
+                  (<ButtonSubmit
+                      variant="contained"
+                      size='small'
+                      onClick={() => handleCancelled()}
+                    >
+                    cancelar
+                  </ButtonSubmit>
+                  )
+                }
+                </Stack>
+            </Grid>
               <Paper
                     sx={{
                       p: 2,
@@ -440,7 +484,7 @@ export default function ServiceSchedulesEdit() {
                   alignSelf='flex-end'
                   spacing={2}
                 >
-                {wasEdited && (
+                {(wasEdited && isEditSelectedCard === 'technicalConsultant') && (
                   <ButtonSubmit
                     variant="contained"
                     size='small'
@@ -449,7 +493,7 @@ export default function ServiceSchedulesEdit() {
                     save
                   </ButtonSubmit>
                 )}
-                { wasEdited &&
+                { (wasEdited && isEditSelectedCard === 'technicalConsultant') &&
                   (<ButtonSubmit
                       variant="contained"
                       size='small'
@@ -460,7 +504,6 @@ export default function ServiceSchedulesEdit() {
                   )
                 }
                 </Stack>
-              
             </Grid>
             </Stack>
           </Grid>
