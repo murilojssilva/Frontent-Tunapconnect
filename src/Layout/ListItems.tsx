@@ -44,12 +44,10 @@ const memuList:memuListProps = [
 ]
 
 
-export const MainListItems = () => {
+export const MainListItems = ({opended}: {opended: boolean}) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
-
-  console.log('menu', router.pathname.includes('/service-schedules'))
-
+  // console.log('aberto',opended)
   useEffect(() => {
     setRouteActual(router.pathname)
   },[router])
@@ -60,7 +58,10 @@ export const MainListItems = () => {
       {memuList.map((menu,index )=> {
         return (
           <Link href={menu.href} key={index} style={{textDecoration: 'none'}}>
-            <ListItemButton selected={routeActual.includes(menu.path)}>
+  
+            <ListItemButton selected={routeActual.includes(menu.path)} sx={{
+              ...(opended && {margin: '10px 20px'}),
+            }}>
               <ListItemIcon>
                 {menu.component}
               </ListItemIcon>

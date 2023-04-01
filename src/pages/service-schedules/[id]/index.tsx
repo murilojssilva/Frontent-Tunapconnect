@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from 'react';
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useContext, useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import { getSession } from 'next-auth/react';
@@ -23,7 +23,7 @@ import List from '@mui/material/List';
 
 import Stack from '@mui/material/Stack';
 
-import { ButtonCenter, ButtonLeft, ButtonRight, DateTimePickerCard, DividerCard, InfoCardName, InfoCardText, ListItemCard, TitleCard } from '@/styles/pages/service-schedules/stylesEdit';
+import { ButtonCenter, ButtonLeft, ButtonRight, ButtonSubmit, DateTimePickerCard, DividerCard, InfoCardName, InfoCardText, ListItemCard, TitleCard } from '@/styles/pages/service-schedules/stylesEdit';
 import Skeleton from '@mui/material/Skeleton';
 import PrintIcon from '@mui/icons-material/Print';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -31,61 +31,154 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
-import ptBR from 'date-fns/locale/pt-BR';
+// import * as locale from 'date-fns/locale/pt-BR';
+
+import MenuItem from '@mui/material/MenuItem';
+import { MoreOptionsButtonSelect } from '@/components/MoreOptionsButtonSelect';
+import { CompanyContext } from '@/contexts/CompanyContext';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import 'date-fns/locale/pt-BR';
+import { formatDateTimePresentation, formatDateTimezone } from '@/ultis/formatDateTimezone';
+dayjs.locale('pt-br') 
+
 
 
 
 const api = new apiCore()
 
+const cardsName = [
+  'client',
+  'clientVehicle',
+  'schedule',
+  'technicalConsultant',
+]
 
-export default function ServiceSchedulesCreate() {
+type isEditSelectedCardType = 'client' | 'clientVehicle' | 'schedule' | 'technicalConsultant' | null
+
+export default function ServiceSchedulesEdit() {
   const [client, setClient] = useState<ClientInfor | null>()
   const [clientVehicle, setClientVehicle] = useState<ClientVehicle | null>()
   const [visitDate, setVisitDate] = useState<Dayjs | null>(null)
-  const [technicalConsultant, setTechnicalConsultant] = useState<TechnicalConsultant | null>()
+  const [technicalConsultant, setTechnicalConsultant] = useState<TechnicalConsultant | null>(null)
+  const [technicalConsultantsList, setTechnicalConsultantsList] = useState<TechnicalConsultant[]>([])
+  const [isEditSelectedCard, setIsEditSelectedCard] = useState<isEditSelectedCardType>(null)
+  const [wasEdited, setWasEdited] = useState(false)
+  
 
   const router = useRouter()
 
+  const { company } = useContext(CompanyContext)
+
+  function handleIsEditSelectedCard(value: isEditSelectedCardType) {
+    setIsEditSelectedCard(value)
+    setWasEdited(true)
+  }
+
+  function handleTechnicalConsultant(id: number) {
+    setTechnicalConsultant(prevState => {
+      return technicalConsultantsList.filter(c => c.id === id)[0]
+    })
+  }
+
+  function handleCancelled() {
+    setWasEdited(false)
+    setIsEditSelectedCard(null)
+  }
+
+  function onSave() { 
+   const dataFormatted =  {
+    code: null,
+    promised_date:formatDateTimezone(`${visitDate}`),
+    // promised_date: "2023-04-29T16:30:00-04:00",
+    technical_consultant_id: technicalConsultant?.id,
+    client_id: client?.id,
+    client_vehicle_id: clientVehicle?.id,
+    company_id: company?.id,
+    chasis: clientVehicle?.chassis,
+    plate: clientVehicle?.plate,
+    claims_service: [
+        // {
+        //     claim_service_id: 1,
+        //     services: [
+        //         {
+        //             service_id: 1,
+        //             price: 50.2,
+        //             products: [
+        //                 {
+        //                     product_id: 1,
+        //                     price: '000'
+        //                 }
+        //             ]
+        //         }
+        //     ]
+        // }
+        ]
+   }
+      console.log(dataFormatted)
+    api.update('/service-schedule/' + router.query.id, dataFormatted)
+      .then(resp => console.log(resp))
+      .catch(err => console.error(err));
+  }
 
   useEffect(() => {
-    const { id } = router.query
-    console.log(id)
-      api.get(`/service-schedule/${id}`)
-        .then((response) => {
-          console.log(response.data);
-
-          const {client, client_vehicle,technical_consultant, promised_date} = response.data.data
-          setClient({
-            name: client.name ?? 'Não informado',
-            cpf: client.document ?? 'Não informado',
-            email: client.email[0] ?? 'Não informado',
-            telefone: client.phone[0] ?? 'Não informado',
-            address: client.address ?? 'Não informado'
+    if (!wasEdited) {
+      const { id } = router.query
+      console.log(id)
+        api.get(`/service-schedule/${id}`)
+          .then((response) => {
+            console.log(response.data);
+  
+            const {client, client_vehicle,technical_consultant, promised_date} = response.data.data
+            setClient({
+              id: client.id,
+              name: client.name ?? 'Não informado',
+              cpf: client.document ?? 'Não informado',
+              email: client.email[0] ?? 'Não informado',
+              telefone: client.phone[0] ?? 'Não informado',
+              address: client.address ?? 'Não informado'
+            })
+            
+            setClientVehicle({
+              id: client_vehicle.id,
+              brand: client_vehicle?.vehicle?.model?.brand?.name  ?? 'Não informado',
+              chassis: client_vehicle?.chasis  ?? 'Não informado',
+              vehicle: client_vehicle?.vehicle?.name  ?? 'Não informado',
+              model: `${client_vehicle?.vehicle?.model?.name} - ${client_vehicle.vehicle.model_year}`  ?? 'Não informado',
+              color: client_vehicle?.color ?? 'Não informado',
+              plate: client_vehicle?.plate ?? 'Não informado' 
+            })
+            const promisedDate = dayjs(new Date(promised_date))
+            // console.log(dayjs(promisedDate))
+            setVisitDate(promisedDate)
+            
+            setTechnicalConsultant({
+              id: technical_consultant?.id ?? 'Não informado',
+              name: technical_consultant?.name ?? 'Não informado' 
+            })
+          }).catch((err) => { 
+            setClient(null)
+            setClientVehicle(null)
+            setTechnicalConsultant(null)
+                console.error(err)
           })
-          
-          setClientVehicle({
-            brand: client_vehicle.vehicle.model.brand.name,
-            chassis: client_vehicle.chasis,
-            vehicle: client_vehicle.vehicle.name,
-            model: `${client_vehicle.vehicle.model.name} - ${client_vehicle.vehicle.model_year}`,
-            color: client_vehicle.color,
-            plate: client_vehicle.plate
-          })
-          const promisedDate = dayjs(new Date(promised_date))
-          console.log(dayjs(promisedDate))
-          setVisitDate(promisedDate)
-
-          setTechnicalConsultant({
-            id: technical_consultant.id,
-            name: technical_consultant.name
-          })
-        }).catch((err) => { 
-          setClient(null)
-          setClientVehicle(null)
-          setTechnicalConsultant(null)
-        })
+      
+      if (company?.id) { 
+        api.get(`/technical-consultant?company_id=${company?.id}`)
+        .then(resp => {
+          console.log(resp)
+          setTechnicalConsultantsList(resp.data.data.map((item: TechnicalConsultant) => ({
+            id: item.id,
+            name: item.name
+          })))
+        }).catch((err) => {
+          console.log(err)
+        }
+        )
+      }
+    }
     
-  },[router.query])
+  },[router.query,company?.id,wasEdited])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -106,8 +199,12 @@ export default function ServiceSchedulesCreate() {
                 flexDirection: 'column',
               }}
             >
-            <Stack direction='row'>
-              <TitleCard >cliente</TitleCard>
+              <Stack direction='row' alignItems="center" justifyContent="space-between">
+                <TitleCard >Cliente</TitleCard>
+                <MoreOptionsButtonSelect
+                  handleIsEditSelectedCard={handleIsEditSelectedCard}
+                  typeEdit='client'
+                />
               </Stack>
                 <DividerCard />
             <List dense={false}>
@@ -158,8 +255,12 @@ export default function ServiceSchedulesCreate() {
                       flexDirection: 'column',
                     }}
                   >
-                     <Stack direction='row'>
-              <TitleCard >Veículo</TitleCard>
+               <Stack direction='row' alignItems="center" justifyContent="space-between">
+                <TitleCard >Veículo</TitleCard>
+                <MoreOptionsButtonSelect
+                  handleIsEditSelectedCard={handleIsEditSelectedCard}
+                  typeEdit='clientVehicle'
+                />
               </Stack>
                 <DividerCard />
             <List dense={false}>
@@ -233,8 +334,12 @@ export default function ServiceSchedulesCreate() {
                 flexDirection: 'column',
               }}
             >
-              <Stack direction='row'>
-                <TitleCard >agendamento</TitleCard>
+              <Stack direction='row' alignItems="center" justifyContent="space-between">
+                <TitleCard >AGENDAMENTO</TitleCard>
+                <MoreOptionsButtonSelect
+                  handleIsEditSelectedCard={handleIsEditSelectedCard}
+                  typeEdit='schedule'
+                />
               </Stack>
                 <DividerCard />
               <List dense={false}>
@@ -250,29 +355,68 @@ export default function ServiceSchedulesCreate() {
                   <InfoCardName>
                     Data da visita:
                   </InfoCardName>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ptBR}>
+                 { isEditSelectedCard === 'schedule' &&
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="pt-br"
+                  >
                     <DateTimePickerCard
-                      format="DD/MM/YYYY hh:mm"
+                      format="DD/MM/YYYY HH:mm"
                       slotProps={{ textField: { size: 'small' } }}
                       value={visitDate}
-                      // slotProps={{
-                      //   textField: {
-                      //     helperText: 'DD / MM / YYYY',
-                      //   },
-                      // }}
+                      // readOnly={isEditSelectedCard !== 'schedule'}
+
                       onChange={(newValue: any) => {
-                        console.log(newValue)
+                        // console.log(newValue)
                         setVisitDate(newValue)
                       }}
                     />
                     </LocalizationProvider>
-                  {/* {client?.cpf ? (<InfoCardText>{client?.cpf}</InfoCardText>) : (
-                     <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
-                  )} */}
+                  }
+                  {
+                    isEditSelectedCard !== 'schedule' && (
+                      <ListItemCard>
+                        {visitDate ? (<InfoCardText>{formatDateTimePresentation(`${visitDate}`)}</InfoCardText>) : (
+                            <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
+                          )}
+                      </ListItemCard>
+                    )
+                  }
               </ListItemCard>
               
-            </List>
-              </Paper>
+              </List>
+              
+            </Paper>
+          <Grid item xs={12} md={5} lg={5}
+              alignSelf='flex-end'
+            >
+              
+                <Stack
+                  direction="row"
+                  alignSelf='flex-end'
+                  spacing={2}
+                >
+                {(wasEdited &&isEditSelectedCard === 'schedule')  && (
+                  <ButtonSubmit
+                    variant="contained"
+                    size='small'
+                    onClick={() => onSave()}
+                  >
+                    save
+                  </ButtonSubmit>
+                )}
+                { (wasEdited && isEditSelectedCard === 'schedule') &&
+                  (<ButtonSubmit
+                      variant="contained"
+                      size='small'
+                      onClick={() => handleCancelled()}
+                    >
+                    cancelar
+                  </ButtonSubmit>
+                  )
+                }
+                </Stack>
+            </Grid>
               <Paper
                     sx={{
                       p: 2,
@@ -280,28 +424,87 @@ export default function ServiceSchedulesCreate() {
                       flexDirection: 'column',
                     }}
                   >
-                     <Stack direction='row'>
-              <TitleCard >Consultor técnico</TitleCard>
+              <Stack direction='row' alignItems="center" justifyContent="space-between">
+                <TitleCard >Consultor técnico</TitleCard>
+                <MoreOptionsButtonSelect
+                  handleIsEditSelectedCard={handleIsEditSelectedCard}
+                  typeEdit='technicalConsultant'
+                />
               </Stack>
                 <DividerCard />
             <List dense={false}>
               
               <ListItemCard>
+                
                   <InfoCardName>
                     Nome:
-                  </InfoCardName> {technicalConsultant?.name ? (<InfoCardText >{technicalConsultant?.name}</InfoCardText>) : (
-                    <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
+                  </InfoCardName> {isEditSelectedCard !== 'technicalConsultant' && technicalConsultant?.name
+                    ? (<InfoCardText >{technicalConsultant?.name}</InfoCardText>)
+                    : (
+                     isEditSelectedCard !== 'technicalConsultant' && (<InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>)
+                    )}
+                  {isEditSelectedCard === 'technicalConsultant' && (
+                    <Box width="100%">
+
+                      <TextField
+                        id="standard-select-currency"
+                        select
+                        sx={{
+                          width: '100%',
+                        }}
+                        value={technicalConsultant?.id}
+                        variant="standard"
+                        onChange={(e) => handleTechnicalConsultant(parseInt(e.target.value))} 
+                      >
+                      {technicalConsultantsList.map((option) => (
+                          <MenuItem key={option.id + option.name} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Box>
                   )}
               </ListItemCard>
               <ListItemCard>
                   <InfoCardName>
                     Código consultor:
                   </InfoCardName> {technicalConsultant?.id ? (<InfoCardText>{technicalConsultant?.id }</InfoCardText>) : (
-                     <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
+                    <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
                   )}
+          
               </ListItemCard>
-            </List>
-              </Paper>
+              </List>
+            </Paper>
+            <Grid item xs={12} md={5} lg={5}
+              alignSelf='flex-end'
+            >
+              
+                <Stack
+                  direction="row"
+                  alignSelf='flex-end'
+                  spacing={2}
+                >
+                {(wasEdited && isEditSelectedCard === 'technicalConsultant') && (
+                  <ButtonSubmit
+                    variant="contained"
+                    size='small'
+                    onClick={() => onSave()}
+                  >
+                    save
+                  </ButtonSubmit>
+                )}
+                { (wasEdited && isEditSelectedCard === 'technicalConsultant') &&
+                  (<ButtonSubmit
+                      variant="contained"
+                      size='small'
+                      onClick={() => handleCancelled()}
+                    >
+                    cancelar
+                  </ButtonSubmit>
+                  )
+                }
+                </Stack>
+            </Grid>
             </Stack>
           </Grid>
 
@@ -310,6 +513,7 @@ export default function ServiceSchedulesCreate() {
     
   );
 }
+
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 

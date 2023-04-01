@@ -29,7 +29,7 @@ export default function ActionAlerts({ isOpen }: { isOpen: boolean }) {
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'top',  horizontal: 'right', }}
+        anchorOrigin={{ vertical: 'bottom',  horizontal: 'right', }}
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           This is a success message!
