@@ -1,5 +1,3 @@
-import { DateTimePickerCard } from "./styles";
-
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/pt-br';
