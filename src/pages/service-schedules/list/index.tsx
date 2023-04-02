@@ -176,14 +176,11 @@ export default function ServiceSchedulesList() {
 
 
   useEffect(() => { 
-    // console.log(company?.id)
     if (!!company?.id) {
       setLoadingData(true)
       api.get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
       .then((response) => {
-        // console.log(response.data.data);
         const resp = response.data.data
-        // console.log(resp)
         setRows(resp.map((data: any) => ({
           id: data?.id  ?? 'Não informado',
           client: data?.client?.name  ?? 'Não informado',  
@@ -264,7 +261,6 @@ export default function ServiceSchedulesList() {
           <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} loading={loadingData} />
           </Grid>
         </Grid>
-      {/* <ActionAlerts isOpen={true} /> */}
     </Container>
     
   );

@@ -10,7 +10,6 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -20,20 +19,6 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MainListItems, secondaryListItems } from './ListItems';
 import { CompanyContext } from '@/contexts/CompanyContext';
-
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const drawerWidth: number = 240;
 
@@ -200,23 +185,3 @@ interface LayoutProps {
 export default function Layout({children}: LayoutProps) {
   return <DashboardContent>{children}</DashboardContent>;
 }
-
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-
-//   const session = await getSession(ctx)
-// console.log(session)
-
-//   if (!session?.user?.token) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       }
-//     }
-//   }
-//   return {
-//     props: {
-//       result: ''
-//     }, 
-//   }
-// }

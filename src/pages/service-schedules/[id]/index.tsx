@@ -23,7 +23,7 @@ import List from '@mui/material/List';
 
 import Stack from '@mui/material/Stack';
 
-import { ButtonCenter, ButtonLeft, ButtonRight, ButtonSubmit, DateTimePickerCard, DividerCard, InfoCardName, InfoCardText, ListItemCard, TitleCard } from '@/styles/pages/service-schedules/stylesEdit';
+import { ButtonCenter, ButtonLeft, ButtonRight, ButtonSubmit, DividerCard, InfoCardName, InfoCardText, ListItemCard, TitleCard } from '@/styles/pages/service-schedules/stylesEdit';
 import Skeleton from '@mui/material/Skeleton';
 import PrintIcon from '@mui/icons-material/Print';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -38,11 +38,10 @@ import { MoreOptionsButtonSelect } from '@/components/MoreOptionsButtonSelect';
 import { CompanyContext } from '@/contexts/CompanyContext';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import 'date-fns/locale/pt-BR';
 import { formatDateTimePresentation, formatDateTimezone } from '@/ultis/formatDateTimezone';
-dayjs.locale('pt-br') 
-
-
+import ActionAlerts from '@/components/ActionAlerts';
+import {DataTimeInput} from '@/components/DataTimeInput';
+import { ActionAlertsStateProps } from '@/types/components/ActionAlerts';
 
 
 const api = new apiCore()
@@ -56,6 +55,18 @@ const cardsName = [
 
 type isEditSelectedCardType = 'client' | 'clientVehicle' | 'schedule' | 'technicalConsultant' | null
 
+type updateData = {
+  code: null;
+  promised_date: string;
+  technical_consultant_id: number | undefined;
+  client_id: number | undefined;
+  client_vehicle_id: number | undefined;
+  company_id: number | undefined;
+  chasis: string | undefined;
+  plate: string | undefined;
+  claims_service: any[];
+}
+
 export default function ServiceSchedulesEdit() {
   const [client, setClient] = useState<ClientInfor | null>()
   const [clientVehicle, setClientVehicle] = useState<ClientVehicle | null>()
@@ -64,7 +75,11 @@ export default function ServiceSchedulesEdit() {
   const [technicalConsultantsList, setTechnicalConsultantsList] = useState<TechnicalConsultant[]>([])
   const [isEditSelectedCard, setIsEditSelectedCard] = useState<isEditSelectedCardType>(null)
   const [wasEdited, setWasEdited] = useState(false)
-  
+  const [actionAlerts, setActionAlerts] = useState<ActionAlertsStateProps>({
+    isOpen: false,
+    title: '',
+    type: 'success',
+  })
 
   const router = useRouter()
 
@@ -86,39 +101,49 @@ export default function ServiceSchedulesEdit() {
     setIsEditSelectedCard(null)
   }
 
-  function onSave() { 
-   const dataFormatted =  {
+  function handleAlert(isOpen : boolean) {
+    setActionAlerts(
+      {
+        isOpen,
+        title: '',
+        type: 'success',
+      }
+    )
+  }
+
+  function handleDateSchedule(data: Dayjs | null) {
+    setVisitDate(data)
+  }
+
+  async function onSave() { 
+   const dataFormatted:updateData = {
     code: null,
     promised_date:formatDateTimezone(`${visitDate}`),
-    // promised_date: "2023-04-29T16:30:00-04:00",
+    // promised_date: "2023-04-2",
     technical_consultant_id: technicalConsultant?.id,
     client_id: client?.id,
     client_vehicle_id: clientVehicle?.id,
     company_id: company?.id,
     chasis: clientVehicle?.chassis,
     plate: clientVehicle?.plate,
-    claims_service: [
-        // {
-        //     claim_service_id: 1,
-        //     services: [
-        //         {
-        //             service_id: 1,
-        //             price: 50.2,
-        //             products: [
-        //                 {
-        //                     product_id: 1,
-        //                     price: '000'
-        //                 }
-        //             ]
-        //         }
-        //     ]
-        // }
-        ]
+    claims_service: []
    }
-      console.log(dataFormatted)
-    api.update('/service-schedule/' + router.query.id, dataFormatted)
-      .then(resp => console.log(resp))
-      .catch(err => console.error(err));
+    try {
+      const respUpdate: any = await api.update('/service-schedule/' + router.query.id, dataFormatted)
+      console.log(respUpdate)
+      setIsEditSelectedCard(null)
+      setActionAlerts({
+        isOpen: true,
+        title: `${respUpdate.data.msg ?? 'Salvo com sucesso!'}!`,
+        type: 'success'
+      })
+    } catch (e: any) { 
+      setActionAlerts({
+        isOpen: true,
+        title: `${e.response.data.msg ?? 'Error inesperado'}!`,
+        type: 'error'
+      })
+    } 
   }
 
   useEffect(() => {
@@ -160,7 +185,12 @@ export default function ServiceSchedulesEdit() {
             setClient(null)
             setClientVehicle(null)
             setTechnicalConsultant(null)
-                console.error(err)
+            setActionAlerts({
+              isOpen: true,
+              title: `${err.response.data.msg ?? 'Error inesperado'}!`,
+              type: 'error',
+              redirectTo: '/service-schedules/list'
+            })
           })
       
       if (company?.id) { 
@@ -355,68 +385,60 @@ export default function ServiceSchedulesEdit() {
                   <InfoCardName>
                     Data da visita:
                   </InfoCardName>
-                 { isEditSelectedCard === 'schedule' &&
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="pt-br"
-                  >
-                    <DateTimePickerCard
-                      format="DD/MM/YYYY HH:mm"
-                      slotProps={{ textField: { size: 'small' } }}
-                      value={visitDate}
-                      // readOnly={isEditSelectedCard !== 'schedule'}
+                  {isEditSelectedCard === 'schedule' &&
+                    <DataTimeInput dateSchedule={visitDate} handleDateSchedule={handleDateSchedule}/>
 
-                      onChange={(newValue: any) => {
-                        // console.log(newValue)
-                        setVisitDate(newValue)
-                      }}
-                    />
-                    </LocalizationProvider>
                   }
                   {
-                    isEditSelectedCard !== 'schedule' && (
-                      <ListItemCard>
-                        {visitDate ? (<InfoCardText>{formatDateTimePresentation(`${visitDate}`)}</InfoCardText>) : (
-                            <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
-                          )}
-                      </ListItemCard>
-                    )
+                    ( isEditSelectedCard !== 'schedule' && visitDate) && (<InfoCardText>{formatDateTimePresentation(`${visitDate}`)}</InfoCardText>)
                   }
+                  {!visitDate && (
+                    <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>
+                  )}
               </ListItemCard>
               
               </List>
               
             </Paper>
-          <Grid item xs={12} md={5} lg={5}
-              alignSelf='flex-end'
-            >
-              
-                <Stack
-                  direction="row"
-                  alignSelf='flex-end'
-                  spacing={2}
+              {(wasEdited && isEditSelectedCard === 'schedule') && (
+              <Grid item xs={12} md={12} lg={12}
+                alignSelf='flex-end'
+              >
+                <Paper
+                  sx={{
+                    p: '0 2',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    background: 'transparent'
+                  }}
+                  elevation={0}
                 >
-                {(wasEdited &&isEditSelectedCard === 'schedule')  && (
-                  <ButtonSubmit
-                    variant="contained"
-                    size='small'
-                    onClick={() => onSave()}
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={2}
+                  
                   >
-                    save
-                  </ButtonSubmit>
-                )}
-                { (wasEdited && isEditSelectedCard === 'schedule') &&
-                  (<ButtonSubmit
+                    <ButtonSubmit
+                      variant="contained"
+                      size='small'
+                      onClick={() => onSave()}
+                    >
+                      save
+                    </ButtonSubmit>
+                    <ButtonSubmit
                       variant="contained"
                       size='small'
                       onClick={() => handleCancelled()}
                     >
-                    cancelar
-                  </ButtonSubmit>
-                  )
-                }
-                </Stack>
-            </Grid>
+                      cancelar
+                    </ButtonSubmit>
+                  </Stack>
+                </Paper>
+              </Grid>
+              )}        
+            
+
               <Paper
                     sx={{
                       p: 2,
@@ -475,40 +497,53 @@ export default function ServiceSchedulesEdit() {
               </ListItemCard>
               </List>
             </Paper>
-            <Grid item xs={12} md={5} lg={5}
-              alignSelf='flex-end'
-            >
-              
-                <Stack
-                  direction="row"
-                  alignSelf='flex-end'
-                  spacing={2}
+            {(wasEdited && isEditSelectedCard === 'technicalConsultant') && (
+              <Grid item xs={12} md={12} lg={12}
+                alignSelf='flex-end'
+              >
+                <Paper
+                  sx={{
+                    p: '0 2',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    background: 'transparent'
+                  }}
+                  elevation={0}
                 >
-                {(wasEdited && isEditSelectedCard === 'technicalConsultant') && (
-                  <ButtonSubmit
-                    variant="contained"
-                    size='small'
-                    onClick={() => onSave()}
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={2}
+                  
                   >
-                    save
-                  </ButtonSubmit>
-                )}
-                { (wasEdited && isEditSelectedCard === 'technicalConsultant') &&
-                  (<ButtonSubmit
+                    <ButtonSubmit
+                      variant="contained"
+                      size='small'
+                      onClick={() => onSave()}
+                    >
+                      save
+                    </ButtonSubmit>
+                    <ButtonSubmit
                       variant="contained"
                       size='small'
                       onClick={() => handleCancelled()}
                     >
-                    cancelar
-                  </ButtonSubmit>
-                  )
-                }
-                </Stack>
-            </Grid>
+                      cancelar
+                    </ButtonSubmit>
+                  </Stack>
+                </Paper>
+              </Grid>
+              )}
             </Stack>
           </Grid>
-
-        </Grid>
+        <ActionAlerts
+          isOpen={actionAlerts.isOpen}
+          title={actionAlerts.title}
+          type={actionAlerts.type}
+            handleAlert={handleAlert}
+          />
+      </Grid>
+ 
     </Container>
     
   );

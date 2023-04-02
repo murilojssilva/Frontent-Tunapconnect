@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { useRouter } from 'next/router';
+import { ActionAlertsComponentProps } from '@/types/components/ActionAlerts';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -9,19 +11,25 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ActionAlerts({ isOpen }: { isOpen: boolean }) {
-  const [open, setOpen] = React.useState(true);
+
+export default function ActionAlerts({ isOpen, title, type, handleAlert, redirectTo }: ActionAlertsComponentProps) {
+  const [open, setOpen] = React.useState(false);
+
+  const router = useRouter()
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-
+    handleAlert(false)
     setOpen(false);
+    redirectTo !== undefined && router.push(redirectTo)
   };
 
   React.useEffect(() => { 
-    setOpen(isOpen);
+    if (isOpen) {
+      setOpen(isOpen);
+    }
   },[isOpen])
 
   return (
@@ -31,8 +39,8 @@ export default function ActionAlerts({ isOpen }: { isOpen: boolean }) {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom',  horizontal: 'right', }}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
+        <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
+          {title}
         </Alert>
       </Snackbar>
   );
