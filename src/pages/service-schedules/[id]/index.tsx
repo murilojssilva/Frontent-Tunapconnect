@@ -38,7 +38,7 @@ import { MoreOptionsButtonSelect } from '@/components/MoreOptionsButtonSelect';
 import { CompanyContext } from '@/contexts/CompanyContext';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import { formatDateTimePresentation, formatDateTimezone } from '@/ultis/formatDateTimezone';
+import { formatDateTime, formatDateTimeTimezoneForSave } from '@/ultis/formatDate';
 import ActionAlerts from '@/components/ActionAlerts';
 import {DataTimeInput} from '@/components/DataTimeInput';
 import { ActionAlertsStateProps } from '@/types/components/ActionAlerts';
@@ -118,7 +118,7 @@ export default function ServiceSchedulesEdit() {
   async function onSave() { 
    const dataFormatted:updateData = {
     code: null,
-    promised_date:formatDateTimezone(`${visitDate}`),
+    promised_date:formatDateTimeTimezoneForSave(`${visitDate}`),
     // promised_date: "2023-04-2",
     technical_consultant_id: technicalConsultant?.id,
     client_id: client?.id,
@@ -390,7 +390,7 @@ export default function ServiceSchedulesEdit() {
 
                   }
                   {
-                    ( isEditSelectedCard !== 'schedule' && visitDate) && (<InfoCardText>{formatDateTimePresentation(`${visitDate}`)}</InfoCardText>)
+                    ( isEditSelectedCard !== 'schedule' && visitDate) && (<InfoCardText>{formatDateTime(`${visitDate}`)}</InfoCardText>)
                   }
                   {!visitDate && (
                     <InfoCardText width='100%'><Skeleton variant="text" sx={{ fontSize: '1rem', lineHeight: 1.5 }} width='100%' /></InfoCardText>

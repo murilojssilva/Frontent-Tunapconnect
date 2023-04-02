@@ -6,13 +6,13 @@ type formatDateTimezoneProps = {
   date: Date
 }
 
-export function formatDateTimezone(date: string): string {
+export function formatDateTimeTimezone(date: string): string {
   return dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ')
 }
 
-export function formatDatePresentation (date: string): string{
+export function formatDate (date: string): string{
   return dayjs(date).format('DD/MM/YYYY')
 }
-export function formatDateTimePresentation(date: string): string{
+export function formatDateTime(date: string): string{
   return dayjs(new Date(date)).format('DD/MM/YYYY HH:mm')
 }
