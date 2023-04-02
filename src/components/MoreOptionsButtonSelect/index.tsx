@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,6 +7,7 @@ import { TechnicalConsultant } from "@/types/service-schedule";
 import Divider from "@mui/material/Divider";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { Settings } from "@mui/icons-material";
+import { MoreOptionsButtonSelectProps } from "./types";
 
 
 const ITEM_HEIGHT = 38;
@@ -16,21 +17,15 @@ const options = [
   'Editar',
 ];
 
-type isEditSelectedCardType = 'client' | 'clientVehicle' | 'schedule' | 'technicalConsultant' | null
-
-type MoreOptionsButtonSelectProps = {
-  typeEdit: isEditSelectedCardType
-  handleIsEditSelectedCard: (value: isEditSelectedCardType) => void
-}
 
 
-export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit}:MoreOptionsButtonSelectProps) {
+export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, buttons, disabledButton }:MoreOptionsButtonSelectProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
     };
-  const handleClose = () => {
+    const handleClose = () => {
       handleIsEditSelectedCard(typeEdit)
       setAnchorEl(null);
     };
@@ -43,6 +38,7 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit}:Mor
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
+        disabled={disabledButton}
       >
         <MoreVertIcon />
       </IconButton>
@@ -81,6 +77,16 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit}:Mor
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        {/* {buttons && buttons.map(button => {
+          return (
+            <MenuItem onClick={handleClose} key={button.label + typeEdit}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              Editar
+            </MenuItem>
+          )
+        })} */}
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <Settings fontSize="small" />
