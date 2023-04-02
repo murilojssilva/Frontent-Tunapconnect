@@ -1,13 +1,13 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { TechnicalConsultant } from "@/types/service-schedule";
-import Divider from "@mui/material/Divider";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import { Settings } from "@mui/icons-material";
+// import Divider from "@mui/material/Divider";
+// import ListItemIcon from "@mui/material/ListItemIcon";
+// import { Settings } from "@mui/icons-material";
 import { MoreOptionsButtonSelectProps } from "./types";
+import { MenuItemButton } from "./styles";
 
 
 const ITEM_HEIGHT = 38;
@@ -53,6 +53,7 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
           sx: {
             overflow: 'visible',
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            p: '0 10px',
             mt: 1.5,
             '& .MuiAvatar-root': {
               width: 32,
@@ -87,12 +88,12 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
             </MenuItem>
           )
         })} */}
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
+        <MenuItemButton onClick={handleClose}>
+          {/* <ListItemIcon>
             <Settings fontSize="small" />
-          </ListItemIcon>
+          </ListItemIcon> */}
           Editar
-        </MenuItem>
+        </MenuItemButton>
       </Menu>
     </div>
   )
