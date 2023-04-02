@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { TableDataGrid } from './styles';
 import { CustomNoRowsOverlay } from './NoRows';
 import { CustomFooterStatusComponent } from './FooterPaginate';
-import ActionAlerts from '../ActionAlerts';
+
 
 
 interface TableAppProps {
@@ -98,7 +98,6 @@ export function TableApp({columns, rowsData, handlePages, pages,loading}: TableA
                 />
               </Box>
       </Paper>  
-      <ActionAlerts isOpen={true} />
       </>
   );
 }
