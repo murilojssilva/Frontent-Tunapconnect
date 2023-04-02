@@ -41,7 +41,8 @@ import Box from '@mui/material/Box';
 import { formatDateTime, formatDateTimeTimezone } from '@/ultis/formatDate';
 import ActionAlerts from '@/components/ActionAlerts';
 import {DataTimeInput} from '@/components/DataTimeInput';
-import { ActionAlertsStateProps } from '@/types/components/ActionAlerts';
+import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts';
+
 
 
 const api = new apiCore()
@@ -234,6 +235,7 @@ export default function ServiceSchedulesEdit() {
                 <MoreOptionsButtonSelect
                   handleIsEditSelectedCard={handleIsEditSelectedCard}
                   typeEdit='client'
+                  disabledButton={true}
                 />
               </Stack>
                 <DividerCard />
@@ -290,6 +292,7 @@ export default function ServiceSchedulesEdit() {
                 <MoreOptionsButtonSelect
                   handleIsEditSelectedCard={handleIsEditSelectedCard}
                   typeEdit='clientVehicle'
+                  disabledButton={true}
                 />
               </Stack>
                 <DividerCard />
