@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useForm } from "react-hook-form";
-import { useEffect, useState  , useRef} from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -249,23 +249,48 @@ export default function ServiceSchedulesCreate() {
         },
     }));
 
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        watch,
+        formState: { errors }
+    } = useForm();
+    const [stageLists, setStageLists] = useState([]);
+
+    const onSubmit = (data: any) => {
+        data.stages = stages
+        data.tipo = tipo
+        data.regras = rulesList
+        console.log(data);
+        // parse to string regras
+        data.regras = JSON.stringify(data.regras)
+        // add to stageLists
+        setStageLists([...stageLists, data])
+         
+    };
+
     const [tipo, setTipo] = useState('')
-    const [descricao, setDescricao] = useState('')
-    const [foto, setFoto] = useState('')
-    const [comentario, setComentario] = useState('')
-    const [status, setStatus] = useState('')
- 
-    
-    const [rulesList, setRulesList]:any = useState([])
-    const regraref : any  = useRef()
+    // const [descricao, setDescricao] = useState('')
+    // const [foto, setFoto] = useState('')
+    // const [comentario, setComentario] = useState('')
+    // const [status, setStatus] = useState('')
+
+
+    const [rulesList, setRulesList]: any = useState([])
+    const regraref: any = useRef()
     function addRuleIntoList() {
-        const newRule:any = {
+        const newRule: any = {
             value: regraref.current.value
         }
         setRulesList([...rulesList, newRule])
         regraref.current.value = ''
     }
-   
+    function removeRuleFromList(index: number) {
+        let newList = rulesList.filter((item: any, i: number) => i !== index)
+        setRulesList(newList)
+    }
+
     return (
         <Container maxWidth="lg" sx={{ mt: 12, mb: 12 }}>
 
@@ -315,149 +340,164 @@ export default function ServiceSchedulesCreate() {
                                 </Tabs>
 
                                 {stages.value.map((stage, index) => (
-                                    <TabPanel value={value} index={index}>
-                                        <table>
-                                            <tr>
-                                                <th><FormControl fullWidth>
-                                                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                        Tipo
-                                                    </InputLabel>
-                                                    <NativeSelect
-                                                        key="tipo"
-                                                        defaultValue={itemtypes[0].value}
-                                                        value={tipo}
-                                                        inputProps={{
-                                                            name: 'age',
-                                                            id: 'uncontrolled-native',
-                                                        }}
-                                                        onChange={e => {
-                                                            setTipo(e.target.value)
-                                                        }
-                                                        }
-                                                    >
-                                                        <option aria-label="None" value="" />
-                                                        {itemtypes.map((itemtype, index) => (
-                                                            <option value={itemtype.value}>{itemtype.label}</option>
-                                                        ))}
+                                    <>
+                                        <TabPanel value={value} index={index}>
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <FormControl >
+                                                    <Grid container spacing={2}>
+                                                        <Grid item xs={3}>
 
-                                                    </NativeSelect>
-                                                </FormControl></th>
-                                                <th> <TextField id="standard-basic"
-                                                    key="descricao"
-                                                    value={descricao}
-                                                    onChange={e => {
-                                                        setDescricao(e.target.value)
-                                                    }} label="Descrição" defaultValue="Description" variant="standard" /></th>
-                                                <th><TextField id="standard-basic"
-                                                    key="comentario"
-                                                    onChange={e => {
-                                                        setComentario(e.target.value)
-                                                    }}
-
-                                                    label="Observacao" defaultValue="Description" variant="standard" /></th>
-                                                <th>
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        <FormGroup aria-label="position" row>
-                                                            <FormControlLabel
-                                                                value="top"
-                                                                control={<AntSwitch
-                                                                    value={foto}
-                                                                    onChange={e => {
-                                                                        setFoto(e.target.value)
-                                                                    }}
-                                                                    defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
-                                                                label="Fotos ?"
-                                                                labelPlacement="top"
-                                                            />
-                                                        </FormGroup>
-                                                    </Stack>
-                                                </th>
-                                                <th><Stack direction="row" spacing={1} alignItems="center">
-                                                    <FormGroup aria-label="position" row>
-                                                        <FormControlLabel
-                                                            value="top"
-                                                            control={<AntSwitch
-                                                                value={status}
-                                                                onChange={e => {
-                                                                    setStatus(e.target.value)
+                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                                Tipo
+                                                            </InputLabel>
+                                                            <NativeSelect
+                                                                key="tipo"
+                                                                // name="tipo" {...register("tipo")}
+                                                                defaultValue={itemtypes[0].value}
+                                                                value={tipo}
+                                                                onChange={e => setTipo(e.target.value)}
+                                                                inputProps={{
+                                                                    name: 'age',
+                                                                    id: 'uncontrolled-native',
                                                                 }}
-                                                                defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
-                                                            label="Ativo ?"
-                                                            labelPlacement="top"
-                                                        />
-                                                    </FormGroup>
-                                                </Stack>
-                                                </th>
-                                                <th>
-                                                </th>
-                                                <th>
-                                                    <Button
-                                                        disabled={tipo == 'selecao' ? false : true}
-                                                        onClick={handleOpen}>Adicionar Regras</Button>
-                                                    <Modal
-                                                        open={open}
-                                                        onClose={handleClose}
-                                                        aria-labelledby="modal-modal-title"
-                                                        aria-describedby="modal-modal-description"
-                                                    >
-                                                        <Box sx={style}>
-                                                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                                                <TextField
-                                                                    key="regra"
-                                                                    inputRef={regraref}
-                                                                    id="standard-basic"
-                                                                    label="Observacao"
-                                                                    defaultValue="Description"
-                                                                    variant="standard"
-                                                                />
+                                                            >
+                                                                <option aria-label="None" value="" />
+                                                                {itemtypes.map((itemtype) => (
+                                                                    <option value={itemtype.value}>{itemtype.label}</option>
+                                                                ))}
+
+                                                            </NativeSelect>
+
+                                                        </Grid>
+                                                        <Grid item xs={3}>
+                                                            <TextField id="standard-basic"
+                                                                key="descricao"
+                                                                name="descricao" {...register("descricao")}
+                                                                label="Observacao" defaultValue="Description" variant="standard" />
+                                                        </Grid>
+                                                        <Grid item xs={3}>
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <FormGroup aria-label="position" row>
+                                                                    <FormControlLabel
+                                                                        value="top"
+                                                                        control={<AntSwitch
+                                                                            name="foto" {...register("foto")}
+                                                                            defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
+                                                                        label="Fotos ?"
+                                                                        labelPlacement="top"
+                                                                    />
+                                                                </FormGroup>
+                                                            </Stack>
+                                                        </Grid>
+                                                        <Grid item xs={3}>
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <FormGroup aria-label="position" row>
+                                                                    <FormControlLabel
+                                                                        value="top"
+                                                                        control={<AntSwitch
+                                                                            name="status" {...register("status")}
+                                                                            defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
+                                                                        label="Ativo ?"
+                                                                        labelPlacement="top"
+                                                                    />
+                                                                </FormGroup>
+                                                            </Stack>
+                                                        </Grid>
+                                                    </Grid>
+                                                </FormControl>
+ 
+                                                <Button
+                                                    disabled={tipo == "selecao" ? false : true}
+                                                    onClick={handleOpen}>Adicionar Regras</Button>
+                                                <Modal
+                                                    open={open}
+                                                    onClose={handleClose}
+                                                    aria-labelledby="modal-modal-title"
+                                                    aria-describedby="modal-modal-description"
+                                                >
+                                                    <Box sx={style}>
+                                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                            <TextField
+                                                                key="regra"
+                                                                inputRef={regraref}
+                                                                id="standard-basic"
+                                                                label="Observacao"
+                                                                defaultValue="Description"
+                                                                variant="standard"
+                                                            />
 
 
-                                                                <Button variant="contained" sx={{ ml: 2 }} onClick={e => addRuleIntoList()}>Adicionar</Button>
-                                                            </Typography>
-                                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                                <List
-                                                                    sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-                                                                    aria-label="contacts"
+                                                            <Button variant="contained" sx={{ ml: 2 }} onClick={e => addRuleIntoList()}>Adicionar</Button>
+                                                        </Typography>
+                                                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                            <List
+                                                                sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+                                                                aria-label="contacts"
 
-                                                                >
-                                                                    {rulesList.map((rule, index) => (
-                                                                        <ListItem
-                                                                            key={index}
-                                                                            secondaryAction={   
-                                                                                <IconButton edge="end" aria-label="delete">
-                                                                                    <DeleteForeverIcon />
-                                                                                </IconButton>
-                                                                            }
-                                                                        >
-                                                                            <ListItemText
-                                                                                primary={rule.value}
-                                                                            />
-                                                                        </ListItem>
-                                                                    ))}
-                                                                </List>
-                                                            </Typography>
-                                                        </Box>
-                                                    </Modal>
-                                                    <Button>Salvar</Button></th>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                        </table>
-                                    </TabPanel>
+                                                            >
+                                                                {rulesList.map((rule, index) => (
+                                                                    <ListItem
+                                                                        key={index}
+                                                                        secondaryAction={
+                                                                            <IconButton edge="end" aria-label="delete">
+                                                                                <DeleteForeverIcon
+                                                                                    onClick={e => removeRuleFromList(index)}
+                                                                                />
+                                                                            </IconButton>
+                                                                        }
+                                                                    >
+                                                                        <ListItemText
+                                                                            primary={rule.value}
+                                                                        />
+                                                                    </ListItem>
+                                                                ))}
+                                                            </List>
+                                                        </Typography>
+                                                    </Box>
+                                                </Modal>
+                                                <Button type="submit">Salvar</Button>
+                                            </form >
+                                            <table>
+                                                <thead>
+                                                <tr>
+                                                    <td> Tipo</td>
+                                                    <td> Descriao</td>
+                                                    <td> Foto</td>
+                                                    <td> Status</td>
+                                                    <td> Regras</td>
+                                                    <td> Actions</td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {stageLists.map((stageList, index) => (         
+                                                    <tr key={index}>
+                                                        <td>{stageList.tipo}</td>
+                                                        <td>{stageList.descricao}</td>
+                                                        <td>{stageList.foto}</td>
+                                                        <td>{stageList.status}</td>
+                                                        <td>{stageList.regras}</td>
+                                                        <td>
+                                                            <Button variant="contained"  >Remover</Button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+
+                                                </tbody>
+                                            </table>
+                                        </TabPanel>
+                                        
+                                    </>
                                 ))
                                 }
-
-
                             </Box>
-                        </Paper>
+                        </Paper >
 
-                    </Stack>
-                </Grid>
+                    </Stack >
+                </Grid >
 
 
-            </Grid>
-        </Container>
+            </Grid >
+        </Container >
         //c
     );
 }
