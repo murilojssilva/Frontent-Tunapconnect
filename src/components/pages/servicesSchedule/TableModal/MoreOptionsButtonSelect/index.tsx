@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import Divider from "@mui/material/Divider";
-// import ListItemIcon from "@mui/material/ListItemIcon";
 // import { Settings } from "@mui/icons-material";
 import { MoreOptionsButtonSelectProps } from "./types";
 import { MenuItemButton } from "./styles";
@@ -13,20 +12,17 @@ import { MenuItemButton } from "./styles";
 const ITEM_HEIGHT = 38;
 
 
-const options = [
-  'Editar',
-];
-
-
-
-export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, buttons, disabledButton }:MoreOptionsButtonSelectProps) {
+export function MoreOptionsButtonSelect({ disabledButton }:MoreOptionsButtonSelectProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      event.stopPropagation();
       setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
-      handleIsEditSelectedCard(typeEdit)
+      setAnchorEl(null);
+    };
+    const handleClickEdit = () => {
       setAnchorEl(null);
     };
   return (
@@ -78,21 +74,20 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {/* {buttons && buttons.map(button => {
-          return (
-            <MenuItem onClick={handleClose} key={button.label + typeEdit}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              Editar
-            </MenuItem>
-          )
-        })} */}
-        <MenuItemButton onClick={handleClose}>
-          {/* <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon> */}
+        <MenuItemButton onClick={handleClickEdit}>
           Editar
+        </MenuItemButton>
+        <MenuItemButton onClick={handleClickEdit}>
+          Visualizar
+        </MenuItemButton>
+        <MenuItemButton onClick={handleClickEdit}>
+          Enviar
+        </MenuItemButton>
+        <MenuItemButton onClick={handleClickEdit}>
+          Duplicar
+        </MenuItemButton>
+        <MenuItemButton onClick={handleClickEdit}>
+          Imprimir
         </MenuItemButton>
       </Menu>
     </div>

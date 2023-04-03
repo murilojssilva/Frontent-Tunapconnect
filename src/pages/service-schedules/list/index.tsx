@@ -32,6 +32,7 @@ import { CompanyContext } from '@/contexts/CompanyContext';
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types';
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb';
 import Stack from '@mui/material/Stack';
+import { formatMoneyPt_BR } from '@/ultis/formatMoneyPtBR';
 
 
 
@@ -84,15 +85,15 @@ export default function ServiceSchedulesList() {
 
 
   function handlePages(nextPage: string): void {
-    console.log('func handlePages', nextPage)
+    // console.log('func handlePages', nextPage)
   }
 
 
-  const formatNumber = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2, maximumFractionDigits: 2
-  })
+  // const formatNumber = new Intl.NumberFormat('pt-BR', {
+  //   style: 'currency',
+  //   currency: 'BRL',
+  //   minimumFractionDigits: 2, maximumFractionDigits: 2
+  // })
 
   const columns: GridColDef[] = [
   {
@@ -156,7 +157,7 @@ export default function ServiceSchedulesList() {
     align: 'center',
     sortable: false,
     valueGetter: (params: GridValueGetterParams) =>
-      `${formatNumber.format(params.row.totalDiscount) || ''}`
+      `${formatMoneyPt_BR(params.row.totalDiscount) || ''}`
   },
   {
     field: 'total',
@@ -167,7 +168,7 @@ export default function ServiceSchedulesList() {
     align: 'center',
     sortable: false,
         valueGetter: (params: GridValueGetterParams) =>
-      `${formatNumber.format(params.row.total) || ''}`
+      `${formatMoneyPt_BR(params.row.total) || ''}`
   },
   {
     field: 'action',
@@ -269,13 +270,7 @@ export default function ServiceSchedulesList() {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction='row' alignItems='center' justifyContent="space-between">
-            <Title>
-              Lista de Agendamentos
-            </Title>
-            <HeaderBreadcrumb data={HeaderBreadcrumbData} /> 
-
-          </Stack>
+          <HeaderBreadcrumb data={HeaderBreadcrumbData} title='Lista de Agendamentos'/> 
         </Grid>
  
           <Grid item xs={12}>

@@ -44,6 +44,12 @@ import {DataTimeInput} from '@/components/DataTimeInput';
 import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts';
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb';
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types';
+import { TableModal } from '@/components/pages/servicesSchedule/TableModal';
+import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import { Delete } from '@mui/icons-material';
+import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations';
+import { formatMoneyPt_BR } from '@/ultis/formatMoneyPtBR';
 
 
 
@@ -93,9 +99,23 @@ export default function ServiceSchedulesEdit() {
   const [wasEdited, setWasEdited] = useState(false)
   const [actionAlerts, setActionAlerts] = useState<ActionAlertsStateProps | null>(null)
 
+  const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
+
+  const [openChecklistModal, setOpenChecklistModal] = useState(false)
+
   const router = useRouter()
 
   const { company } = useContext(CompanyContext)
+
+  const handleDelete = (id: number) => {
+    setRows(rows.filter(row => row.id !== id))
+  }
+  const closeChecklistModal = () => {
+    setOpenChecklistModal(false)
+  }
+
+
+
 
   function handleIsEditSelectedCard(value: isEditSelectedCardType) {
     setIsEditSelectedCard(value)
@@ -142,7 +162,7 @@ export default function ServiceSchedulesEdit() {
    }
     try {
       const respUpdate: any = await api.update('/service-schedule/' + router.query.id, dataFormatted)
-      console.log(respUpdate)
+      // console.log(respUpdate)
       setIsEditSelectedCard(null)
       setActionAlerts({
         isOpen: true,
@@ -161,10 +181,10 @@ export default function ServiceSchedulesEdit() {
   useEffect(() => {
     if (!wasEdited) {
       const { id } = router.query
-      console.log(id)
+      // console.log(id)
         api.get(`/service-schedule/${id}`)
           .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
   
             const {client, client_vehicle,technical_consultant, promised_date} = response.data.data
             setClient({
@@ -208,7 +228,7 @@ export default function ServiceSchedulesEdit() {
       if (company?.id) { 
         api.get(`/technical-consultant?company_id=${company?.id}`)
         .then(resp => {
-          console.log(resp)
+          // console.log(resp)
           setTechnicalConsultantsList(resp.data.data.map((item: TechnicalConsultant) => ({
             id: item.id,
             name: item.name
@@ -227,13 +247,7 @@ export default function ServiceSchedulesEdit() {
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={12} lg={12}>
-            <Stack direction='row' alignItems='center' justifyContent="space-between">
-            <Title>
-              Agenda de Serviços
-            </Title>
-            <HeaderBreadcrumb data={HeaderBreadcrumbData} /> 
-
-          </Stack>
+          <HeaderBreadcrumb data={HeaderBreadcrumbData} title='Agenda de Serviços'/> 
         </Grid>
         <Grid item xs={12} md={7} lg={7}>
           <Stack spacing={3}>
@@ -365,7 +379,7 @@ export default function ServiceSchedulesEdit() {
         <Grid item xs={12} md={5} lg={5}>
           <Stack spacing={2}>
             <Stack spacing={2} direction='row' display='flex' justifyContent='center' >
-              <ButtonLeft >Listar Checklists</ButtonLeft>
+              <ButtonLeft onClick={() => setOpenChecklistModal(true)}>Listar Checklists</ButtonLeft>
               <ButtonCenter ><PrintIcon /></ButtonCenter>
               <ButtonRight startIcon={<AddCircleOutlineIcon/>}>Novo</ButtonRight>
             </Stack>
@@ -561,7 +575,11 @@ export default function ServiceSchedulesEdit() {
             handleAlert={handleAlert}
           />)}
       </Grid>
- 
+      <TableModal
+        isOpen={openChecklistModal}
+        title="Lista de checklists"
+        closeChecklistModal={closeChecklistModal}
+      />
     </Container>
     
   );

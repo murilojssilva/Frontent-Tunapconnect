@@ -73,7 +73,7 @@ export default function ServiceSchedulesCreate() {
 
 
   function handlePages(nextPage: string): void {
-    console.log('func handlePages', nextPage)
+    // console.log('func handlePages', nextPage)
   }
 
   useEffect(() => {
