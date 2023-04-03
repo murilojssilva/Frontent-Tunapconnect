@@ -42,6 +42,8 @@ import { formatDateTime, formatDateTimeTimezone } from '@/ultis/formatDate';
 import ActionAlerts from '@/components/ActionAlerts';
 import {DataTimeInput} from '@/components/DataTimeInput';
 import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts';
+import HeaderBreadcrumb from '@/components/HeaderBreadcrumb';
+import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types';
 
 
 
@@ -68,6 +70,19 @@ type updateData = {
   claims_service: any[];
 }
 
+
+const HeaderBreadcrumbData:listBreadcrumb[] = [
+  {
+    label: 'Tunap',
+    href: '/company'
+  },
+  {
+    label: 'Edição de agendamento',
+    href: '/service-schedules/edit'
+  },
+  
+]
+
 export default function ServiceSchedulesEdit() {
   const [client, setClient] = useState<ClientInfor | null>()
   const [clientVehicle, setClientVehicle] = useState<ClientVehicle | null>()
@@ -76,11 +91,7 @@ export default function ServiceSchedulesEdit() {
   const [technicalConsultantsList, setTechnicalConsultantsList] = useState<TechnicalConsultant[]>([])
   const [isEditSelectedCard, setIsEditSelectedCard] = useState<isEditSelectedCardType>(null)
   const [wasEdited, setWasEdited] = useState(false)
-  const [actionAlerts, setActionAlerts] = useState<ActionAlertsStateProps>({
-    isOpen: false,
-    title: '',
-    type: 'success',
-  })
+  const [actionAlerts, setActionAlerts] = useState<ActionAlertsStateProps | null>(null)
 
   const router = useRouter()
 
@@ -216,8 +227,12 @@ export default function ServiceSchedulesEdit() {
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={12} lg={12}>
-          <Stack direction='row'>
-            <Title>Agenda de Serviços</Title>
+            <Stack direction='row' alignItems='center' justifyContent="space-between">
+            <Title>
+              Agendamento - {router.query.id}
+            </Title>
+            <HeaderBreadcrumb data={HeaderBreadcrumbData} /> 
+
           </Stack>
         </Grid>
         <Grid item xs={12} md={7} lg={7}>
@@ -539,12 +554,12 @@ export default function ServiceSchedulesEdit() {
               )}
             </Stack>
           </Grid>
-        <ActionAlerts
+       {actionAlerts !== null && (<ActionAlerts
           isOpen={actionAlerts.isOpen}
           title={actionAlerts.title}
           type={actionAlerts.type}
             handleAlert={handleAlert}
-          />
+          />)}
       </Grid>
  
     </Container>
