@@ -259,15 +259,23 @@ export default function ServiceSchedulesCreate() {
     const [stageLists, setStageLists] = useState([]);
 
     const onSubmit = (data: any) => {
+       
         data.stages = stages
         data.tipo = tipo
         data.regras = rulesList
+
         console.log(data);
         // parse to string regras
         data.regras = JSON.stringify(data.regras)
-        // add to stageLists
-        setStageLists([...stageLists, data])
          
+        const newStages = stages
+        newStages.value[value].value.push(data)
+        setStages(newStages)
+        console.log(stages)
+
+
+
+
     };
 
     const [tipo, setTipo] = useState('')
@@ -290,10 +298,14 @@ export default function ServiceSchedulesCreate() {
         let newList = rulesList.filter((item: any, i: number) => i !== index)
         setRulesList(newList)
     }
-
+    function a11yProps(index: number) {
+        return {
+          id: `simple-tab-${index}`,
+          'aria-controls': `simple-tabpanel-${index}`,
+        };
+      }
     return (
-        <Container maxWidth="lg" sx={{ mt: 12, mb: 12 }}>
-
+        <Container maxWidth="lg" sx={{ mt: 2, mb: 12 }}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Stack direction='row'>
@@ -331,7 +343,7 @@ export default function ServiceSchedulesCreate() {
                                     }}
                                 >
                                     {stages.value.map((stage, index) => (
-                                        <Tab label={stage.stage} />
+                                        <Tab label={stage.stage}  {...a11yProps(index)}/>
                                     ))}
 
                                     {/* <Tab label={<InputHeader />} /> */}
@@ -341,12 +353,14 @@ export default function ServiceSchedulesCreate() {
 
                                 {stages.value.map((stage, index) => (
                                     <>
+                                        {console.log(stage,index)}
                                         <TabPanel value={value} index={index}>
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <FormControl >
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={3}>
-
+                                                          
+                                                        
                                                             <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                                                 Tipo
                                                             </InputLabel>
@@ -405,7 +419,7 @@ export default function ServiceSchedulesCreate() {
                                                         </Grid>
                                                     </Grid>
                                                 </FormControl>
- 
+
                                                 <Button
                                                     disabled={tipo == "selecao" ? false : true}
                                                     onClick={handleOpen}>Adicionar Regras</Button>
@@ -459,33 +473,34 @@ export default function ServiceSchedulesCreate() {
                                             </form >
                                             <table>
                                                 <thead>
-                                                <tr>
-                                                    <td> Tipo</td>
-                                                    <td> Descriao</td>
-                                                    <td> Foto</td>
-                                                    <td> Status</td>
-                                                    <td> Regras</td>
-                                                    <td> Actions</td>
-                                                </tr>
+                                                    <tr>
+                                                        <td> Tipo</td>
+                                                        <td> Descriao</td>
+                                                        <td> Foto</td>
+                                                        <td> Status</td>
+                                                        <td> Regras</td>
+                                                        <td> Actions</td>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {stageLists.map((stageList, index) => (         
-                                                    <tr key={index}>
-                                                        <td>{stageList.tipo}</td>
-                                                        <td>{stageList.descricao}</td>
-                                                        <td>{stageList.foto}</td>
-                                                        <td>{stageList.status}</td>
-                                                        <td>{stageList.regras}</td>
-                                                        <td>
-                                                            <Button variant="contained"  >Remover</Button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                    {stages.value[index].value?.length > 0 &&
+                                                        stages.value[index].value?.map((stageList, index) => (
+                                                            <tr key={index}>
+                                                                <td>{stageList.tipo}</td>
+                                                                <td>{stageList.descricao}</td>
+                                                                <td>{stageList.foto}</td>
+                                                                <td>{stageList.status}</td>
+                                                                <td>{stageList.regras}</td>
+                                                                <td>
+                                                                    <Button variant="contained"  >Remover</Button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
 
                                                 </tbody>
                                             </table>
                                         </TabPanel>
-                                        
+
                                     </>
                                 ))
                                 }
