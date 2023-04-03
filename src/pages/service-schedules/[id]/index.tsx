@@ -229,7 +229,7 @@ export default function ServiceSchedulesEdit() {
         <Grid item xs={12} md={12} lg={12}>
             <Stack direction='row' alignItems='center' justifyContent="space-between">
             <Title>
-              Agendamento - {router.query.id}
+              Agenda de Serviços
             </Title>
             <HeaderBreadcrumb data={HeaderBreadcrumbData} /> 
 
