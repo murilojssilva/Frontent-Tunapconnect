@@ -8,7 +8,7 @@ import { GridColDef, GridRenderCellParams, GridValueGetterParams, useGridApiRef 
 
 
 import { getSession } from 'next-auth/react';
-import next, { GetServerSideProps } from 'next/types';
+import { GetServerSideProps } from 'next/types';
 
 
 import Box from '@mui/material/Box';
@@ -29,6 +29,11 @@ import { useRouter } from 'next/router';
 import { TableApp } from '@/components/TableApp';
 import Title from '@/components/Title';
 import { CompanyContext } from '@/contexts/CompanyContext';
+import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types';
+import HeaderBreadcrumb from '@/components/HeaderBreadcrumb';
+import Stack from '@mui/material/Stack';
+
+
 
 type SearchFormProps = {
   search: string
@@ -39,6 +44,18 @@ type SearchFormProps = {
 // }
 
 const api = new apiCore()
+
+const HeaderBreadcrumbData:listBreadcrumb[] = [
+  {
+    label: 'Tunap',
+    href: '/company'
+  },
+  {
+    label: 'Lista de agendamentos',
+    href: '/service-schedules/list'
+  },
+  
+]
 
 export default function ServiceSchedulesList() {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
@@ -252,9 +269,13 @@ export default function ServiceSchedulesList() {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Title>
-            Lista de orçamentos
-          </Title>
+          <Stack direction='row' alignItems='center' justifyContent="space-between">
+            <Title>
+              Lista de Agendamentos
+            </Title>
+            <HeaderBreadcrumb data={HeaderBreadcrumbData} /> 
+
+          </Stack>
         </Grid>
  
           <Grid item xs={12}>
