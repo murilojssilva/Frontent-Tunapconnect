@@ -343,7 +343,7 @@ export default function ServiceSchedulesCreate() {
                                     }}
                                 >
                                     {stages.value.map((stage, index) => (
-                                        <Tab label={stage.stage}  {...a11yProps(index)}/>
+                                        <Tab label={stage.stage} key={index}  {...a11yProps(index)}/>
                                     ))}
 
                                     {/* <Tab label={<InputHeader />} /> */}
@@ -359,7 +359,6 @@ export default function ServiceSchedulesCreate() {
                                                 <FormControl >
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={3}>
-                                                          
                                                         
                                                             <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                                                 Tipo
@@ -376,8 +375,8 @@ export default function ServiceSchedulesCreate() {
                                                                 }}
                                                             >
                                                                 <option aria-label="None" value="" />
-                                                                {itemtypes.map((itemtype) => (
-                                                                    <option value={itemtype.value}>{itemtype.label}</option>
+                                                                {itemtypes.map((itemtype, index) => (
+                                                                    <option value={itemtype.value} key={index + itemtype.value}>{itemtype.label}</option>
                                                                 ))}
 
                                                             </NativeSelect>
