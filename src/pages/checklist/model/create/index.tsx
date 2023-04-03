@@ -126,6 +126,7 @@ export default function ServiceSchedulesCreate() {
 
 
         return (
+            //   @ts-ignore 
             <div style={styleDiv} >
                 <input
                     type="text"
@@ -133,7 +134,7 @@ export default function ServiceSchedulesCreate() {
                     defaultValue={props.title ? props.title : 'Sem título'}
                     name="myInput"
                 />
-                <Link style={styleLink} />
+                <Link sx={styleLink} />
             </div>
         );
     }
@@ -385,6 +386,7 @@ export default function ServiceSchedulesCreate() {
                                                         <Grid item xs={3}>
                                                             <TextField id="standard-basic"
                                                                 key="descricao"
+                                                                //@ts-ignore
                                                                 name="descricao" {...register("descricao")}
                                                                 label="Observacao" defaultValue="Description" variant="standard" />
                                                         </Grid>
@@ -394,6 +396,7 @@ export default function ServiceSchedulesCreate() {
                                                                     <FormControlLabel
                                                                         value="top"
                                                                         control={<AntSwitch
+                                                                              //@ts-ignore
                                                                             name="foto" {...register("foto")}
                                                                             defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
                                                                         label="Fotos ?"
@@ -408,6 +411,7 @@ export default function ServiceSchedulesCreate() {
                                                                     <FormControlLabel
                                                                         value="top"
                                                                         control={<AntSwitch
+                                                                              //@ts-ignore
                                                                             name="status" {...register("status")}
                                                                             defaultChecked inputProps={{ 'aria-label': 'ant design' }} />}
                                                                         label="Ativo ?"
@@ -448,6 +452,7 @@ export default function ServiceSchedulesCreate() {
                                                                 aria-label="contacts"
 
                                                             >
+                                                                {/*   @ts-ignore */}
                                                                 {rulesList.map((rule, index) => (
                                                                     <ListItem
                                                                         key={index}
@@ -485,10 +490,14 @@ export default function ServiceSchedulesCreate() {
                                                     {stages.value[index].value?.length > 0 &&
                                                         stages.value[index].value?.map((stageList, index) => (
                                                             <tr key={index}>
+                                                                  {/*   @ts-ignore */}
                                                                 <td>{stageList.tipo}</td>
+                                                                {/*   @ts-ignore */}
                                                                 <td>{stageList.descricao}</td>
+                                                                {/*   @ts-ignore */}
                                                                 <td>{stageList.foto}</td>
                                                                 <td>{stageList.status}</td>
+                                                                {/*   @ts-ignore */}
                                                                 <td>{stageList.regras}</td>
                                                                 <td>
                                                                     <Button variant="contained"  >Remover</Button>
