@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import Divider from "@mui/material/Divider";
-// import ListItemIcon from "@mui/material/ListItemIcon";
 // import { Settings } from "@mui/icons-material";
 import { MoreOptionsButtonSelectProps } from "./types";
 import { MenuItemButton } from "./styles";
@@ -26,6 +25,9 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
       setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleClickEdit = () => {
       handleIsEditSelectedCard(typeEdit)
       setAnchorEl(null);
     };
@@ -88,7 +90,7 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
             </MenuItem>
           )
         })} */}
-        <MenuItemButton onClick={handleClose}>
+        <MenuItemButton onClick={handleClickEdit}>
           {/* <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon> */}
