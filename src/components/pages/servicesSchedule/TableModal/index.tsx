@@ -54,7 +54,7 @@ export function TableModal({isOpen, title, closeChecklistModal}: TableAppProps) 
   const [rows, setRows] = useState<RowsProps[]>([])
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const { company } = useContext(CompanyContext)
 
@@ -73,7 +73,7 @@ export function TableModal({isOpen, title, closeChecklistModal}: TableAppProps) 
     headerName: 'Data',
     headerClassName: 'super-app-theme--header',
     flex: 1,
-    maxWidth: 120,
+    maxWidth: 220,
     minWidth: 80,
     sortable: false
   },
@@ -149,15 +149,20 @@ export function TableModal({isOpen, title, closeChecklistModal}: TableAppProps) 
   return (
     <>
       <Dialog
+        // fullScreen={fullScreen}
         fullScreen={fullScreen}
+        maxWidth="lg"
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
+        
       >
         <DialogTitle id="responsive-dialog-title">
           {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent  sx={{
+          width: 400
+        }}>
          
             <BoxContainer>
                 <TableDataGrid

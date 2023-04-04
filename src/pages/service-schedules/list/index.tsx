@@ -286,20 +286,20 @@ export default function ServiceSchedulesList() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
-const session = await getSession(ctx)
+// const session = await getSession(ctx)
 
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      }
-    }
-  }
-  return {
-    props: {
-    }, 
-  }
-}
+//   if (!session?.user?.token) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       }
+//     }
+//   }
+//   return {
+//     props: {
+//     }, 
+//   }
+// }

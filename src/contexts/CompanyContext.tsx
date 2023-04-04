@@ -58,7 +58,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
         const localstorageParse = JSON.parse(localstorage)
         if (localstorageParse.company) {
           setCompany(localstorageParse.company)
-          router.push('/service-schedules/list')  
         } else {
           router.push('/company')
         }
