@@ -68,6 +68,10 @@ export default function ServiceSchedulesList() {
 
   const router = useRouter()
 
+  if (router.isFallback) {
+    setLoadingData(true)
+  }
+
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
       search: ''
@@ -274,7 +278,7 @@ export default function ServiceSchedulesList() {
         </Grid>
  
           <Grid item xs={12}>
-          <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} loading={router.isFallback} />
+          <TableApp columns={columns} rowsData={rows} handlePages={handlePages} pages={pages} loading={loadingData} />
           </Grid>
         </Grid>
     </Container>
