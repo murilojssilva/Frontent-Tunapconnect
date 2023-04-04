@@ -26,9 +26,12 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
       setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
-      handleIsEditSelectedCard(typeEdit)
       setAnchorEl(null);
     };
+    const handleButtonEdit = () => {
+      handleIsEditSelectedCard(typeEdit)
+      setAnchorEl(null);
+    }
   return (
     <div>
       <IconButton
@@ -88,7 +91,7 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
             </MenuItem>
           )
         })} */}
-        <MenuItemButton onClick={handleClose}>
+        <MenuItemButton onClick={handleButtonEdit}>
           {/* <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon> */}
