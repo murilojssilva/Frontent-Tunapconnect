@@ -22,7 +22,32 @@ import TableRow from '@mui/material/TableRow';
 import { Photo } from '@mui/icons-material';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
+
+import SignatureCanvas from "react-signature-canvas";
+
+import moment from "moment";
+
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+ 
 const blue = {
     50: '#F0F7FF',
     100: '#C2E0FF',
@@ -145,42 +170,53 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     padding: 0,
     display: 'flex',
     '&:active': {
-      '& .MuiSwitch-thumb': {
-        width: 15,
-      },
-      '& .MuiSwitch-switchBase.Mui-checked': {
-        transform: 'translateX(9px)',
-      },
+        '& .MuiSwitch-thumb': {
+            width: 15,
+        },
+        '& .MuiSwitch-switchBase.Mui-checked': {
+            transform: 'translateX(9px)',
+        },
     },
     '& .MuiSwitch-switchBase': {
-      padding: 2,
-      '&.Mui-checked': {
-        transform: 'translateX(12px)',
-        color: '#fff',
-        '& + .MuiSwitch-track': {
-          opacity: 1,
-          backgroundColor: theme.palette.mode === 'dark' ? `${blue[1200]}` : `${blue[1200]}`,
+        padding: 2,
+        '&.Mui-checked': {
+            transform: 'translateX(12px)',
+            color: '#fff',
+            '& + .MuiSwitch-track': {
+                opacity: 1,
+                backgroundColor: theme.palette.mode === 'dark' ? `${blue[1200]}` : `${blue[1200]}`,
+            },
         },
-      },
     },
     '& .MuiSwitch-thumb': {
-      boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
-      width: 12,
-      height: 12,
-      borderRadius: 6,
-      transition: theme.transitions.create(['width'], {
-        duration: 200,
-      }),
+        boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        transition: theme.transitions.create(['width'], {
+            duration: 200,
+        }),
     },
     '& .MuiSwitch-track': {
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor:
-        theme.palette.mode === 'dark' ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.25)',
-      boxSizing: 'border-box',
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor:
+            theme.palette.mode === 'dark' ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.25)',
+        boxSizing: 'border-box',
     },
-  }));
+}));
 export default function checklistCreate() {
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
 
     const [stages, setStages] = React.useState<any>({
         checklist: 'name',
@@ -188,6 +224,14 @@ export default function checklistCreate() {
             {
                 stage: 'Recepção',
                 tasks: [
+                    {
+                        type: 'signature',
+                        description: 'Inspeção visual - Toyota',
+                        images: ['image.png', 'img_ps.png'],
+                        videos: [],
+                        audios: [],
+                        comments: [],
+                    },
                     {
                         type: 'visual_inpect',
                         description: 'Inspeção visual - Toyota',
@@ -256,7 +300,7 @@ export default function checklistCreate() {
         },
 
     ]
-    function returnCTA(type: string , list?:any) {
+    function returnCTA(type: string, list?: any) {
         switch (type) {
             case 'text':
                 return <CustomButton> Teste xpto</CustomButton>
@@ -268,11 +312,13 @@ export default function checklistCreate() {
                 return 'Audio'
             case 'comment':
                 return 'Comentário'
+            case 'signature':
+                return <CustomButton onClick={handleClickOpen}> Assinatura</CustomButton>
             case 'checkbox':
-                return  <div  ><AntSwitch  defaultChecked inputProps={{ 'aria-label': 'ant design' }} /></div>
+                return <div  ><AntSwitch defaultChecked inputProps={{ 'aria-label': 'ant design' }} /></div>
             case 'select':
                 return <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    
+
                     <Select
                         displayEmpty
                         id="demo-simple-select"
@@ -285,12 +331,24 @@ export default function checklistCreate() {
                         ))}
                     </Select>
 
-                    </FormControl>
+                </FormControl>
             case 'visual_inpect':
                 return <CustomButton> Inspeção</CustomButton>
         }
     }
     const [checklist, setChecklist] = useState<any>([]);
+    const signatureWidth = () => {
+        let width = document.getElementById('signature')?.offsetWidth || 1000;
+
+        if (width > 800) {
+            width = (width / 2) * 0.7;
+        } else {
+            width = (width) * 0.9;
+        }
+
+        return width;
+    };
+    // ref use signaturePed
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -322,10 +380,10 @@ export default function checklistCreate() {
                                                         key={index}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     >
-                                                        <TableCell align="center" sx={{alignItems: 'center'}} >
-                                                        <Stack direction="row" spacing={2} alignItems="center" >
-                                                            {returnCTA(task.type , task.list??[] )}
-                                                        </Stack>
+                                                        <TableCell align="center" sx={{ alignItems: 'center' }} >
+                                                            <Stack direction="row" spacing={2} alignItems="center" >
+                                                                {returnCTA(task.type, task.list ?? [])}
+                                                            </Stack>
                                                         </TableCell>
                                                         <TableCell align="center">{task.description}</TableCell>
 
@@ -358,6 +416,39 @@ export default function checklistCreate() {
                 <Grid item xs={12}>
                 </Grid>
             </Grid>
+
+
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={handleClose}
+                TransitionComponent={Transition}
+            >
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleClose}
+                            aria-label="close"
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                            Sound
+                        </Typography>
+                        <Button autoFocus color="inherit" onClick={handleClose}>
+                            save
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                {/* div with border 1px solid black */}
+                <div id="signature" style={{ border: '1px solid black' , width: 300 , height: 200, backgroundColor: grey[600] }}>
+                    <SignatureCanvas penColor='green'
+                        canvasProps={{ width: 300, height: 200, className: 'sigCanvas' }} />
+                </div>
+
+            </Dialog>
         </Container>
 
     );
