@@ -7,7 +7,10 @@ import classNames from "classnames";
 import toyota from '@/assets/images/toyota.png'
 import carrinho from '@/assets/images/carrinho.jpg'
 import Image from "next/image";
-import style from "./styles.module.css";
+// import style from "./styles.module.css";
+// import style from '@/sass/styles/printInspection.module.scss'
+import '@/sass/styles/printInspection.module.scss'
+import {localStyleCss} from "./style"
 
 const SquareCheck = ({ type = "success", checked = false }) => (
   <div className={`square-check bg-${type}`}>
@@ -138,11 +141,11 @@ const getData = () => {
   
   
  return (
-     <div className={style.page}>
+     <div className={classNames(style.page)} >
       <header>
              <div className={style.row}>
-                 <div className={classNames(style.col-40, style['d-flex'], style['align-items-center'])}>
-            <Image src={toyota} alt="Toyota Logotype" />
+                 <div className={classNames(style["col-40"], style["d-flex"], style["align-items-center"])}>
+            <img src="/images/toyota.png" alt="Toyota Logotype" />
           </div>
           <div>
             <h3>
@@ -190,7 +193,7 @@ const getData = () => {
             </div>
             <div className={classNames(style.row, style["mt-1"] ,style["les-tres"])}>
               <div className={style.col}>
-                <div className={style["form-slot"], style.placa}>
+                <div className={classNames(style["form-slot"], style.placa)}>
                   <label>Placa:</label>
                 </div>
                 <div className={style["blue-slots"]}>
@@ -218,7 +221,7 @@ const getData = () => {
                   </div>
                 </div>
               </div>
-             <div className={classNames(style["col"], style["px-2"])}>
+             <div className={classNames(style.col, style["px-2"])}>
                 <div>
                  <div className={style["icon-header"]}>
                    <span className={style["text-center"]}>Recepção</span>
@@ -292,7 +295,7 @@ const getData = () => {
                   <div></div>
                 </div>
                 <div className={classNames(style.row, style["two-checkboxes"])}>
-                  <div className="checked"></div>
+                  <div className={style.checked}></div>
                   <div></div>
                 </div>
                 <div className={classNames(style.row, style["two-checkboxes"])}>
@@ -332,7 +335,7 @@ const getData = () => {
               <div className="row">
                 <div className="col-7 pe-1">
                   <figure className={style.figure,style["mb-10"]}>
-                    {/* <img src="/images/carrinho.jpg" alt="" width= "100%" /> */}
+                    <img src="/images/carrinho.jpg" alt="" width= "100%" />
                   </figure>
                  <table className={classNames(style["table-head"], style["border-1"],style["my-2"],style["cell-h-sm"])}>
                     <thead>
@@ -346,7 +349,7 @@ const getData = () => {
                   </table>
                  <table className={classNames(style["bordered"], style["table-head"],style["cell-h-sm"])}>
                     <thead>
-                      <tr>
+                      <tr className={style.tr}>
                         <th>Pneu</th>
                         <th width="30%">Marca</th>
                         <th>Sulco encontrado</th>
@@ -387,7 +390,7 @@ const getData = () => {
                 <div className={style["col-5"]}>
                  <table className={classNames(style["bordered"], style["table-head"],style["cell-h-sm"], style.table)}>
                     <thead>
-                      <tr className={style["table-tr"]}>
+                      <tr className={style["table-tr"], style.tr}>
                         <th>ltens Adicionais</th>
                         <th>Sim</th>
                         <th>Não</th>
@@ -395,13 +398,13 @@ const getData = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className={style["table-tr"]}>
+                      <tr className={style["table-tr"], style.tr}>
                         <td>Tapete genuíno Toyota</td>
                         <td></td>
                         <td></td>
                         <td></td>
                       </tr>
-                      <tr className={style["table-tr"]}>
+                      <tr className={style["table-tr"], style.tr}>
                         <td>Kit Multimídia / Sistema de áudio</td>
                         <td></td>
                         <td></td>
@@ -501,20 +504,20 @@ const getData = () => {
                   </table>
                 </div>
               </div>
-              <div className="row">
-                <div className="col p-1 lh-150">
+              <div className={style.row}>
+               <div className={classNames(style.col,style["p-1"], style["lh-150"])}>
                   <div>
-                    Pintura/Carroçaria: <hr className="bottom-line" />
+                    Pintura/Carroçaria: <hr className={style["bottom-line"]} />
                   </div>
                   <div>
-                    Para-brisa: <hr className="bottom-line" />
+                    Para-brisa: <hr className={style["bottom-line"]} />
                   </div>
                   <div>
-                    Assinatura Estofamento: <hr className="bottom-line" />
+                    Assinatura Estofamento: <hr className={style["bottom-line"]} />
                   </div>
                   <div>
                     Cliente deseja trocar o veículo?
-                    <hr className="bottom-line" />
+                    <hr className={style["bottom-line"]} />
                   </div>
                 </div>
               </div>
@@ -523,10 +526,10 @@ const getData = () => {
         </div>
 
         {/* seção */}
-        <div className="row equal-form-slots h-12mm">
-          <div className="col-6">
-            <div className="form-slot me-1">
-              <p className="mb-1">
+       <div className={classNames(style["row"], style["equal-form-slots"],style["h-12mm"])}>
+          <div className={style["col-6"]}>
+           <div className={classNames(style["form-slot"], style["me-1"])}>
+              <p className={style["mb-1"]}>
                 Veículo oriundo de guincho/plataforma: ( &nbsp; ) Sim &nbsp; (
                 &nbsp; ) Nao
               </p>
@@ -535,23 +538,23 @@ const getData = () => {
               guardar &nbsp; ( &nbsp; ) No veículo
             </div>
           </div>
-          <div className="col-6">
-            <div className="form-slot">
+          <div className={style["col-6"]}>
+            <div className={style["form-slot"]}>
               <label>Observações:</label>
             </div>
           </div>
         </div>
-        <div className="row smallest-gutters">
-          <div className="col-6 text-center">
-            <div className="form-slot p-2 me-1">
-              <div className="text-justify ls-05">
+       <div className={classNames(style.row, style["smallest-gutters"])}>
+         <div className={classNames(style["col-6"], style["text-center"])}>
+           <div className={classNames(style["form-slot"], style["p-2"], style["me-1"])}>
+             <div className={classNames(style["text-justify"], style["ls-05"])}>
                 Declaro ter deixado o veículo nas condições informadas nesta
                 folha de inspeção.
               </div>
-              <p className="my-5">
+              <p className={style["my-5"]}>
                 Data: ____ / ____ /________ &nbsp; Hora: ____ : ____
               </p>
-              <span className="signature px-4 small">
+             <span className={classNames(style.signature, style["px-4"], style.small)}>
                 <div>
                   <hr />
                 </div>
@@ -559,16 +562,16 @@ const getData = () => {
               </span>
             </div>
           </div>
-          <div className="col-6 text-center">
-            <div className="form-slot p-2" style={{ height: "100%" }}>
-              <div className="text-justify ls-05">
+         <div className={classNames(style["col-6"], style["text-center"])}>
+           <div className={classNames(style["form-slot"], style["p-2"])} style={{ height: "100%" }}>
+              <div className={classNames(style["text-justify"], style["ls-05"])}>
                 Declaro ter retirado o veículo nas condições informadas nesta
                 folha de inspeção.
               </div>
-              <p className="my-5">
+              <p className={style["my-5"]}>
                 Data: ____ / ____ /________ &nbsp; Hora: ____ : ____
               </p>
-              <span className="signature px-4 small">
+              <span className={classNames(style.signature, style["px-4"], style.small)}>
                 <div>
                   <hr />
                 </div>
@@ -579,19 +582,19 @@ const getData = () => {
         </div>
 
         {/* seção */}
-        <div className="icon-header p-1 text-white mt-1">
-          <div className="row">
-            <div className="col-auto">TIPO DE SERVIÇO</div>
-            <div className="col-auto">Revisão</div>
+       <div className={classNames(style["icon-header"], style["p-1"],style["text-white"],style["mt-1"])}>
+          <div className={style.row}>
+            <div className={style["col-auto"]}>TIPO DE SERVIÇO</div>
+            <div className={style["col-auto"]}>Revisão</div>
           </div>
         </div>
-        <div className="row align-items-start ls-05">
-          <div className="col-4 pe-1">
-            <div className="icon-header my-1">
+       <div className={classNames(style.row, style["align-items-start"],style["ls-05"])}>
+         <div className={classNames(style["col-4"], style["pe-1"])}>
+           <div className={classNames(style["icon-header"], style["my-1"])}>
               <span>PARTE INTERNA</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
-            <table className="table checks">
+           <table className={classNames(style.table, style.checks)}>
               <tbody>
                 <tr>
                   <td width={5}>
@@ -712,9 +715,10 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <div className="icon-header my-2">
+           <div 
+             className={classNames(style["icon-header"], style["my-2"])}>
               <span>PARTE EXTERNA</span>
-              <div className="icon">icon</div>
+              <div className={style["icon"]}>icon</div>
             </div>
             <table className="table checks">
               <tbody>
@@ -733,12 +737,13 @@ const getData = () => {
               </tbody>
             </table>
           </div>
-          <div className="col-4 px-2">
-            <div className="icon-header mb-1 mt-1">
+         <div className={classNames(style["col-4"], style["px-2"])}>
+           
+           <div className={classNames(style["icon-header"], style["mb-1"],  style["mt-1"])}>
               <span>COM O CAPÔ ABERTO</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
-            <table className="table checks">
+            <table className={classNames(style.table, style.checks)}>
               <tbody>
                 <tr>
                   <td width={5}>
@@ -776,7 +781,7 @@ const getData = () => {
                   </td>
                   <td>
                     Tensão da bateria. Encontrado:{" "}
-                    <span className="mx-10 px-5"></span>V •
+                   <span className={classNames(style["mx-10"], style["px-5"])}></span>V •
                   </td>
                 </tr>
                 <tr>
@@ -787,11 +792,12 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <div className="icon-header my-1">
+           <div
+             className={classNames(style["icon-header"], style["my-1"])}>
               <span>FLUÍDOS</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
-            <table className="table checks">
+            <table className={classNames(style.table, style.checks)}>
               <tbody>
                 <tr>
                   <td width={5}>
@@ -824,7 +830,7 @@ const getData = () => {
                   <td>
                     Fluído de transmissão automática
                     <br />
-                    <span className="smallest">
+                    <span className={style.smallest}>
                       (se equipado com vareta de inspeção)
                     </span>
                   </td>
@@ -837,11 +843,11 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <div className="icon-header my-1">
+           <div className={classNames(style["icon-header"], style["my-1"])}>
               <span>EMBAIXO DO VEÍCULO</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
-            <table className="table checks">
+           <table className={classNames(style.table, style.checks)}>
               <tbody>
                 <tr>
                   <td width={5}>
@@ -859,7 +865,7 @@ const getData = () => {
                   <td>
                     <TripleSquareCheck />
                   </td>
-                  <td className="smallest">
+                  <td className={style.smallest}>
                     Vazamentos de óleo, água, combustivel e/ou outros fluidos
                   </td>
                 </tr>
@@ -896,43 +902,43 @@ const getData = () => {
               </tbody>
             </table>
           </div>
-          <div className="col-4 ps-1">
-            <div className="icon-header my-1">
+         <div className={classNames(style["col-4"], style["ps-1"])}>
+           <div className={classNames(style["icon-header"], style["my-1"])}>
               <span>CALIBRAGEM DOS PNEUS •</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
 
-            <table className="table checks">
+           <table className={classNames(style["table"], style["checks"])}>
               <thead>
                 <tr>
                   <th></th>
-                  <th className="text-center">CALIBRADO</th>
+                  <th className={style["text-center"]}>CALIBRADO</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td width={105}>DIANTEIRO ESQUERDO:</td>
-                  <td className="text-end py-2">psi</td>
+                  <td className={classNames(style["text-end"], style["py-2"])}>psi</td>
                 </tr>
                 <tr>
                   <td width={105}>DIANTEIRO DIREITO:</td>
-                  <td className="text-end py-2">psi</td>
+                 <td className={classNames(style["text-end"], style["py-2"])}>psi</td>
                 </tr>
                 <tr>
                   <td width={105}>TRASEIRO ESQUERDO:</td>
-                  <td className="text-end py-2">psi</td>
+                  <td className={classNames(style["text-end"], style["py-2"])}>psi</td>
                 </tr>
                 <tr>
                   <td width={105}>TRASEIRO DIREITO:</td>
-                  <td className="text-end py-2">psi</td>
+                  <td className={classNames(style["text-end"], style["py-2"])}>psi</td>
                 </tr>
               </tbody>
             </table>
-            <div className="icon-header mb-1">
+           <div className={classNames(style["icon-header"], style["mb-1"])}>
               <span>FREIOS •</span>
-              <div className="icon">icon</div>
+              <div className={style.icon}>icon</div>
             </div>
-            <table className="table checks last-checks">
+           <table className={classNames(style.table, style.checks, style[" last-checks"])}>
               <thead>
                 <tr>
                   <th></th>
@@ -942,7 +948,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-center" width={40} rowSpan={5}>
+                  <td className={style["text-end"]} width={40} rowSpan={5}>
                     icon
                     <br />
                     PASTILHAS
@@ -966,7 +972,7 @@ const getData = () => {
                   <td>
                     TRAS. ESQUERDA:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>
@@ -977,7 +983,7 @@ const getData = () => {
                   <td>
                     TRAS. DIREITA:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>
@@ -986,7 +992,7 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <table className="table checks last-checks">
+           <table className={classNames(style.table,style.checks, style["last-checks"])}>
               <thead>
                 <tr>
                   <th></th>
@@ -996,7 +1002,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-center" width={40} rowSpan={5}>
+                  <td className={style["text-end"]} width={40} rowSpan={5}>
                     icon
                     <br />
                     DISCOS
@@ -1020,7 +1026,7 @@ const getData = () => {
                   <td>
                     TRAS. ESQUERDO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>
@@ -1031,7 +1037,7 @@ const getData = () => {
                   <td>
                     TRAS. DIREITO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>
@@ -1040,7 +1046,7 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <table className="table checks last-checks">
+           <table className={classNames(style.table, style.checks, style["last-checks"])}>
               <thead>
                 <tr>
                   <th></th>
@@ -1050,7 +1056,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-center" width={40} rowSpan={3}>
+                  <td className={style["text-end"]} width={40} rowSpan={3}>
                     icon
                     <br />
                     LONAS
@@ -1060,7 +1066,7 @@ const getData = () => {
                   <td>
                     TRAS. ESQUERDO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td width={5}>mm</td>
                   <td width={5}>
@@ -1071,7 +1077,7 @@ const getData = () => {
                   <td>
                     TRAS. DIREITO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>
@@ -1080,10 +1086,10 @@ const getData = () => {
                 </tr>
               </tbody>
             </table>
-            <table className="table checks last-checks">
+           <table className={classNames(style.table, style.checks, style["last-checks"])}>
               <tbody>
                 <tr>
-                  <td className="text-center" width={40} rowSpan={3}>
+                  <td className={style["text-end"]} width={40} rowSpan={3}>
                     icon
                     <br />
                     TAMBORES
@@ -1093,7 +1099,7 @@ const getData = () => {
                   <td>
                     TRAS. ESQUERDO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td width={5}>mm</td>
                   <td width={5}>
@@ -1104,7 +1110,7 @@ const getData = () => {
                   <td>
                     TRAS. DIREITO:
                     <br />
-                    <span className="smallest">(se aplicável)</span>
+                    <span className={style.smallest}>(se aplicável)</span>
                   </td>
                   <td>mm</td>
                   <td>

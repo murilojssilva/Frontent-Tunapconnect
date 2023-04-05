@@ -1,21 +1,3 @@
-.page {
-  width: 21cm;
-  min-height: 29.7cm;
-  max-height: 29.7cm;
-  padding: 1cm;
-  margin: 0 auto;
-  border: 1px #d3d3d3 solid;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  font-size: 0.64rem;
-
-  box-sizing: border-box;
-  color-adjust: exact !important;
-  -webkit-print-color-adjust: exact !important;
-  print-color-adjust: exact !important;
-}
-
 .bg-primary {
   background-color: #13618d !important;
 }
@@ -928,6 +910,32 @@
   font-weight: 900;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color-adjust: exact !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+body {
+  font-size: 0.64rem;
+  font-family: "Roboto", sans-serif;
+}
+
+.page {
+  width: 21cm;
+  min-height: 29.7cm;
+  max-height: 29.7cm;
+  padding: 1cm;
+  margin: 0 auto;
+  border: 1px #d3d3d3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
 .d-flex {
   display: flex;
 }
@@ -1176,64 +1184,60 @@ header > .row img {
   height: 6.8mm;
   min-height: 6.8mm;
 }
-/* 
+
 hr {
   border: none;
   border-bottom: thin solid #aaa;
-} */
-
-.tr {
-  
 }
 
-.table {
+table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.44rem;
   height: 1px;
 }
-.table.checks {
+table.checks {
   font-size: 0.5rem;
 }
-.table.checks .tr td {
+table.checks tr td {
   vertical-align: middle;
 }
-.table.checks .tr td:last-child {
+table.checks tr td:last-child {
   padding: 0.6mm 0.8mm;
 }
-.table.checks .tr:not(:last-child) td {
+table.checks tr:not(:last-child) td {
   border-bottom: 0.01mm solid #eee;
 }
-.table.checks.last-checks td {
+table.checks.last-checks td {
   padding: 0.4mm 0.8mm;
 }
-.table.checks.last-checks td[rowspan] {
+table.checks.last-checks td[rowspan] {
   border: none;
 }
-.table.checks.last-checks td:last-child {
+table.checks.last-checks td:last-child {
   padding: 0;
 }
-.table .tr {
+table tr {
   height: 100%;
 }
-.table td {
+table td {
   height: 100%;
 }
-.table td > div {
+table td > div {
   height: 100%;
 }
-.table.bordered td,
-.table.bordered th {
+table.bordered td,
+table.bordered th {
   border: thin solid #000;
   padding: 1px 2px;
 }
-.table.table-head th {
+table.table-head th {
   background-color: #ddd;
 }
-.table.cell-h-sm th,
-.table.cell-h-sm td {
+table.cell-h-sm th,
+table.cell-h-sm td {
   height: 4.3mm;
-} 
+}
 
 .square-check {
   display: inline-flex;
@@ -1271,7 +1275,7 @@ hr {
   display: inline-flex;
 }
 
-.figure img {
+figure img {
   max-width: 100%;
 }
 .equal-form-slots .form-slot {
