@@ -8,9 +8,9 @@ import toyota from '@/assets/images/toyota.png'
 import carrinho from '@/assets/images/carrinho.jpg'
 import Image from "next/image";
 // import style from "./styles.module.css";
-import style from '@/sass/styles/printInspection.module.scss'
-// import style from '@/sass/styles/print.module.scss'
-
+// import style from '@/sass/styles/printInspection.module.scss'
+import '@/sass/styles/printInspection.module.scss'
+import {localStyleCss} from "./style"
 
 const SquareCheck = ({ type = "success", checked = false }) => (
   <div className={`square-check bg-${type}`}>
@@ -168,7 +168,7 @@ const getData = () => {
         </div>
             <div className={style["col-35"]}>Toyota Ramires</div>
         </div>
-      </header >
+      </header>
       <div className={style["container-fluid"]}>
              <div className={classNames(style.row,style["my-2"],style["text-center"],style["fw-500"])}>
           <div className={style.col}>
@@ -187,7 +187,7 @@ const getData = () => {
         </div>
 
         <div className={classNames(style.row, style["mb-1"])}>
-         <div className={classNames(style['col-5'])} style={{ alignSelf: 'start'}}>
+          <div className={style["col-5"]}>
             <div className={classNames(style["form-slot"], style["me-2"])}>
               <label>Cliente:</label>
             </div>
