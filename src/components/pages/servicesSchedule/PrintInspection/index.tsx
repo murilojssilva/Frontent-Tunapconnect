@@ -4,17 +4,13 @@ import { apiCore } from "@/lib/api";
 import { Card, CardContent, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
-import toyota from '@/assets/images/toyota.png'
-import carrinho from '@/assets/images/carrinho.jpg'
-import Image from "next/image";
-// import style from "./styles.module.css";
 import style from '@/sass/styles/printInspection.module.scss'
-// import style from '@/sass/styles/print.module.scss'
+
 
 
 const SquareCheck = ({ type = "success", checked = false }) => (
-  <div className={`square-check bg-${type}`}>
-    <div className={checked && "checked"}></div>
+  <div className={classNames(style["square-check"],style[`bg-${type}`])}>
+    <div className={checked ? style.checked : ''}></div>
   </div>
 );
 
@@ -23,7 +19,7 @@ const TripleSquareCheck = ({
   second = { checked: false },
   third = { checked: false },
 }) => (
-  <div class="tripe-square-check">
+  <div className={style["tripe-square-check"]}>
     <SquareCheck checked={first.checked} />
     <SquareCheck type="warning" checked={second.checked} />
     <SquareCheck type="danger" checked={third.checked} />
@@ -254,7 +250,7 @@ const getData = () => {
                 </div>
                 <div className={classNames(style["row"], style["two-checkboxes"])}>
                   <div></div>
-                  <div className="checked"></div>
+                  <div className={style.checked}></div>
                 </div>
                 <div className={classNames(style["row"], style["two-checkboxes"])}>
                   <div></div>
@@ -308,7 +304,7 @@ const getData = () => {
                 </div>
                 <div className={classNames(style.row, style["two-checkboxes"])}>
                   <div></div>
-                  <div className="checked"></div>
+                  <div className={style.checked}></div>
                 </div>
                 <div className={classNames(style.row, style["two-checkboxes"])}>
                   <div></div>
@@ -317,7 +313,7 @@ const getData = () => {
                 <div className={style["blue-slots"]}>
                   <div></div>
                   <div>
-                    <div className="form-slot"></div>
+                   <div className={style["form-slot"]}></div>
                   </div>
                 </div>
 
@@ -332,14 +328,14 @@ const getData = () => {
           </div>
           <div className={style["col-7"]}>
            <div className={classNames(style["border-wrapper"], style["p-1"])}>
-              <div className="row">
-                <div className="col-7 pe-1">
-                  <figure className={style.figure,style["mb-10"]}>
-                    <img src="/images/carrinho.jpg" alt="" width= "100%" />
+              <div className={style.row}>
+                <div className={classNames(style["col-7"], style["pe-1"])}>
+                  <figure className={classNames(style.figure,style["mb-10"])}>
+                    <img src="/images/carrinho.jpg" alt="" />
                   </figure>
                  <table className={classNames(style["table-head"], style["border-1"],style["my-2"],style["cell-h-sm"])}>
                     <thead>
-                      <tr className={style["table-tr"]}>
+                      <tr >
                         <th>A=Amassado</th>
                         <th>R=Riscado</th>
                         <th>X=Quebrado</th>
@@ -388,9 +384,9 @@ const getData = () => {
                   </table>
                 </div>
                 <div className={style["col-5"]}>
-                 <table className={classNames(style["bordered"], style["table-head"],style["cell-h-sm"], style.table)}>
+                 <table className={classNames(style["bordered"], style["table-head"],style["cell-h-sm"])}>
                     <thead>
-                      <tr className={style["table-tr"], style.tr}>
+                      <tr>
                         <th>ltens Adicionais</th>
                         <th>Sim</th>
                         <th>Não</th>
@@ -398,13 +394,13 @@ const getData = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className={style["table-tr"], style.tr}>
+                      <tr >
                         <td>Tapete genuíno Toyota</td>
                         <td></td>
                         <td></td>
                         <td></td>
                       </tr>
-                      <tr className={style["table-tr"], style.tr}>
+                      <tr>
                         <td>Kit Multimídia / Sistema de áudio</td>
                         <td></td>
                         <td></td>
@@ -482,24 +478,12 @@ const getData = () => {
                         <td></td>
                         <td></td>
                       </tr>
-                      <tr>
+                      {/* <tr>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>
@@ -515,9 +499,9 @@ const getData = () => {
                   <div>
                     Assinatura Estofamento: <hr className={style["bottom-line"]} />
                   </div>
-                  <div>
+                  <div style={{marginBottom: "-8px"}}>
                     Cliente deseja trocar o veículo?
-                    <hr className={style["bottom-line"]} />
+                   <hr className={style["bottom-line"]} style={{paddingBottom: "-10px"}} />
                   </div>
                 </div>
               </div>
@@ -538,9 +522,12 @@ const getData = () => {
               guardar &nbsp; ( &nbsp; ) No veículo
             </div>
           </div>
-          <div className={style["col-6"]}>
-            <div className={style["form-slot"]}>
-              <label>Observações:</label>
+          <div className={style["col-6"]} >
+            <div className={style["form-slot"]} style={{maxHeight:'100%', paddingBottom: '14px'}}>
+             <label>Observações:</label>
+             <br />
+             <br />
+             <br />
             </div>
           </div>
         </div>
@@ -938,7 +925,7 @@ const getData = () => {
               <span>FREIOS •</span>
               <div className={style.icon}>icon</div>
             </div>
-           <table className={classNames(style.table, style.checks, style[" last-checks"])}>
+           <table className={classNames(style.table, style.checks, style["last-checks"])}>
               <thead>
                 <tr>
                   <th></th>
@@ -948,7 +935,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className={style["text-end"]} width={40} rowSpan={5}>
+                  <td className={style["text-center"]} width={40} rowSpan={5}>
                     icon
                     <br />
                     PASTILHAS
@@ -1002,7 +989,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className={style["text-end"]} width={40} rowSpan={5}>
+                  <td className={style["text-center"]} width={40} rowSpan={5}>
                     icon
                     <br />
                     DISCOS
@@ -1056,7 +1043,7 @@ const getData = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className={style["text-end"]} width={40} rowSpan={3}>
+                  <td className={style["text-center"]} width={40} rowSpan={3}>
                     icon
                     <br />
                     LONAS
@@ -1089,7 +1076,7 @@ const getData = () => {
            <table className={classNames(style.table, style.checks, style["last-checks"])}>
               <tbody>
                 <tr>
-                  <td className={style["text-end"]} width={40} rowSpan={3}>
+                  <td className={style["text-center"]} width={40} rowSpan={3}>
                     icon
                     <br />
                     TAMBORES

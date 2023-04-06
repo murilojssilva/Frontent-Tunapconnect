@@ -1,5 +1,5 @@
 {
-  "name": "testando_next13",
+  "name": "tunap",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/nprogress": "^0.2.0",
-    "sass": "^1.60.0"
+    "sass": "^1.60.0",
     "@types/react-signature-canvas": "^1.0.2"
   }
 }

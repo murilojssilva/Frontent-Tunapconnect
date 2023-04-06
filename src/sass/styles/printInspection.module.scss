@@ -117,11 +117,17 @@ $fWeights: (100, 300, 400, 500, 700, 900);
 //   font-family: "Roboto", sans-serif;
 // }
 
+.container-fluid {
+  width: "100%";
+}
+
 .page {
   width: 21cm;
-  min-height: 29.7cm;
-  max-height: 29.7cm;
-  padding: 1cm;
+  // min-height: 29.7cm;
+  // max-height: 29.7cm;
+  min-height: 31.7cm;
+  max-height: 31.7cm;
+  padding: 0.4cm 1cm;
   
   margin: 0 auto;
   border: 1px #d3d3d3 solid;
