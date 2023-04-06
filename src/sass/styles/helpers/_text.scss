@@ -1,7 +1,0 @@
-.print-checklist{
-  @each $weight in $fWeights {
-    .fw-#{$weight} {
-      font-weight: $weight !important;
-    }
-  }
-}
