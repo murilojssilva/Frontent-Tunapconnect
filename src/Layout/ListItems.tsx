@@ -43,7 +43,7 @@ const memuList:memuListProps = [
   },
   {
     path: '/checklist',
-    href: '/checklist/list',
+    href: '/checklist/10',
     component: <AccessTimeFilledOutlinedIcon />,
     title: 'Checklist'
   },
