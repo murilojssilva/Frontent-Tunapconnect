@@ -1,8 +1,8 @@
 export type ActionAlertsComponentProps = {
-  isOpen: boolean,
-  handleAlert: (value: boolean) => void,
+  isOpen: boolean
+  handleAlert: (value: boolean) => void
   title: string
-  type: 'error' | 'warning' | 'success',
+  type: 'error' | 'warning' | 'success'
   redirectTo?: string | undefined
 }
 

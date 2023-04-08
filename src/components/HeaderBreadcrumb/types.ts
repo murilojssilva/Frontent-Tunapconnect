@@ -1,6 +1,6 @@
 export type listBreadcrumb = {
   label: string
-  href: string,
+  href: string
 }
 export type HeaderBreadcrumbProps = {
   data: listBreadcrumb[]
@@ -8,5 +8,5 @@ export type HeaderBreadcrumbProps = {
 }
 
 interface TitleProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import 'dayjs/locale/pt-br';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { Box } from "@mui/material";
+import * as React from 'react'
+import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/pt-br'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { Box } from '@mui/material'
 
 type DateTimeInputProps = {
   dateSchedule: Dayjs | null
@@ -13,22 +13,21 @@ type DateTimeInputProps = {
 
 export function DataTimeInput({
   dateSchedule,
-  handleDateSchedule
+  handleDateSchedule,
 }: DateTimeInputProps) {
-
   return (
     <>
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-br'>
-      <Box >
-        <DateTimePicker
-          value={dateSchedule ?? dayjs(new Date())}
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+        <Box>
+          <DateTimePicker
+            value={dateSchedule ?? dayjs(new Date())}
             onChange={(newValue) => {
               handleDateSchedule(newValue)
             }}
-          slotProps={{ textField: { size: 'small' } }}
-        />
-      </Box>
-    </LocalizationProvider>
+            slotProps={{ textField: { size: 'small' } }}
+          />
+        </Box>
+      </LocalizationProvider>
     </>
-  );
+  )
 }

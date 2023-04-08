@@ -1,8 +1,9 @@
-import type { NextComponentType, NextPageContext } from "next"
-import type { Session } from "next-auth"
-import type { Router } from "next/router"
+import type { NextComponentType, NextPageContext } from 'next'
+import type { Session } from 'next-auth'
+import type { Router } from 'next/router'
 
-declare module "next/app" {
+declare module 'next/app' {
+  // eslint-disable-next-line no-unused-vars
   type AppProps<P = Record<string, unknown>> = {
     Component: NextComponentType<NextPageContext, any, P>
     router: Router

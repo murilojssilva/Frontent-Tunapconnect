@@ -1,37 +1,36 @@
-import { useState } from "react";
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useState } from 'react'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 // import Divider from "@mui/material/Divider";
 // import ListItemIcon from "@mui/material/ListItemIcon";
 // import { Settings } from "@mui/icons-material";
-import { MoreOptionsButtonSelectProps } from "./types";
-import { MenuItemButton } from "./styles";
+import { MoreOptionsButtonSelectProps } from './types'
+import { MenuItemButton } from './styles'
 
+const ITEM_HEIGHT = 38
 
-const ITEM_HEIGHT = 38;
+const options = ['Editar']
 
-
-const options = [
-  'Editar',
-];
-
-
-
-export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, buttons, disabledButton }:MoreOptionsButtonSelectProps) {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-    const handleButtonEdit = () => {
-      handleIsEditSelectedCard(typeEdit)
-      setAnchorEl(null);
-    }
+export function MoreOptionsButtonSelect({
+  handleIsEditSelectedCard,
+  typeEdit,
+  buttons,
+  disabledButton,
+}: MoreOptionsButtonSelectProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  const handleButtonEdit = () => {
+    handleIsEditSelectedCard(typeEdit)
+    setAnchorEl(null)
+  }
   return (
     <div>
       <IconButton
@@ -45,7 +44,7 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
       >
         <MoreVertIcon />
       </IconButton>
-          <Menu
+      <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -101,4 +100,3 @@ export function MoreOptionsButtonSelect({handleIsEditSelectedCard, typeEdit, but
     </div>
   )
 }
-
