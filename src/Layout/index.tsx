@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
       console.log('Unauthenticated')
       redirectRouter('/')
     }
-  }, [session])
+  }, [])
 
   return <>{session && <DashboardContent>{children}</DashboardContent>}</>
 }
