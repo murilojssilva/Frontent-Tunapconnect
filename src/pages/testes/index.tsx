@@ -1,4 +1,4 @@
-import { PrintInspection } from '../panel/service-schedules/components/PrintInspection'
+import { PrintInspection } from '../panel/service-schedules/create/components/PrintInspection'
 
 export default function testes() {
   return (

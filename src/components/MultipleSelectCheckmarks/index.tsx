@@ -34,7 +34,6 @@ export function MultipleSelectCheckmarks({
     const {
       target: { value },
     } = event
-    // console.log(value)
     setChecked(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,

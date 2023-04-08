@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { parseCookies, setCookie } from 'nookies'
 import { useQuery } from 'react-query'
 import { ApiCore } from '@/lib/api'
+import { useSession } from 'next-auth/react'
 
 type CompanyProps = {
   id: number
@@ -28,20 +29,18 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
 
   const router = useRouter()
   const api = new ApiCore()
+  const { status } = useSession()
 
   const { data: company } = useQuery<CompanyProps | null>(
     ['campanyContext', companyId],
     async () => {
       const response = await api.get(`/company/${companyId}`)
-      console.log(response.data.data)
       return response.data.data
     },
     {
-      enabled: companyId !== null,
+      enabled: status === 'authenticated' && !!companyId,
     },
   )
-
-  // console.log(data)
 
   async function createCompany(newCompany: CompanyProps) {
     setCompanyId(String(newCompany?.id))
@@ -61,13 +60,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
         )
       ) {
         setCompanyId(cookies['@tunapconnect:company'])
-        // setCompany({
-        //   id: cookies['@tunapconnect:company'],
-        // })
       }
-      // else {
-      //   await router.push('/painel/company')
-      // }
     }
     isCookies()
   }, [])

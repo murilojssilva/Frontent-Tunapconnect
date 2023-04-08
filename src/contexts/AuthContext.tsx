@@ -49,9 +49,12 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
     }
   }
 
+  console.log('auth', session)
+
   useEffect(() => {
     getSession()
       .then((session) => {
+        console.log('session effect', session)
         if (session) {
           setUser({
             id: session?.user?.id,
@@ -63,7 +66,7 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
       .catch((error) => {
         console.log(error)
       })
-  }, [])
+  }, [session])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>

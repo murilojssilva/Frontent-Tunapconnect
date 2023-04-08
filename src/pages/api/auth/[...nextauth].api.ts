@@ -5,6 +5,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 60 * 60 * 1, // 1 hour
   },
   jwt: {
     secret: process.env.JWT_SIGNIN_PRIVATE_KEY,
@@ -41,17 +42,14 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      // console.log('-----', token)
       return {
         ...token,
         ...user,
       }
     },
     async session({ session, token, user }) {
-      // console.log(token)
       session.user = token as any
-      session.expires = token.exp as string
-      // console.log(session)
+      // session.expires = token.exp as string
       return session
     },
     // async redirect({ url, baseUrl }) {

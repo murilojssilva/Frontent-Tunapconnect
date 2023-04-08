@@ -3,8 +3,7 @@ import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
 import Container from '@mui/material/Container'
-import { getSession } from 'next-auth/react'
-import { GetServerSideProps } from 'next/types'
+import { GetServerSidePropsContext } from 'next/types'
 
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -54,7 +53,9 @@ import { DataTimeInput } from '@/components/DataTimeInput'
 import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
-import { TableModal } from '../components/TableModal'
+import { TableModal } from '../create/components/TableModal'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 
 const api = new ApiCore()
 
@@ -164,7 +165,6 @@ export default function ServiceSchedulesEdit() {
         '/service-schedule/' + router.query.id,
         dataFormatted,
       )
-      // console.log(respUpdate)
       setIsEditSelectedCard(null)
       setActionAlerts({
         isOpen: true,
@@ -183,12 +183,9 @@ export default function ServiceSchedulesEdit() {
   useEffect(() => {
     if (!wasEdited) {
       const { id } = router.query
-      // console.log(id)
       api
         .get(`/service-schedule/${id}`)
         .then((response) => {
-          // console.log(response.data);
-
           const {
             client,
             client_vehicle,
@@ -217,7 +214,6 @@ export default function ServiceSchedulesEdit() {
             plate: client_vehicle?.plate ?? 'Não informado',
           })
           const promisedDate = dayjs(new Date(promised_date))
-          // console.log(dayjs(promisedDate))
           setVisitDate(promisedDate)
 
           setTechnicalConsultant({
@@ -241,7 +237,6 @@ export default function ServiceSchedulesEdit() {
         api
           .get(`/technical-consultant?company_id=${company?.id}`)
           .then((resp) => {
-            // console.log(resp)
             setTechnicalConsultantsList(
               resp.data.data.map((item: TechnicalConsultant) => ({
                 id: item.id,
@@ -723,9 +718,8 @@ export default function ServiceSchedulesEdit() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
-
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions)
   if (!session?.user?.token) {
     return {
       redirect: {
@@ -735,6 +729,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   }
   return {
-    props: {},
+    props: {
+      session,
+    },
   }
 }

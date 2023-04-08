@@ -31,6 +31,9 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from 'react-query'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/pages/api/auth/[...nextauth].api'
+import { GetServerSidePropsContext } from 'next/types'
 
 type SearchFormProps = {
   search: string
@@ -85,7 +88,6 @@ export default function ServiceSchedulesList() {
 
   function handlePages(nextPage: any): void {
     setPages(nextPage)
-    // console.log('func handlePages', nextPage)
   }
 
   const columns: GridColDef[] = [
@@ -207,7 +209,6 @@ export default function ServiceSchedulesList() {
         totalDiscount: 0,
         total: 0,
       }))
-      console.log(resp)
       return resp
     },
     { enabled: !!company?.id },
@@ -243,7 +244,6 @@ export default function ServiceSchedulesList() {
   //       })
   //   }
   // }, [router])
-  console.log(isFetching)
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -331,4 +331,21 @@ export default function ServiceSchedulesList() {
       </Grid>
     </Container>
   )
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions)
+  if (!session?.user?.token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+  return {
+    props: {
+      session,
+    },
+  }
 }

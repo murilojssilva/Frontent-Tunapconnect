@@ -54,7 +54,7 @@ import { DataTimeInput } from '@/components/DataTimeInput'
 import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
-import { TableModal } from '../components/TableModal'
+import { TableModal } from './components/TableModal'
 
 const api = new ApiCore()
 
@@ -164,7 +164,6 @@ export default function ServiceSchedulesEdit() {
         '/service-schedule/' + router.query.id,
         dataFormatted,
       )
-      // console.log(respUpdate)
       setIsEditSelectedCard(null)
       setActionAlerts({
         isOpen: true,
@@ -183,12 +182,9 @@ export default function ServiceSchedulesEdit() {
   useEffect(() => {
     if (!wasEdited) {
       const { id } = router.query
-      // console.log(id)
       api
         .get(`/service-schedule/${id}`)
         .then((response) => {
-          // console.log(response.data);
-
           const {
             client,
             client_vehicle,
@@ -217,7 +213,6 @@ export default function ServiceSchedulesEdit() {
             plate: client_vehicle?.plate ?? 'Não informado',
           })
           const promisedDate = dayjs(new Date(promised_date))
-          // console.log(dayjs(promisedDate))
           setVisitDate(promisedDate)
 
           setTechnicalConsultant({
@@ -241,7 +236,6 @@ export default function ServiceSchedulesEdit() {
         api
           .get(`/technical-consultant?company_id=${company?.id}`)
           .then((resp) => {
-            // console.log(resp)
             setTechnicalConsultantsList(
               resp.data.data.map((item: TechnicalConsultant) => ({
                 id: item.id,
