@@ -53,9 +53,12 @@ import { DataTimeInput } from '@/components/DataTimeInput'
 import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
-import { TableModal } from '../create/components/TableModal'
+
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
+
+import { PrintInspectionModal } from './components/PrintInspectionModal'
+import { TableModal } from './components/TableModal'
 
 const api = new ApiCore()
 
@@ -107,6 +110,8 @@ export default function ServiceSchedulesEdit() {
   // const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
 
   const [openChecklistModal, setOpenChecklistModal] = useState(false)
+  const [openPrintInspectionModal, setOpenPrintInspectionModal] =
+    useState(false)
 
   const router = useRouter()
 
@@ -117,6 +122,9 @@ export default function ServiceSchedulesEdit() {
   // }
   const closeChecklistModal = () => {
     setOpenChecklistModal(false)
+  }
+  const closePrintInspectionModalModal = () => {
+    setOpenPrintInspectionModal(false)
   }
 
   function handleIsEditSelectedCard(value: isEditSelectedCardType) {
@@ -227,7 +235,7 @@ export default function ServiceSchedulesEdit() {
           setTechnicalConsultant(null)
           setActionAlerts({
             isOpen: true,
-            title: `${err.response.data.msg ?? 'Error inesperado'}!`,
+            title: `${err.response?.data?.msg ?? 'Error inesperado'}!`,
             type: 'error',
             redirectTo: '/service-schedules/list',
           })
@@ -478,7 +486,12 @@ export default function ServiceSchedulesEdit() {
               <ButtonLeft onClick={() => setOpenChecklistModal(true)}>
                 Listar Checklists
               </ButtonLeft>
-              <ButtonCenter>
+              <ButtonCenter
+                onClick={() => {
+                  console.log('print Checklists')
+                  setOpenPrintInspectionModal(true)
+                }}
+              >
                 <PrintIcon />
               </ButtonCenter>
               <ButtonRight startIcon={<AddCircleOutlineIcon />}>
@@ -713,6 +726,10 @@ export default function ServiceSchedulesEdit() {
         isOpen={openChecklistModal}
         title="Lista de checklists"
         closeChecklistModal={closeChecklistModal}
+      />
+      <PrintInspectionModal
+        isOpen={openPrintInspectionModal}
+        closeModal={closePrintInspectionModalModal}
       />
     </Container>
   )

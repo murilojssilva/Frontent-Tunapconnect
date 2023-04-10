@@ -77,9 +77,9 @@ export function TableModal({
       field: 'createAt',
       headerName: 'Data',
       headerClassName: 'super-app-theme--header',
-      flex: 1,
+      // flex: 1,
       maxWidth: 220,
-      minWidth: 80,
+      minWidth: 220,
       sortable: false,
     },
     {
@@ -111,7 +111,7 @@ export function TableModal({
     closeChecklistModal()
   }
 
-  const router = useRouter()
+  // const router = useRouter()
 
   const apiRef = useGridApiRef()
   // console.log('rowsData', rowsData)
@@ -160,9 +160,9 @@ export function TableModal({
       >
         <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
         <DialogContent
-          sx={{
-            width: 400,
-          }}
+        // sx={{
+        //   width: 400,
+        // }}
         >
           <BoxContainer>
             <TableDataGrid
@@ -188,7 +188,7 @@ export function TableModal({
               }}
               loading={false}
               onRowClick={(id) => {
-                router.push(`/service-schedules/${id.id}`)
+                // router.push(`/service-schedules/${id.id}`)
               }}
               pageSizeOptions={[7]}
               disableRowSelectionOnClick

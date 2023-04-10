@@ -1,5 +1,5 @@
 // import { ApiCore } from '@/lib/api'
-import { useEffect } from 'react'
+import { Ref, useEffect } from 'react'
 import classNames from 'classnames'
 import style from '@/sass/styles/printInspection.module.scss'
 
@@ -26,6 +26,7 @@ export function PrintInspection(props: {
   id: number
   type: string
   checklistId: number
+  refPrint: any
 }) {
   // export function PrintInspection(props) {
 
@@ -143,7 +144,7 @@ export function PrintInspection(props: {
   }, [props?.checklistId])
 
   return (
-    <div className={classNames(style.page)}>
+    <div className={classNames(style.page)} ref={props.refPrint}>
       <header>
         <div className={style.row}>
           <div
