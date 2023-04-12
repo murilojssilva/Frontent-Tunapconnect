@@ -1,5 +1,5 @@
 // import { ApiCore } from '@/lib/api'
-import { Ref, useEffect } from 'react'
+import { useEffect } from 'react'
 import classNames from 'classnames'
 import style from '@/sass/styles/printInspection.module.scss'
 

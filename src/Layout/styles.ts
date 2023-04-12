@@ -1,12 +1,6 @@
 import { alpha, styled } from '@mui/material/styles'
-import IconButton from '@mui/material/IconButton'
-import ListItemB from '@mui/material/ListItemButton'
-import { colors } from '@mui/material'
 
-const myColors = {
-  background: '#1C4961',
-  white: '#FFFFFF',
-}
+import ListItemB from '@mui/material/ListItemButton'
 
 export const ListItemButton = styled(ListItemB)(({ theme }) => ({
   color: '#1C4961',

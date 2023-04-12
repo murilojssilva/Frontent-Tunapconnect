@@ -1,6 +1,6 @@
 import { Grid, IconButton, Typography } from '@mui/material'
 
-import { useFieldArray, useForm } from 'react-hook-form'
+// import { useFieldArray, useForm } from 'react-hook-form'
 import {
   // ButtonItemChecklist,
   GridItem,
@@ -18,20 +18,20 @@ type TabContentProps = {
 }
 
 export function TabContent({ stageData }: TabContentProps) {
-  console.log(stageData)
-  const { control, register, handleSubmit } = useForm()
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: 'test', // unique name for your Field Array
-    },
-  )
+  // console.log(stageData)
+  // const { control, register, handleSubmit } = useForm()
+  // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+  //   {
+  //     control, // control props comes from useForm (optional: if you are using FormContext)
+  //     name: 'test', // unique name for your Field Array
+  //   },
+  // )
 
   return (
     <Grid
       container
       component="form"
-      onSubmit={handleSubmit((data) => console.log(data))}
+      // onSubmit={handleSubmit((data) => console.log(data))}
     >
       {stageData.map((item, index) => {
         return (

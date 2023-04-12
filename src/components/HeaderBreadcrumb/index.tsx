@@ -7,9 +7,9 @@ import Link from 'next/link'
 import { HeaderBreadcrumbProps } from './types'
 import Title from '../Title'
 
-function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  event.preventDefault()
-}
+// function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+//   event.preventDefault()
+// }
 
 export default function HeaderBreadcrumb({
   data,
