@@ -494,7 +494,12 @@ export default function ServiceSchedulesEdit() {
               >
                 <PrintIcon />
               </ButtonCenter>
-              <ButtonRight startIcon={<AddCircleOutlineIcon />}>
+              <ButtonRight
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={async () =>
+                  await router.push('/panel/checklist/create')
+                }
+              >
                 Novo
               </ButtonRight>
             </Stack>
