@@ -12,16 +12,12 @@ export default function Layout({ children }: LayoutProps) {
 
   const router = useRouter()
 
-  console.log(status)
-  console.log(session)
-
   useEffect(() => {
     const redirectRouter = async (pathname = '/') => {
       await router.push(pathname)
     }
 
     if (status === 'unauthenticated') {
-      console.log('Unauthenticated')
       redirectRouter('/')
     }
   }, [])

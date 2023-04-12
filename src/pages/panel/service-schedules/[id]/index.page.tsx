@@ -725,6 +725,7 @@ export default function ServiceSchedulesEdit() {
       <TableModal
         isOpen={openChecklistModal}
         title="Lista de checklists"
+        serviceScheduleId={router?.query?.id}
         closeChecklistModal={closeChecklistModal}
       />
       <PrintInspectionModal

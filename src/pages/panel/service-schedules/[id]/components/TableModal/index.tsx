@@ -7,7 +7,6 @@ import {
   useGridApiRef,
 } from '@mui/x-data-grid'
 
-import { useRouter } from 'next/router'
 import { BoxContainer, TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
@@ -31,6 +30,7 @@ interface TableAppProps {
   // loading: boolean
   isOpen: boolean
   title: string
+  serviceScheduleId: string
   closeChecklistModal: () => void
 }
 
@@ -55,6 +55,7 @@ export function TableModal({
   isOpen,
   title,
   closeChecklistModal,
+  serviceScheduleId,
 }: TableAppProps) {
   const [rows, setRows] = useState<RowsProps[]>([])
   const [open, setOpen] = React.useState(false)
@@ -142,7 +143,9 @@ export function TableModal({
     if (isOpen) {
       setOpen(true)
       api
-        .get('/checklist/list/?company_id=' + company?.id)
+        .get(
+          `checklist/list/?company_id=${company?.id}&service_schedule_id=${serviceScheduleId}`,
+        )
         .then((response) => console.log(response.data))
         .catch((error) => console.log(error))
     }

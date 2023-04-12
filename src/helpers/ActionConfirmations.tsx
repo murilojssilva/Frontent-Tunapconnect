@@ -19,8 +19,6 @@ export function ActionDeleteConfirmations(
     cancelButtonText: 'Cancelar',
   }).then(async (result) => {
     if (result.isConfirmed) {
-      //  const resp = await api.delete('/service-schedule/' + id)
-      //   console.log('respostar', resp.response.data)
       try {
         const resp = await api.delete('/service-schedule/' + id)
         if (resp?.status === 200) {
