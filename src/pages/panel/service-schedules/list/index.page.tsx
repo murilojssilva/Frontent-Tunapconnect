@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import Container from '@mui/material/Container'
 
@@ -17,8 +17,8 @@ import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
 
 import { ButtonAdd, ButtonIcon } from './style'
-// import { ServiceSchedulesListProps } from '@/types/service-schedule'
-// import { ApiCore } from '@/lib/api'
+import { ServiceSchedulesListProps } from '@/types/service-schedule'
+import { ApiCore } from '@/lib/api'
 import IconButton from '@mui/material/IconButton'
 import { Delete } from '@mui/icons-material'
 
@@ -26,11 +26,11 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations'
 import { useRouter } from 'next/router'
 import { TableApp } from '@/components/TableApp'
-// import { CompanyContext } from '@/contexts/CompanyContext'
+import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-// import { useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSidePropsContext } from 'next/types'
@@ -44,7 +44,7 @@ type SearchFormProps = {
 // }
 
 // eslint-disable-next-line new-cap
-// const api = new ApiCore()
+const api = new ApiCore()
 
 const HeaderBreadcrumbData: listBreadcrumb[] = [
   {
@@ -64,7 +64,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  // const { company } = useContext(CompanyContext)
+  const { company } = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -191,28 +191,28 @@ export default function ServiceSchedulesList() {
     },
   ]
 
-  // const { data: rows, isFetching } = useQuery<ServiceSchedulesListProps[] | []>(
-  //   ['service-scheduler-list', company?.id],
-  //   async () => {
-  //     const response = await api.get(
-  //       `/service-schedule?company_id=${company?.id}&limit=2&page=2`,
-  //     )
+  const { data: rows, isFetching } = useQuery<ServiceSchedulesListProps[] | []>(
+    ['service-scheduler-list', company?.id],
+    async () => {
+      const response = await api.get(
+        `/service-schedule?company_id=${company?.id}&limit=2&page=2`,
+      )
 
-  //     const resp = response.data.data.map((data: any) => ({
-  //       id: data?.id ?? 'Não informado',
-  //       client: data?.client?.name ?? 'Não informado',
-  //       plate: data?.client_vehicle?.plate ?? 'Não informado',
-  //       chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-  //       technical_consultant:
-  //         data?.technical_consultant?.name ?? 'Não informado',
-  //       typeEstimate: 'não definido',
-  //       totalDiscount: 0,
-  //       total: 0,
-  //     }))
-  //     return resp
-  //   },
-  //   { enabled: !!company?.id },
-  // )
+      const resp = response.data.data.map((data: any) => ({
+        id: data?.id ?? 'Não informado',
+        client: data?.client?.name ?? 'Não informado',
+        plate: data?.client_vehicle?.plate ?? 'Não informado',
+        chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+        technical_consultant:
+          data?.technical_consultant?.name ?? 'Não informado',
+        typeEstimate: 'não definido',
+        totalDiscount: 0,
+        total: 0,
+      }))
+      return resp
+    },
+    { enabled: !!company?.id },
+  )
 
   // useEffect(() => {
   //   setLoadingData(true)
@@ -322,12 +322,10 @@ export default function ServiceSchedulesList() {
         <Grid item xs={12}>
           <TableApp
             columns={columns}
-            rowsData={[]}
-            // rowsData={rows || []}
+            rowsData={rows || []}
             handlePages={handlePages}
             pages={pages}
-            loading={false}
-            // loading={isFetching}
+            loading={isFetching}
           />
         </Grid>
       </Grid>
