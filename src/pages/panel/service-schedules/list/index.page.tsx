@@ -221,7 +221,7 @@ export default function ServiceSchedulesList() {
   //       .get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
   //       .then((response) => {
   //         const resp = response.data.data
-  //         setRows(
+  //         setRows(`
   //           resp.map((data: any) => ({
   //             id: data?.id ?? 'Não informado',
   //             client: data?.client?.name ?? 'Não informado',

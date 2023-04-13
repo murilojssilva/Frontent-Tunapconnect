@@ -11,9 +11,10 @@ import createEmotionServer from '@emotion/server/create-instance'
 import { AppType } from 'next/app'
 import theme, { roboto } from '@/styles/config/theme'
 import createEmotionCache from '@/styles/config/createEmotionCache'
-import { MyAppProps } from './_app'
+import { MyAppProps } from './_app.page'
 
 interface MyDocumentProps extends DocumentProps {
+  // eslint-disable-next-line no-undef
   emotionStyleTags: JSX.Element[]
 }
 
