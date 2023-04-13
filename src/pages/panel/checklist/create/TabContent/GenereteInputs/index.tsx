@@ -3,11 +3,23 @@ import { FieldValues, UseFormRegister } from 'react-hook-form'
 import { Value } from '../types'
 import { ButtonItemChecklist } from './styles'
 
+type registerInputProps = {
+  register: UseFormRegister<FieldValues>
+  nameRegister: string
+  indexRegister: number
+}
+
 type InputButtonProps = {
   labelName: string
+  register: UseFormRegister<FieldValues>
+  nameRegister: string
+  indexRegister: number
 }
 type InputSelectProps = {
   opts: string[] | []
+  register: UseFormRegister<FieldValues>
+  nameRegister: string
+  indexRegister: number
 }
 
 function InputButton({ labelName }: InputButtonProps) {
@@ -17,19 +29,60 @@ function InputButton({ labelName }: InputButtonProps) {
     </ButtonItemChecklist>
   )
 }
-function InputSwitch() {
-  return <Switch defaultChecked={false} />
-}
-function InputText() {
-  return <TextField type="text" fullWidth size="small" />
-}
-function InputNumber() {
-  return <TextField type="number" fullWidth size="small" />
-}
-function InputSelect({ opts }: InputSelectProps) {
-  console.log(opts)
+function InputSwitch({
+  register,
+  nameRegister,
+  indexRegister,
+}: registerInputProps) {
   return (
-    <TextField select fullWidth size="small" defaultValue="">
+    <Switch
+      defaultChecked={false}
+      {...register(`${nameRegister}.${indexRegister}.col-1-boolean`)}
+    />
+  )
+}
+function InputText({
+  register,
+  nameRegister,
+  indexRegister,
+}: registerInputProps) {
+  return (
+    <TextField
+      type="text"
+      fullWidth
+      size="small"
+      {...register(`${nameRegister}.${indexRegister}.col-1-text`)}
+    />
+  )
+}
+function InputNumber({
+  register,
+  nameRegister,
+  indexRegister,
+}: registerInputProps) {
+  return (
+    <TextField
+      type="number"
+      fullWidth
+      size="small"
+      {...register(`${nameRegister}.${indexRegister}.col-1-number`)}
+    />
+  )
+}
+function InputSelect({
+  opts,
+  indexRegister,
+  nameRegister,
+  register,
+}: InputSelectProps) {
+  return (
+    <TextField
+      select
+      fullWidth
+      size="small"
+      defaultValue=""
+      {...register(`${nameRegister}.${indexRegister}.col-1-select`)}
+    >
       {opts.map((option, index) => (
         <MenuItem key={Math.random() * 20000 + index} value={option}>
           {option}
@@ -40,26 +93,66 @@ function InputSelect({ opts }: InputSelectProps) {
 }
 
 export function genereteInput(
-  name: string,
   type: string,
-  itemValues?: Value,
-  register?: UseFormRegister<FieldValues>,
+  itemValues: Value,
+  register: UseFormRegister<FieldValues>,
+  nameRegister: string,
+  indexRegister: number,
 ) {
   const optionsSelect = itemValues ? itemValues?.options : []
 
   switch (type) {
     case 'number':
-      return <InputNumber />
+      return (
+        <InputNumber
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
     case 'text':
-      return <InputText />
+      return (
+        <InputText
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
     case 'select':
-      return <InputSelect opts={optionsSelect || []} />
+      return (
+        <InputSelect
+          opts={optionsSelect || []}
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
     case 'boolean':
-      return <InputSwitch />
+      return (
+        <InputSwitch
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
     case 'visual_inspect':
-      return <InputButton labelName={name} />
+      return (
+        <InputButton
+          labelName="inspeção"
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
     case 'signature':
-      return <InputButton labelName={'assinatura'} />
+      return (
+        <InputButton
+          labelName={'assinatura'}
+          indexRegister={indexRegister}
+          register={register}
+          nameRegister={nameRegister}
+        />
+      )
 
     default:
       return null

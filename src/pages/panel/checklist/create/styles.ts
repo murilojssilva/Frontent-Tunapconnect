@@ -1,4 +1,12 @@
-import { Box, Grid, OutlinedInput, Tab, Tabs, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Grid,
+  OutlinedInput,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import Badge, { BadgeProps } from '@mui/material/Badge'
 import CropOriginalIcon from '@mui/icons-material/CropOriginal'
@@ -34,16 +42,16 @@ export const TabsContainer = styled(Tabs)(({ theme }) => ({
   },
 }))
 
-// export const ButtonItemChecklist = styled(Button)(({ theme }) => ({
-//   background: '#1ACABA',
-//   color: '#fff',
-//   borderRadius: 6,
+export const ButtonSave = styled(Button)(({ theme }) => ({
+  background: '#1ACABA',
+  color: '#fff',
+  borderRadius: 6,
 
-//   '&:hover': {
-//     background: alpha('#1ACABA', 0.4),
-//     // color: '#FFFFFF',
-//   },
-// }))
+  '&:hover': {
+    background: alpha('#1ACABA', 0.4),
+    // color: '#FFFFFF',
+  },
+}))
 
 export const GridItem = styled(Grid)(({ theme }) => ({
   borderBottom: '1px solid #E5E5E5',

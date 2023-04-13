@@ -10,6 +10,8 @@ import Box from '@mui/material/Box'
 import { TabItem, TabsContainer } from './styles'
 import { TabContent } from './TabContent'
 import { ApiCore } from '@/lib/api'
+import { ChecklistProps } from './TabContent/types'
+import { StageDataProps } from '../types'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -42,7 +44,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function ServiceSchedulesList() {
   const [value, setValue] = useState(0)
-  // const [data, setData] = useState([])
+  const [data, setData] = useState<ChecklistProps>()
   const [stages, setStages] = useState<
     Array<{
       name: string
@@ -50,6 +52,16 @@ export default function ServiceSchedulesList() {
     }>
   >([])
   // const [stageData, setStageData] = useState([])
+
+  // function handleCreateCheckList(data) {}
+  function handleAddListCheckList(data: StageDataProps) {
+    setData((prevState) => {
+      return {
+        ...prevState,
+        stages: [...prevState?.stages, data],
+      }
+    })
+  }
 
   const api = new ApiCore()
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -60,7 +72,10 @@ export default function ServiceSchedulesList() {
     api.get('/checklist/25?company_id=2').then((response) => {
       const { data } = response.data
       // console.log(data)
-      // setData(data.stages.name)
+      setData({
+        ...data,
+        stages: [],
+      })
       setStages(data.stages)
     })
   }, [])
@@ -98,9 +113,6 @@ export default function ServiceSchedulesList() {
                       />
                     )
                   })}
-                {/* <TabItem label="Item One" {...a11yProps(0)} />
-                <TabItem label="Item Two" {...a11yProps(1)} />
-                <TabItem label="Item Three" {...a11yProps(2)} /> */}
               </TabsContainer>
             </Box>
             {stages.length > 0 &&
@@ -111,328 +123,14 @@ export default function ServiceSchedulesList() {
                     value={value}
                     index={index}
                   >
-                    <TabContent stageData={stage.itens} />
+                    <TabContent
+                      stageData={stage.itens}
+                      stageName={stage.name}
+                      handleAddListCheckList={handleAddListCheckList}
+                    />
                   </TabPanel>
                 )
               })}
-            {/* <TabPanel value={value} index={0}>
-              <Grid container>
-                <GridItem container>
-                  <Grid
-                    item
-                    xs={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                      width: '100%',
-                    }}
-                    height="50px"
-                  >
-                    <ButtonItemChecklist
-                      color="primary"
-                      size="small"
-                      type="submit"
-                      variant="contained"
-                    >
-                      Inspeção
-                    </ButtonItemChecklist>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <Typography>Inspeção visual - TOYOTA</Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={1}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      size="small"
-                    >
-                      <input hidden accept="image/*" type="file" />
-                      <ImageUploadBadge badgeContent={4} color="warning">
-                        <ImageUploadImg />
-                      </ImageUploadBadge>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    alignItems="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <InputContainer>
-                      <InputLabelRow>Observação:</InputLabelRow>
-                      <InputText
-                        placeholder="Anotações..."
-                        size="small"
-                        fullWidth
-                      />
-                    </InputContainer>
-                  </Grid>
-                </GridItem>
-                <GridItem container>
-                  <Grid
-                    item
-                    xs={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                      width: '100%',
-                    }}
-                    height="50px"
-                  >
-                    <Switch defaultChecked />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <Typography>Cliente acompanha inspeção?</Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={1}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      size="small"
-                    >
-                      <input hidden accept="image/*" type="file" />
-                      <ImageUploadBadge badgeContent={2} color="warning">
-                        <ImageUploadImg />
-                      </ImageUploadBadge>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    alignItems="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <InputContainer>
-                      <InputLabelRow>Observação:</InputLabelRow>
-                      <InputText
-                        placeholder="Anotações..."
-                        size="small"
-                        fullWidth
-                      />
-                    </InputContainer>
-                  </Grid>
-                </GridItem>
-                <GridItem container>
-                  <Grid
-                    item
-                    xs={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                      width: '100%',
-                    }}
-                    height="50px"
-                  >
-                    <TextField select fullWidth size="small">
-                      <MenuItem value={10}>Reserva 1</MenuItem>
-                      <MenuItem value={20}>Reserva 2</MenuItem>
-                      <MenuItem value={30}>Reserva 3</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <Typography>Cliente acompanha inspeção?</Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={1}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      size="small"
-                    >
-                      <input hidden accept="image/*" type="file" />
-                      <ImageUploadBadge badgeContent={2} color="warning">
-                        <ImageUploadImg />
-                      </ImageUploadBadge>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    alignItems="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <InputContainer>
-                      <InputLabelRow>Observação:</InputLabelRow>
-                      <InputText
-                        placeholder="Anotações..."
-                        size="small"
-                        fullWidth
-                      />
-                    </InputContainer>
-                  </Grid>
-                </GridItem>
-                <GridItem container>
-                  <Grid
-                    item
-                    xs={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                      width: '100%',
-                    }}
-                    height="50px"
-                  >
-                    <TextField fullWidth size="small" />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <Typography>Cliente acompanha inspeção?</Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={1}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      size="small"
-                    >
-                      <input hidden accept="image/*" type="file" />
-                      <ImageUploadBadge badgeContent={2} color="warning">
-                        <ImageUploadImg />
-                      </ImageUploadBadge>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    alignItems="center"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      paddingY: '8px',
-                    }}
-                    height="50px"
-                  >
-                    <InputContainer>
-                      <InputLabelRow>Observação:</InputLabelRow>
-                      <InputText
-                        placeholder="Anotações..."
-                        size="small"
-                        fullWidth
-                      />
-                    </InputContainer>
-                  </Grid>
-                </GridItem>
-              </Grid>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <TabContent stageData={stageData} />
-            </TabPanel> */}
           </Paper>
         </Grid>
       </Grid>
