@@ -1,5 +1,6 @@
-export interface Rule {
-  required: boolean
+export interface Apointment {
+  x_position: number
+  y_position: number
   type: string
 }
 
@@ -8,50 +9,76 @@ export interface Image {
   'url:image': string
 }
 
-export interface Comentario {
-  comentario: string
+export interface Values {
+  apointments: Apointment[]
+  images: Image[]
+}
+export interface Value {
+  value: string
+  images?: Image[] | undefined
+  label?: string | undefined
+  values?: Values | undefined
+  options?: string[] | undefined
 }
 
-export interface Apointment {
-  x_position: number
-  y_position: number
-  doasjdosa: number
+export interface Rule {
+  required: boolean
   type: string
 }
 
-export interface Values {
-  apointments: Apointment[]
-  comentarios: Comentario[]
-  images: Image[]
-}
-
-export interface Value {
-  value: any
-  images?: Image[]
-  options?: string[]
-  label?: string
-  values?: Values
-  image: any
-  date: any
-  status?: string
-}
-
-export interface StageDataProps {
+export interface Itens {
   name: string
+  comment?: string
   rules: Rule
   values: Value
 }
 
-export interface ChecklistProps {
-  company_id: number
-  brand_id: number | null
-  vehicle_id: number | null
-  model_id: number | null
-  vehicle_client_id: number | null
-  km: number | null
-  fuel: any | null
-  client_id: number | null
-  service_schedule_id: number | null
-  checklist_model: number | null
-  stages: StageDataProps[] | []
+export interface Rules {
+  required: boolean
 }
+
+export interface Signature {
+  name: string
+  rules: Rules
+  image: any[]
+}
+
+export interface StagesDataProps {
+  name: string
+  itens: Itens[]
+  status: 'open' | 'closed'
+  signatures?: Signature[] | undefined
+}
+
+export interface ChecklistProps {
+  id: number
+  name: string
+  description: string
+  active: boolean
+  stages: StagesDataProps[]
+  created_at: Date
+  updated_at: Date
+}
+
+export interface StageFormData {
+  images: any
+  observation: string
+  'col-1': boolean | string
+}
+
+// status: string;
+//     itens: {
+//         comment: string;
+//         values: {
+//             value: string | boolean;
+//             images?: Image[] | undefined;
+//             label?: string | undefined;
+//             values?: Values | undefined;
+//             options?: string[] | undefined;
+//         };
+//         name: string;
+//         rules: Rule;
+//     }[];
+//     name?: string | undefined;
+//     signatures?: Signature[] | undefined;
+// }

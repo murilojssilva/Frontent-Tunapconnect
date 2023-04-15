@@ -1,12 +1,14 @@
 import { MenuItem, Switch, TextField } from '@mui/material'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
-import { Value } from '../types'
+import { Value } from '../../../types'
+
 import { ButtonItemChecklist } from './styles'
 
 type registerInputProps = {
   register: UseFormRegister<FieldValues>
   nameRegister: string
   indexRegister: number
+  isClosed: boolean
 }
 
 type InputButtonProps = {
@@ -14,17 +16,24 @@ type InputButtonProps = {
   register: UseFormRegister<FieldValues>
   nameRegister: string
   indexRegister: number
+  isClosed: boolean
 }
 type InputSelectProps = {
   opts: string[] | []
   register: UseFormRegister<FieldValues>
   nameRegister: string
   indexRegister: number
+  isClosed: boolean
 }
 
-function InputButton({ labelName }: InputButtonProps) {
+function InputButton({ labelName, isClosed }: InputButtonProps) {
   return (
-    <ButtonItemChecklist color="primary" size="small" variant="contained">
+    <ButtonItemChecklist
+      color="primary"
+      size="small"
+      variant="contained"
+      disabled={isClosed}
+    >
       {labelName}
     </ButtonItemChecklist>
   )
@@ -33,11 +42,13 @@ function InputSwitch({
   register,
   nameRegister,
   indexRegister,
+  isClosed,
 }: registerInputProps) {
   return (
     <Switch
       defaultChecked={false}
-      {...register(`${nameRegister}.${indexRegister}.col-1-boolean`)}
+      disabled={isClosed}
+      {...register(`${nameRegister}.${indexRegister}.col-1`)}
     />
   )
 }
@@ -45,13 +56,15 @@ function InputText({
   register,
   nameRegister,
   indexRegister,
+  isClosed,
 }: registerInputProps) {
   return (
     <TextField
       type="text"
       fullWidth
       size="small"
-      {...register(`${nameRegister}.${indexRegister}.col-1-text`)}
+      disabled={isClosed}
+      {...register(`${nameRegister}.${indexRegister}.col-1`)}
     />
   )
 }
@@ -59,13 +72,15 @@ function InputNumber({
   register,
   nameRegister,
   indexRegister,
+  isClosed,
 }: registerInputProps) {
   return (
     <TextField
       type="number"
       fullWidth
       size="small"
-      {...register(`${nameRegister}.${indexRegister}.col-1-number`)}
+      disabled={isClosed}
+      {...register(`${nameRegister}.${indexRegister}.col-1`)}
     />
   )
 }
@@ -74,6 +89,7 @@ function InputSelect({
   indexRegister,
   nameRegister,
   register,
+  isClosed,
 }: InputSelectProps) {
   return (
     <TextField
@@ -81,7 +97,8 @@ function InputSelect({
       fullWidth
       size="small"
       defaultValue=""
-      {...register(`${nameRegister}.${indexRegister}.col-1-select`)}
+      disabled={isClosed}
+      {...register(`${nameRegister}.${indexRegister}.col-1`)}
     >
       {opts.map((option, index) => (
         <MenuItem key={Math.random() * 20000 + index} value={option}>
@@ -98,6 +115,7 @@ export function genereteInput(
   register: UseFormRegister<FieldValues>,
   nameRegister: string,
   indexRegister: number,
+  isClosed: boolean,
 ) {
   const optionsSelect = itemValues ? itemValues?.options : []
 
@@ -108,6 +126,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
     case 'text':
@@ -116,6 +135,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
     case 'select':
@@ -125,6 +145,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
     case 'boolean':
@@ -133,6 +154,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
     case 'visual_inspect':
@@ -142,6 +164,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
     case 'signature':
@@ -151,6 +174,7 @@ export function genereteInput(
           indexRegister={indexRegister}
           register={register}
           nameRegister={nameRegister}
+          isClosed={isClosed}
         />
       )
 
