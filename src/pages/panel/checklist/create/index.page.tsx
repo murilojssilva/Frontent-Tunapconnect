@@ -46,7 +46,7 @@ export default function ChecklistCreate() {
   const [value, setValue] = useState(0)
   const [checklistModel, setChecklistModel] = useState<ChecklistProps>()
   const [stages, setStages] = useState<StagesDataProps[]>([])
-  const [stageSaved, setStageSaved] = useState<StagesDataProps[]>([])
+  // const [stageSaved, setStageSaved] = useState<StagesDataProps[]>([])
   // const [stageData, setStageData] = useState([])
 
   // function handleCreateCheckList(data) {}
@@ -66,13 +66,12 @@ export default function ChecklistCreate() {
     // }
     // console.log(dataForPost)
     // api.create('/checklist', dataForPost)
-    if (stageSaved.length > 0) {
-      setStageSaved((prevState) => {
-        return [...prevState, data]
+
+    setStages((prevState) => {
+      return prevState.map((item) => {
+        return item.name === data.name ? data : item
       })
-    } else {
-      setStageSaved([data])
-    }
+    })
   }
 
   const api = new ApiCore()
@@ -80,10 +79,10 @@ export default function ChecklistCreate() {
     setValue(newValue)
   }
 
-  function getSavedStage(stages: StagesDataProps[], stageActual: string) {
-    const isStage = stages.filter((stage) => stage.name === stageActual)
-    return isStage
-  }
+  // function getSavedStage(stages: StagesDataProps[], stageActual: string) {
+  //   const isStage = stages.filter((stage) => stage.name === stageActual)
+  //   return isStage[0]
+  // }
 
   useEffect(() => {
     api.get('/checklist_model/list/').then((response) => {
@@ -119,14 +118,14 @@ export default function ChecklistCreate() {
               >
                 {stages.length > 0 &&
                   stages.map((stage, index) => {
-                    const isDisabled =
-                      getSavedStage(stageSaved, stage.name).length > 0
+                    // const isDisabled =
+                    //   getSavedStage(stages, stage.name)?.status === 'closed'
                     return (
                       <TabItem
                         key={stage.name + Math.random() * 2000}
                         label={stage.name}
                         {...a11yProps(index)}
-                        disabled={isDisabled}
+                        // disabled={isDisabled}
                       />
                     )
                   })}
@@ -134,7 +133,7 @@ export default function ChecklistCreate() {
             </Box>
             {stages.length > 0 &&
               stages.map((stage, index) => {
-                console.log(getSavedStage(stageSaved, stage.name))
+                // console.log(getSavedStage(stages, stage.name))
                 return (
                   <TabPanel
                     key={`${Math.random() * 2000}-${stage.name}-${index}`}

@@ -63,7 +63,7 @@ export interface ChecklistProps {
 export interface StageFormData {
   images: any
   observation: string
-  'col-1': boolean | string
+  inputs: boolean | string
 }
 
 // status: string;

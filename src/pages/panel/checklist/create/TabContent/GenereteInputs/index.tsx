@@ -1,5 +1,11 @@
-import { MenuItem, Switch, TextField } from '@mui/material'
-import { FieldValues, UseFormRegister } from 'react-hook-form'
+import {
+  Control,
+  Controller,
+  FieldValues,
+  UseFormRegister,
+} from 'react-hook-form'
+
+import { MenuItem, Select, Switch, TextField } from '@mui/material'
 import { Value } from '../../../types'
 
 import { ButtonItemChecklist } from './styles'
@@ -9,6 +15,7 @@ type registerInputProps = {
   nameRegister: string
   indexRegister: number
   isClosed: boolean
+  control?: Control
 }
 
 type InputButtonProps = {
@@ -24,6 +31,7 @@ type InputSelectProps = {
   nameRegister: string
   indexRegister: number
   isClosed: boolean
+  control?: Control
 }
 
 function InputButton({ labelName, isClosed }: InputButtonProps) {
@@ -43,15 +51,39 @@ function InputSwitch({
   nameRegister,
   indexRegister,
   isClosed,
+  control,
 }: registerInputProps) {
   return (
-    <Switch
-      defaultChecked={false}
-      disabled={isClosed}
-      {...register(`${nameRegister}.${indexRegister}.col-1`)}
+    <Controller
+      control={control}
+      name={`${nameRegister}.${indexRegister}.inputs`}
+      render={({ field }) => {
+        return (
+          <Switch
+            checked={field.value}
+            disabled={isClosed}
+            {...field}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+        )
+      }}
     />
   )
 }
+// function InputSwitch({
+//   register,
+//   nameRegister,
+//   indexRegister,
+//   isClosed,
+// }: registerInputProps) {
+//   return (
+//     <Switch
+//       defaultChecked={false}
+//       disabled={isClosed}
+//       {...register(`${nameRegister}.${indexRegister}.inputs`)}
+//     />
+//   )
+// }
 function InputText({
   register,
   nameRegister,
@@ -64,7 +96,7 @@ function InputText({
       fullWidth
       size="small"
       disabled={isClosed}
-      {...register(`${nameRegister}.${indexRegister}.col-1`)}
+      {...register(`${nameRegister}.${indexRegister}.inputs`)}
     />
   )
 }
@@ -80,32 +112,42 @@ function InputNumber({
       fullWidth
       size="small"
       disabled={isClosed}
-      {...register(`${nameRegister}.${indexRegister}.col-1`)}
+      {...register(`${nameRegister}.${indexRegister}.inputs`)}
     />
   )
 }
+
 function InputSelect({
   opts,
   indexRegister,
   nameRegister,
   register,
   isClosed,
+  control,
 }: InputSelectProps) {
   return (
-    <TextField
-      select
-      fullWidth
-      size="small"
-      defaultValue=""
-      disabled={isClosed}
-      {...register(`${nameRegister}.${indexRegister}.col-1`)}
-    >
-      {opts.map((option, index) => (
-        <MenuItem key={Math.random() * 20000 + index} value={option}>
-          {option}
-        </MenuItem>
-      ))}
-    </TextField>
+    <Controller
+      control={control}
+      name={`${nameRegister}.${indexRegister}.inputs`}
+      render={({ field }) => {
+        return (
+          <Select
+            fullWidth
+            size="small"
+            defaultValue={opts[0]}
+            disabled={isClosed}
+            {...field}
+          >
+            <MenuItem value="-">{'-'}</MenuItem>
+            {opts.map((option, index) => (
+              <MenuItem key={Math.random() * 20000 + index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        )
+      }}
+    />
   )
 }
 
@@ -116,6 +158,7 @@ export function genereteInput(
   nameRegister: string,
   indexRegister: number,
   isClosed: boolean,
+  control: Control,
 ) {
   const optionsSelect = itemValues ? itemValues?.options : []
 
@@ -146,6 +189,7 @@ export function genereteInput(
           register={register}
           nameRegister={nameRegister}
           isClosed={isClosed}
+          control={control}
         />
       )
     case 'boolean':
@@ -155,6 +199,7 @@ export function genereteInput(
           register={register}
           nameRegister={nameRegister}
           isClosed={isClosed}
+          control={control}
         />
       )
     case 'visual_inspect':

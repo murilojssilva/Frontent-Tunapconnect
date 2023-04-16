@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 
 import TableRow from '@mui/material/TableRow'
+import { useEffect } from 'react'
 
 import { useFieldArray, useForm } from 'react-hook-form'
 import {
@@ -43,7 +44,7 @@ export function TabContent({
   isClosed,
 }: TabContentProps) {
   const { control, register, handleSubmit } = useForm()
-  useFieldArray({
+  const { update } = useFieldArray({
     control,
     name: stageName,
   })
@@ -55,23 +56,32 @@ export function TabContent({
       itens: stageItems.map((item, index) => {
         return {
           ...item,
-          comment: data[stageName][index].observation,
+          comment: data[stageName][index]?.observation,
           values: {
             ...item.values,
-            value: data[stageName][index]['col-1'],
+            value: data[stageName][index]?.inputs,
           },
         }
       }),
     }
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
-    // handleAddListCheckList({
-    //   [stageName]: data[stageName].map((item, index) => {
-    //     return item
-    //   }),
-    // })
-    // console.log(data[stageName])
+    console.log(dataFormatted)
   }
+
+  useEffect(() => {
+    stageData?.itens.forEach((item, index) => {
+      if (item.rules.type === 'boolean') {
+        update(index, { inputs: item.values.value, observation: item.comment })
+      }
+      if (item.rules.type === 'select') {
+        update(index, {
+          inputs: item.values.value ?? '-',
+          observation: item.comment,
+        })
+      }
+    })
+  }, [stageData?.itens])
 
   return (
     <>
@@ -97,6 +107,7 @@ export function TabContent({
                         stageName,
                         index,
                         isClosed,
+                        control,
                       )}
                     </TableCell>
                     <TableCell>
