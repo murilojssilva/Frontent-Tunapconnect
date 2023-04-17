@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 
 import TableRow from '@mui/material/TableRow'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useFieldArray, useForm } from 'react-hook-form'
 import {
@@ -24,6 +24,7 @@ import {
   InputText,
 } from '../styles'
 import { genereteInput } from './GenereteInputs'
+import ModalImages from './ModalImages'
 
 type TabContentProps = {
   stageData: StagesDataProps | undefined
@@ -43,6 +44,8 @@ export function TabContent({
   handleAddListCheckList,
   isClosed,
 }: TabContentProps) {
+  const [openModalImage, setOpenModalImage] = useState(false)
+
   const { control, register, handleSubmit } = useForm()
   const { update } = useFieldArray({
     control,
@@ -67,6 +70,10 @@ export function TabContent({
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
     console.log(dataFormatted)
+  }
+
+  function closeModalImage() {
+    setOpenModalImage(false)
   }
 
   useEffect(() => {
@@ -120,13 +127,14 @@ export function TabContent({
                         component="label"
                         size="small"
                         disabled={isClosed}
+                        onClick={() => setOpenModalImage(true)}
                       >
-                        <input
+                        {/* <input
                           hidden
                           accept="image/*"
                           type="file"
                           {...register(`${stageName}.${index}.images`)}
-                        />
+                        /> */}
                         <ImageUploadBadge
                           badgeContent={item?.values?.images?.length}
                           color="warning"
@@ -153,6 +161,7 @@ export function TabContent({
           </TableBody>
         </Table>
       </TableContainer>
+      <ModalImages isOpen={openModalImage} closeModalImage={closeModalImage} />
     </>
   )
 }
