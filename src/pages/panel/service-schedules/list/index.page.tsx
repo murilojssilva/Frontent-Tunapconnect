@@ -1,6 +1,9 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { useContext, useState } from 'react'
+import {
+  // useContext,
+  useState,
+} from 'react'
 
 import Container from '@mui/material/Container'
 
@@ -26,7 +29,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations'
 import { useRouter } from 'next/router'
 import { TableApp } from '@/components/TableApp'
-import { CompanyContext } from '@/contexts/CompanyContext'
+// import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
@@ -65,7 +68,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  const { company } = useContext(CompanyContext)
+  // const { company } = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -201,7 +204,7 @@ export default function ServiceSchedulesList() {
       queryKey: ['service-scheduler-list'],
       queryFn: () =>
         api
-          .get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
+          .get(`/service-schedule?company_id=${1}&limit=2&page=2`)
           .then((response) => {
             const resp = response.data.data.map((data: any) => ({
               id: data?.id ?? 'Não informado',
