@@ -33,7 +33,7 @@ import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSidePropsContext } from 'next/types'
-import { Skeleton } from '@mui/material'
+// import { Skeleton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
