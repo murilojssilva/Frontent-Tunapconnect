@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -12,6 +13,7 @@ import {
 
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { MyDropzone } from './DropZone'
 
 interface IModalImageProps {
   isOpen: boolean
@@ -138,13 +140,16 @@ export default function ModalImages({
             </ImageListItem>
           ))}
         </ImageList>
+        <Box>
+          <MyDropzone />
+        </Box>
       </DialogContent>
       <DialogActions sx={{ paddingX: 4, paddingBottom: 2, paddingTop: 0 }}>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" onClick={handleClose}>
             cancelar
           </Button>
-          <Button
+          {/* <Button
             // color="primary"
             aria-label="upload picture"
             component="label"
@@ -156,9 +161,10 @@ export default function ModalImages({
               accept="image/*"
               type="file"
               // {...register(`${stageName}.${index}.images`)}
+              onChange={(e) => console.log(e.target.value)}
             />
             upload <UploadFileRoundedIcon />
-          </Button>
+          </Button> */}
         </Stack>
       </DialogActions>
     </Dialog>

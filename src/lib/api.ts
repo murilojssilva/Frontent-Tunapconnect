@@ -51,4 +51,8 @@ export class ApiCore {
   update(url: string, data: any) {
     return api.put(url, data)
   }
+
+  axiosPure() {
+    return api
+  }
 }

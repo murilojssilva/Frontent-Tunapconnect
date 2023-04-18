@@ -62,8 +62,7 @@ export default function ChecklistCreate() {
       return api
         .update(`/checklist/${router?.query?.id}`, newDataChecklist)
         .then((resp) => {
-          console.log(resp.data.dados)
-          return resp.data.dados
+          return resp.data.data
         })
     },
 
@@ -84,7 +83,10 @@ export default function ChecklistCreate() {
     queryFn: () =>
       api
         .get(`/checklist/${router?.query?.id}?company_id=${company?.id}`)
-        .then((response) => response.data.data),
+        .then((response) => {
+          console.log(response.data.data)
+          return response.data.data
+        }),
     // refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
   })
@@ -101,6 +103,7 @@ export default function ChecklistCreate() {
       client_id: null,
       service_schedule_id: null,
       checklist_model: 1,
+      status: 'salvo', // salvo // finalizado // rascunho
       stages: data?.stages.map((item) => {
         return item.name === stageData.name ? stageData : item
       }),

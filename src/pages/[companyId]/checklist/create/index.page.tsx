@@ -16,7 +16,7 @@ export default function ChecklistCreate() {
     async function createCheckListBase() {
       try {
         const modelChecklist = await api.get('/checklist_model/list/')
-        console.log(modelChecklist.data.data[0])
+        // console.log(modelChecklist.data.data[0])
         const dataCreateChecklist = {
           company_id: 1,
           brand_id: null,
@@ -28,6 +28,7 @@ export default function ChecklistCreate() {
           client_id: null,
           service_schedule_id: null,
           checklist_model: 1,
+          status: 'rascunho', // salvo // finalizado // rascunho
           stages: modelChecklist.data.data[0].stages,
         }
         if (modelChecklist.data.data.length > 0) {
@@ -36,11 +37,11 @@ export default function ChecklistCreate() {
             dataCreateChecklist,
           )
           await router.push(
-            '/panel/checklist/create/' + createdDefault?.data?.dados?.id,
+            `/${router?.query?.companyId}/checklist/create/${createdDefault?.data?.data?.id}`,
           )
         }
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     }
     createCheckListBase()

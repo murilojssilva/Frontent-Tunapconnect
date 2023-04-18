@@ -41,7 +41,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     queryKey: ['company-page-list-company-context'],
     queryFn: () =>
       api.get(`/user/companies`).then((response) => {
-        console.log(response)
         // setCompanyList(response.data.data)
         console.log(response.data.data)
         return response.data.data
@@ -54,15 +53,21 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
       router.push('/company')
     }
     if (!!router?.query?.companyId && !company) {
-      console.log('SEM COMPANY', company, router?.query?.companyId)
-      api
-        .get(`/company/${router?.query?.companyId}`)
-        .then((response) => {
-          setCompany(response.data.data)
-        })
-        .catch(() => {
-          router.push('/company')
-        })
+      if (data) {
+        data.findIndex(
+          (item: any) =>
+            item.id === parseInt(router?.query?.companyId as string),
+        ) < 0 && router.push('/company')
+      } else {
+        api
+          .get(`/company/${router?.query?.companyId}`)
+          .then((response) => {
+            setCompany(response.data.data)
+          })
+          .catch(() => {
+            router.push('/company')
+          })
+      }
     }
   }, [router?.query?.companyId, company])
 
