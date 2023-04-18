@@ -13,8 +13,9 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import Layout from '@/Layout'
 import { CompanyProvider } from '@/contexts/CompanyContext'
-import { QueryClientProvider } from 'react-query'
+
 import { queryClient } from '@/lib/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()

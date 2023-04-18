@@ -1,9 +1,10 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { parseCookies, setCookie } from 'nookies'
-import { useQuery } from 'react-query'
+
 import { ApiCore } from '@/lib/api'
 import { useSession } from 'next-auth/react'
+import { useQuery } from '@tanstack/react-query'
 
 type CompanyProps = {
   id: number

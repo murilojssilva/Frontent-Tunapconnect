@@ -30,10 +30,11 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-import { useQuery } from 'react-query'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSidePropsContext } from 'next/types'
+import { Skeleton } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
   search: string
@@ -191,7 +192,11 @@ export default function ServiceSchedulesList() {
     },
   ]
 
-  const { data: rows, isFetching } = useQuery<ServiceSchedulesListProps[] | []>(
+  const {
+    data: rows,
+    isSuccess,
+    isLoading,
+  } = useQuery<ServiceSchedulesListProps[] | []>(
     ['service-scheduler-list', company?.id],
     async () => {
       const response = await api.get(
@@ -245,92 +250,107 @@ export default function ServiceSchedulesList() {
   //   }
   // }, [router])
 
-  return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
-            <Grid container spacing={3}>
-              <Grid
-                item
-                xs={12}
-                md={12}
-                lg={8}
-                sx={{ display: 'flex', alignItems: 'center' }}
-              >
-                <Box
-                  component="form"
-                  onSubmit={handleSubmit(onSubmitSearch)}
-                  sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
-                >
-                  <TextField
-                    label="Procura"
-                    id="outlined-size-small"
-                    // defaultValue="Pro"
-                    size="small"
-                    sx={{ flex: 1, width: '100%' }}
-                    {...register('search')}
-                  />
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={400}
+          sx={{ borderRadius: 2 }}
+        />
+      </Container>
+    )
+  }
 
-                  <ButtonIcon
-                    type="submit"
-                    aria-label="search"
-                    color="primary"
-                    sx={{ marginLeft: 1 }}
+  if (isSuccess) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
+              <Grid container spacing={3}>
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  lg={8}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <Box
+                    component="form"
+                    onSubmit={handleSubmit(onSubmitSearch)}
+                    sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
                   >
-                    <SearchIcon />
-                  </ButtonIcon>
-                </Box>
-                {/* <Box>
+                    <TextField
+                      label="Procura"
+                      id="outlined-size-small"
+                      // defaultValue="Pro"
+                      size="small"
+                      sx={{ flex: 1, width: '100%' }}
+                      {...register('search')}
+                    />
+
+                    <ButtonIcon
+                      type="submit"
+                      aria-label="search"
+                      color="primary"
+                      sx={{ marginLeft: 1 }}
+                    >
+                      <SearchIcon />
+                    </ButtonIcon>
+                  </Box>
+                  {/* <Box>
                   <MultipleSelectCheckmarks checkNames={filterChecked} handleChecked={handleChecked} />
                 </Box> */}
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={12}
-                lg={4}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <ButtonAdd
-                  size="large"
-                  variant="contained"
-                  sx={{ alignSelf: 'flex-end' }}
-                  startIcon={<AddCircleOutlineIcon />}
-                  onClick={async () => {
-                    await router.push('/panel/service-schedules/create')
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  lg={4}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  Adicionar novo
-                </ButtonAdd>
+                  <ButtonAdd
+                    size="large"
+                    variant="contained"
+                    sx={{ alignSelf: 'flex-end' }}
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={async () => {
+                      await router.push('/panel/service-schedules/create')
+                    }}
+                  >
+                    Adicionar novo
+                  </ButtonAdd>
+                </Grid>
               </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <HeaderBreadcrumb
-            data={HeaderBreadcrumbData}
-            title="Lista de Agendamentos"
-          />
-        </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <HeaderBreadcrumb
+              data={HeaderBreadcrumbData}
+              title="Lista de Agendamentos"
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <TableApp
-            columns={columns}
-            rowsData={rows || []}
-            handlePages={handlePages}
-            pages={pages}
-            loading={isFetching}
-          />
+          <Grid item xs={12}>
+            <TableApp
+              columns={columns}
+              rowsData={rows || []}
+              handlePages={handlePages}
+              pages={pages}
+              loading={isLoading}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
-  )
+      </Container>
+    )
+  }
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
