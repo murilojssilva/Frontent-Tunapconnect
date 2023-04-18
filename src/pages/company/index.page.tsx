@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
 import { getSession } from 'next-auth/react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { GetServerSideProps } from 'next/types'
 import { ApiCore } from '@/lib/api'
 import { Skeleton, Typography } from '@mui/material'
@@ -12,6 +12,7 @@ import { ContainerItem } from './styles'
 
 // import { useRouter } from 'next/router'
 import { CompanyContext } from '@/contexts/CompanyContext'
+import { useQuery } from '@tanstack/react-query'
 
 interface companyProps {
   id: number
@@ -21,7 +22,7 @@ interface companyProps {
 }
 
 export default function DashboardContent() {
-  const [company, setCompany] = useState<companyProps[] | []>()
+  // const [company, setCompany] = useState<companyProps[] | []>()
 
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
@@ -32,35 +33,17 @@ export default function DashboardContent() {
     createCompany(newCompany)
   }
 
-  useEffect(() => {
-    api
-      .get('/user/companies')
-      .then((response) => {
-        const { data } = response.data
-        if (data.length > 0) {
-          setCompany(
-            data.map((item: any) => {
-              return {
-                id: item.id,
-                name: item.name,
-                cnpj: item.cnpj,
-                cpf: item.cpf,
-              }
-            }),
-          )
-        }
-      })
-      .catch((err) => {
-        setCompany([])
-        console.log(err)
-      })
-  }, [])
+  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>({
+    queryKey: ['company-page-list-company'],
+    queryFn: () =>
+      api.get(`/user/companies`).then((response) => response.data.data),
+  })
 
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
-          {!company && (
+          {isLoading && (
             <>
               <Grid item xs={12} md={4} lg={4}>
                 <Skeleton
@@ -85,8 +68,8 @@ export default function DashboardContent() {
               </Grid>
             </>
           )}
-          {company &&
-            company.map((item, index) => {
+          {isSuccess &&
+            data?.map((item, index) => {
               return (
                 <Grid
                   item

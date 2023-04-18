@@ -1,10 +1,11 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { parseCookies, setCookie } from 'nookies'
+// import { parseCookies, setCookie } from 'nookies'
 
 import { ApiCore } from '@/lib/api'
-import { useSession } from 'next-auth/react'
 import { useQuery } from '@tanstack/react-query'
+// import { useSession } from 'next-auth/react'
+// import { useQuery } from '@tanstack/react-query'
 
 type CompanyProps = {
   id: number
@@ -15,6 +16,7 @@ type CompanyProps = {
 
 type CompanyContextType = {
   company: CompanyProps | null | undefined
+  campanyId: number | undefined
   createCompany: (company: CompanyProps) => void
 }
 
@@ -25,49 +27,62 @@ type CompanyProviderProps = {
 export const CompanyContext = createContext({} as CompanyContextType)
 
 export function CompanyProvider({ children }: CompanyProviderProps) {
-  // const [company, setCompany] = useState<CompanyProps | null>(null)
-  const [companyId, setCompanyId] = useState<string | null>(null)
+  const [company, setCompany] = useState<CompanyProps | null>(null)
+  // const [companyList, setCompanyList] = useState<CompanyProps[] | null>(null)
+
+  const api = new ApiCore()
+  // const { status } = useSession()
+
+  // isCompanyId = () => {}
 
   const router = useRouter()
-  const api = new ApiCore()
-  const { status } = useSession()
 
-  const { data: company } = useQuery<CompanyProps | null>(
-    ['campanyContext', companyId],
-    async () => {
-      const response = await api.get(`/company/${companyId}`)
-      return response.data.data
-    },
-    {
-      enabled: status === 'authenticated' && !!companyId,
-    },
-  )
-
-  async function createCompany(newCompany: CompanyProps) {
-    setCompanyId(String(newCompany?.id))
-    setCookie(null, '@tunapconnect:company', `${newCompany?.id}`, {
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/',
-    })
-    await router.push('/panel/service-schedules/list')
-  }
+  const { data } = useQuery({
+    queryKey: ['company-page-list-company-context'],
+    queryFn: () =>
+      api.get(`/user/companies`).then((response) => {
+        console.log(response)
+        // setCompanyList(response.data.data)
+        console.log(response.data.data)
+        return response.data.data
+      }),
+  })
 
   useEffect(() => {
-    async function isCookies() {
-      const cookies = parseCookies()
-      if (
-        !(
-          cookies['@tunapconnect:company'] === 'undefined' && companyId === null
-        )
-      ) {
-        setCompanyId(cookies['@tunapconnect:company'])
-      }
+    if (!company && !router?.query?.companyId) {
+      console.log('SEM COMPANY E ROUTE', company, router?.query?.companyId)
+      router.push('/company')
     }
-    isCookies()
-  }, [])
+    if (!!router?.query?.companyId && !company) {
+      console.log('SEM COMPANY', company, router?.query?.companyId)
+      api
+        .get(`/company/${router?.query?.companyId}`)
+        .then((response) => {
+          setCompany(response.data.data)
+        })
+        .catch(() => {
+          router.push('/company')
+        })
+    }
+  }, [router?.query?.companyId, company])
+
+  useEffect(() => {
+    if (data) {
+      data.findIndex(
+        (item: any) => item.id === parseInt(router?.query?.companyId as string),
+      ) < 0 && router.push('/company')
+    }
+  }, [router?.query?.companyId])
+
+  async function createCompany(newCompany: CompanyProps) {
+    setCompany(newCompany)
+    await router.push(`/${newCompany.id}/service-schedules/list`)
+  }
 
   return (
-    <CompanyContext.Provider value={{ company, createCompany }}>
+    <CompanyContext.Provider
+      value={{ campanyId: company?.id, company, createCompany }}
+    >
       {children}
     </CompanyContext.Provider>
   )

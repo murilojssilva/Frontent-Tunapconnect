@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 export default function CompanuId() {
   const router = useRouter()
 
-  const param = router.query.id
+  const param = router.query.companyId
 
   return (
     <Container component="main" maxWidth="xs">

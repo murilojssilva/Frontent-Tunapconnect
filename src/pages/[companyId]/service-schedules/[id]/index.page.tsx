@@ -244,7 +244,7 @@ export default function ServiceSchedulesEdit() {
 
       if (company?.id) {
         api
-          .get(`/technical-consultant?company_id=${company?.id}`)
+          .get(`/technical-consultant?company_id=${router.query?.companyId}`)
           .then((resp) => {
             setTechnicalConsultantsList(
               resp.data.data.map((item: TechnicalConsultant) => ({
@@ -498,7 +498,9 @@ export default function ServiceSchedulesEdit() {
               <ButtonRight
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={async () =>
-                  await router.push('/panel/checklist/create')
+                  await router.push(
+                    `/${router?.query?.companyId}/checklist/create`,
+                  )
                 }
               >
                 Novo

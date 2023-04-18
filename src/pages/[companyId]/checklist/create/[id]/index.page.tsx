@@ -81,13 +81,10 @@ export default function ChecklistCreate() {
 
   const { data, isSuccess, isLoading } = useQuery<ChecklistProps>({
     queryKey: ['checklist-createByID'],
-    queryFn: async () => {
-      const response = await api.get(
-        `/checklist/${router?.query?.id}?company_id=${company?.id}`,
-      )
-      console.log(response.data.data)
-      return response.data.data
-    },
+    queryFn: () =>
+      api
+        .get(`/checklist/${router?.query?.id}?company_id=${company?.id}`)
+        .then((response) => response.data.data),
     // refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
   })
