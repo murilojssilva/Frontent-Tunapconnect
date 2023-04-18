@@ -216,7 +216,8 @@ export default function ServiceSchedulesList() {
       }))
       return resp
     },
-    { enabled: !!company?.id },
+    // { enabled: !!company?.id },
+    { enabled: false },
   )
 
   // useEffect(() => {
@@ -341,6 +342,7 @@ export default function ServiceSchedulesList() {
           <Grid item xs={12}>
             <TableApp
               columns={columns}
+              // rowsData={rows || []}
               rowsData={rows || []}
               handlePages={handlePages}
               pages={pages}
