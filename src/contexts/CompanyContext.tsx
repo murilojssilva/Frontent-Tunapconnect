@@ -42,14 +42,14 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     queryFn: () =>
       api.get(`/user/companies`).then((response) => {
         // setCompanyList(response.data.data)
-        console.log(response.data.data)
+        // console.log(response.data.data)
         return response.data.data
       }),
   })
 
   useEffect(() => {
     if (!company && !router?.query?.companyId) {
-      console.log('SEM COMPANY E ROUTE', company, router?.query?.companyId)
+      // console.log('SEM COMPANY E ROUTE', company, router?.query?.companyId)
       router.push('/company')
     }
     if (!!router?.query?.companyId && !company) {

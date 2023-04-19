@@ -11,7 +11,6 @@ import {
   Stack,
 } from '@mui/material'
 
-import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { MyDropzone } from './DropZone'
 

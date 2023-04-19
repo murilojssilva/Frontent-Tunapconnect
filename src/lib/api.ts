@@ -44,15 +44,15 @@ export class ApiCore {
     return api.delete(data)
   }
 
-  create(url: string, data: any) {
+  create(url: string, data: any, opts?: any) {
+    if (opts) {
+      return api.post(url, data, opts)
+    }
+
     return api.post(url, data)
   }
 
   update(url: string, data: any) {
     return api.put(url, data)
-  }
-
-  axiosPure() {
-    return api
   }
 }

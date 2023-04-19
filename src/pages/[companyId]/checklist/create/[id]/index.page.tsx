@@ -84,7 +84,7 @@ export default function ChecklistCreate() {
       api
         .get(`/checklist/${router?.query?.id}?company_id=${company?.id}`)
         .then((response) => {
-          console.log(response.data.data)
+          // console.log(response.data.data)
           return response.data.data
         }),
     // refetchOnMount: 'always',

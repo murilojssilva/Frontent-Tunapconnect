@@ -1,7 +1,12 @@
 import { useCallback, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined'
+import axios from 'axios'
 import { ApiCore } from '@/lib/api'
+import { GetServerSideProps } from 'next/types'
+import path from 'path'
+import fs from 'fs/promises'
+
 const baseStyle = {
   flex: 1,
   display: 'flex',
@@ -30,35 +35,73 @@ const rejectStyle = {
   borderColor: '#ff1744',
 }
 
-export function MyDropzone() {
+interface MyDropzoneProps {
+  dirs?: string[]
+}
+
+async function savePathTemp(filesList = []) {
+  try {
+    if (!(filesList.length > 0)) return
+    const formData = new FormData()
+    formData.append('image', filesList[0])
+    const { data } = await axios.post('/api/uploadimage', formData)
+    console.log(data)
+  } catch (error: any) {
+    console.log(error.response?.data)
+  }
+}
+
+export function MyDropzone({ dirs }: MyDropzoneProps) {
+  // const [uploading, setUploading] = useState(false)
   const api = new ApiCore()
-  const onDrop = useCallback((acceptedFiles: any) => {
-    console.log(acceptedFiles)
-    const acceptedFileItems = acceptedFiles.map((file) => {
-      api
-        .axiosPure()
-        .post('/file-upload/image', file)
-        .then((response) => console.log(response))
-        .catch((error) => console.error(error))
-      return `${file.path} - ${file.size} bytes`
+
+  const onDrop = useCallback(async (acceptedFiles: any) => {
+    // console.log(acceptedFiles)
+    const formData = new FormData()
+    const acceptedFilesList = acceptedFiles.map((file: File) => {
+      formData.append('image', file)
+      // console.log('formData', formData)
+      // console.log('file', file)
+      // console.log(`${file.name} - ${file.size} bytes`)
+      return file
     })
-
-    // console.log(acceptedFileItems)
-    // acceptedFiles.forEach((file) => {
-    //   const reader = new FileReader()
-
-    //   reader.onabort = () => console.log('file reading was aborted')
-    //   reader.onerror = () => console.log('file reading has failed')
-    //   reader.onload = () => {
-    //     // Do whatever you want with the file contents
-    //     const binaryStr = reader.result
-    //     console.log(binaryStr)
-    //   }
-    //   reader.readAsArrayBuffer(file)
-    // })
+    savePathTemp(acceptedFilesList)
+    // formData.append('image', acceptedFiles[0])
+    api
+      .create('/file-upload/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then((response) => console.log(response))
+      .catch((error) => console.error(error))
   }, [])
+
+  // async function postUploadFile(data: any) {
+  //   const session = await getSession()
+  //   const token = session?.user.token
+  //   console.log(token)
+  //   try {
+  //     const response = await axios({
+  //       method: 'post',
+  //       url: '/file-upload/image',
+  //       data,
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Authorization: 'Bearer ' + token,
+  //       },
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
-    useDropzone({ onDrop, maxFiles: 10 })
+    useDropzone({
+      onDrop,
+      maxFiles: 1,
+      accept: {
+        'image/png': ['.png'],
+        'image/jpg': ['.jpg'],
+      },
+    })
 
   const style = useMemo(
     () => ({
@@ -78,4 +121,17 @@ export function MyDropzone() {
       <p>Clique ou arraste para enviar as imagens</p>
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const props = { dirs: [] }
+  try {
+    const dirs = await fs.readdir(
+      path.join(process.cwd(), '/public/temp/images'),
+    )
+    props.dirs = dirs as any
+    return { props }
+  } catch (error) {
+    return { props }
+  }
 }
