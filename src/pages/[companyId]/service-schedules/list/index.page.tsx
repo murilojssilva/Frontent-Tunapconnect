@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { useContext, useState } from 'react'
+import { useContext, useState, useMemo } from 'react'
 
 import Container from '@mui/material/Container'
 
@@ -93,106 +93,109 @@ export default function ServiceSchedulesList() {
     setPages(nextPage)
   }
 
-  const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'Número',
-      headerClassName: 'super-app-theme--header',
-      width: 90,
-      type: 'number',
-      align: 'center',
-      sortable: false,
-    },
-    {
-      field: 'client',
-      headerName: 'Cliente',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 230,
-      minWidth: 120,
-      align: 'left',
-      sortable: false,
-    },
-    {
-      field: 'plate',
-      headerName: 'Placa',
-      headerClassName: 'super-app-theme--header',
-      width: 90,
-      sortable: false,
-    },
-    {
-      field: 'chassis',
-      headerName: 'Chassis',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 200,
-      minWidth: 120,
-      sortable: false,
-    },
-    {
-      field: 'technical_consultant',
-      headerName: 'Responsavél',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 120,
-      minWidth: 80,
-      sortable: false,
-    },
-    {
-      field: 'typeEstimate',
-      headerName: 'Tipo Orçamento',
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      sortable: false,
-    },
-    {
-      field: 'totalDiscount',
-      headerName: 'Tipo Desconto',
-      headerClassName: 'super-app-theme--header',
-      // type: 'number',
-      width: 110,
-      align: 'center',
-      sortable: false,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${formatMoneyPtBR(params.row.totalDiscount) || ''}`,
-    },
-    {
-      field: 'total',
-      headerName: 'Total Geral',
-      headerClassName: 'super-app-theme--header',
-      // type: 'number',
-      width: 110,
-      align: 'center',
-      sortable: false,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${formatMoneyPtBR(params.row.total) || ''}`,
-    },
-    {
-      field: 'action',
-      headerName: 'Ação',
-      headerClassName: 'super-app-theme--header',
-      sortable: false,
-      width: 80,
-      align: 'left',
-      renderCell: (params: GridRenderCellParams) => {
-        const onClick = (e: React.MouseEvent<HTMLElement>) => {
-          e.stopPropagation()
-          const id = params.id
-          ActionDeleteConfirmations(id as number, handleDelete)
-        }
-        return (
-          <IconButton
-            aria-label="search"
-            color="warning"
-            onClick={onClick}
-            sx={{ marginLeft: 1, color: 'red' }}
-          >
-            <Delete />
-          </IconButton>
-        )
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: 'Número',
+        headerClassName: 'super-app-theme--header',
+        width: 90,
+        type: 'number',
+        align: 'center',
+        sortable: false,
       },
-    },
-  ]
+      {
+        field: 'client',
+        headerName: 'Cliente',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 230,
+        minWidth: 120,
+        align: 'left',
+        sortable: false,
+      },
+      {
+        field: 'plate',
+        headerName: 'Placa',
+        headerClassName: 'super-app-theme--header',
+        width: 90,
+        sortable: false,
+      },
+      {
+        field: 'chassis',
+        headerName: 'Chassis',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 200,
+        minWidth: 120,
+        sortable: false,
+      },
+      {
+        field: 'technical_consultant',
+        headerName: 'Responsavél',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 120,
+        minWidth: 80,
+        sortable: false,
+      },
+      {
+        field: 'typeEstimate',
+        headerName: 'Tipo Orçamento',
+        headerClassName: 'super-app-theme--header',
+        width: 120,
+        sortable: false,
+      },
+      {
+        field: 'totalDiscount',
+        headerName: 'Tipo Desconto',
+        headerClassName: 'super-app-theme--header',
+        // type: 'number',
+        width: 110,
+        align: 'center',
+        sortable: false,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${formatMoneyPtBR(params.row.totalDiscount) || ''}`,
+      },
+      {
+        field: 'total',
+        headerName: 'Total Geral',
+        headerClassName: 'super-app-theme--header',
+        // type: 'number',
+        width: 110,
+        align: 'center',
+        sortable: false,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${formatMoneyPtBR(params.row.total) || ''}`,
+      },
+      {
+        field: 'action',
+        headerName: 'Ação',
+        headerClassName: 'super-app-theme--header',
+        sortable: false,
+        width: 80,
+        align: 'left',
+        renderCell: (params: GridRenderCellParams) => {
+          const onClick = (e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation()
+            const id = params.id
+            ActionDeleteConfirmations(id as number, handleDelete)
+          }
+          return (
+            <IconButton
+              aria-label="search"
+              color="warning"
+              onClick={onClick}
+              sx={{ marginLeft: 1, color: 'red' }}
+            >
+              <Delete />
+            </IconButton>
+          )
+        },
+      },
+    ],
+    [],
+  )
 
   const {
     data: rows,
