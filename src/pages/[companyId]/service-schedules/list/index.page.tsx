@@ -33,7 +33,7 @@ import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSidePropsContext } from 'next/types'
-import { Skeleton } from '@mui/material'
+// import { Skeleton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
@@ -198,29 +198,30 @@ export default function ServiceSchedulesList() {
     data: rows,
     isSuccess,
     isLoading,
-  } = useQuery<ServiceSchedulesListProps[] | []>(
-    {
-      queryKey: ['service-scheduler-list'],
-      queryFn: () =>
-        api
-          .get(`/service-schedule?company_id=${'1'}&limit=2&page=2`)
-          .then((response) => {
-            const resp = response.data.data.map((data: any) => ({
-              id: data?.id ?? 'Não informado',
-              client: data?.client?.name ?? 'Não informado',
-              plate: data?.client_vehicle?.plate ?? 'Não informado',
-              chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-              technical_consultant:
-                data?.technical_consultant?.name ?? 'Não informado',
-              typeEstimate: 'não definido',
-              totalDiscount: 0,
-              total: 0,
-            }))
-            return resp
-          }),
-    },
-    // { enabled: !!company?.id },
-  )
+  } = useQuery<ServiceSchedulesListProps[] | []>({
+    queryKey: ['service-scheduler-list'],
+    queryFn: () =>
+      api
+        .get(
+          `/service-schedule?company_id=${router?.query?.companyId}&limit=2&page=2`,
+        )
+        .then((response) => {
+          const resp = response.data.data.map((data: any) => ({
+            id: data?.id ?? 'Não informado',
+            client: data?.client?.name ?? 'Não informado',
+            plate: data?.client_vehicle?.plate ?? 'Não informado',
+            chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+            technical_consultant:
+              data?.technical_consultant?.name ?? 'Não informado',
+            typeEstimate: 'não definido',
+            totalDiscount: 0,
+            total: 0,
+          }))
+          return resp
+        })
+        .catch(() => []),
+    enabled: !!router?.query?.companyId,
+  })
 
   // useEffect(() => {
   //   setLoadingData(true)
@@ -253,110 +254,108 @@ export default function ServiceSchedulesList() {
   //   }
   // }, [router])
 
-  if (isLoading) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Skeleton
-          variant="rectangular"
-          width="100%"
-          height={400}
-          sx={{ borderRadius: 2 }}
-        />
-      </Container>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+  //       <Skeleton
+  //         variant="rectangular"
+  //         width="100%"
+  //         height={400}
+  //         sx={{ borderRadius: 2 }}
+  //       />
+  //     </Container>
+  //   )
+  // }
 
-  if (isSuccess) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
-              <Grid container spacing={3}>
-                <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  lg={8}
-                  sx={{ display: 'flex', alignItems: 'center' }}
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
+            <Grid container spacing={3}>
+              <Grid
+                item
+                xs={12}
+                md={12}
+                lg={8}
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Box
+                  component="form"
+                  onSubmit={handleSubmit(onSubmitSearch)}
+                  sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
                 >
-                  <Box
-                    component="form"
-                    onSubmit={handleSubmit(onSubmitSearch)}
-                    sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
-                  >
-                    <TextField
-                      label="Procura"
-                      id="outlined-size-small"
-                      // defaultValue="Pro"
-                      size="small"
-                      sx={{ flex: 1, width: '100%' }}
-                      {...register('search')}
-                    />
+                  <TextField
+                    label="Procura"
+                    id="outlined-size-small"
+                    // defaultValue="Pro"
+                    size="small"
+                    sx={{ flex: 1, width: '100%' }}
+                    {...register('search')}
+                  />
 
-                    <ButtonIcon
-                      type="submit"
-                      aria-label="search"
-                      color="primary"
-                      sx={{ marginLeft: 1 }}
-                    >
-                      <SearchIcon />
-                    </ButtonIcon>
-                  </Box>
-                  {/* <Box>
+                  <ButtonIcon
+                    type="submit"
+                    aria-label="search"
+                    color="primary"
+                    sx={{ marginLeft: 1 }}
+                  >
+                    <SearchIcon />
+                  </ButtonIcon>
+                </Box>
+                {/* <Box>
                   <MultipleSelectCheckmarks checkNames={filterChecked} handleChecked={handleChecked} />
                 </Box> */}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  lg={4}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={12}
+                lg={4}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <ButtonAdd
+                  size="large"
+                  variant="contained"
+                  sx={{ alignSelf: 'flex-end' }}
+                  startIcon={<AddCircleOutlineIcon />}
+                  onClick={async () => {
+                    await router.push(`/${campanyId}/service-schedules/create`)
                   }}
                 >
-                  <ButtonAdd
-                    size="large"
-                    variant="contained"
-                    sx={{ alignSelf: 'flex-end' }}
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={async () => {
-                      await router.push(
-                        `/${campanyId}/service-schedules/create`,
-                      )
-                    }}
-                  >
-                    Adicionar novo
-                  </ButtonAdd>
-                </Grid>
+                  Adicionar novo
+                </ButtonAdd>
               </Grid>
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <HeaderBreadcrumb
-              data={HeaderBreadcrumbData}
-              title="Lista de Agendamentos"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TableApp
-              columns={columns}
-              // rowsData={rows || []}
-              rowsData={rows || []}
-              handlePages={handlePages}
-              pages={pages}
-              loading={isLoading}
-            />
-          </Grid>
+            </Grid>
+          </Paper>
         </Grid>
-      </Container>
-    )
-  }
+        <Grid item xs={12}>
+          <HeaderBreadcrumb
+            data={HeaderBreadcrumbData}
+            title="Lista de Agendamentos"
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          {/* {(isSuccess || isFetched) && ( */}
+          <TableApp
+            columns={columns}
+            // rowsData={rows || []}
+            rowsData={isSuccess ? rows : []}
+            handlePages={handlePages}
+            pages={pages}
+            loading={isLoading}
+          />
+          {/* )} */}
+        </Grid>
+      </Grid>
+    </Container>
+  )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

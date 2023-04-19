@@ -3,9 +3,9 @@ import { useDropzone } from 'react-dropzone'
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined'
 // import axios from 'axios'
 import { ApiCore } from '@/lib/api'
-import { GetServerSideProps } from 'next/types'
-import path from 'path'
-import fs from 'fs/promises'
+// import { GetServerSideProps } from 'next/types'
+// import path from 'path'
+// import fs from 'fs/promises'
 
 const baseStyle = {
   flex: 1,
@@ -120,15 +120,15 @@ export function MyDropzone({ dirs }: MyDropzoneProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const props = { dirs: [] }
-  try {
-    const dirs = await fs.readdir(
-      path.join(process.cwd(), '/public/temp/images'),
-    )
-    props.dirs = dirs as any
-    return { props }
-  } catch (error) {
-    return { props }
-  }
-}
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const props = { dirs: [] }
+//   try {
+//     const dirs = await fs.readdir(
+//       path.join(process.cwd(), '/public/temp/images'),
+//     )
+//     props.dirs = dirs as any
+//     return { props }
+//   } catch (error) {
+//     return { props }
+//   }
+// }
