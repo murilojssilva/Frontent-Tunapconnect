@@ -110,6 +110,9 @@ export default function ModalImages({
     >
       {/* <DialogTitle id="alert-dialog-title">{'Images'}</DialogTitle> */}
       <DialogContent>
+        <Box>
+          <MyDropzone />
+        </Box>
         <ImageList sx={{ width: 500, height: 450 }}>
           <ImageListItem key="Subheader" cols={2}>
             {/* <ListSubheader component="div">December</ListSubheader> */}
@@ -139,31 +142,15 @@ export default function ModalImages({
             </ImageListItem>
           ))}
         </ImageList>
-        <Box>
-          <MyDropzone />
-        </Box>
       </DialogContent>
-      <DialogActions sx={{ paddingX: 4, paddingBottom: 2, paddingTop: 0 }}>
+      <DialogActions sx={{ paddingX: 3, paddingBottom: 2, paddingTop: 0 }}>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" onClick={handleClose}>
             cancelar
           </Button>
-          {/* <Button
-            // color="primary"
-            aria-label="upload picture"
-            component="label"
-            size="small"
-            variant="contained"
-          >
-            <input
-              hidden
-              accept="image/*"
-              type="file"
-              // {...register(`${stageName}.${index}.images`)}
-              onChange={(e) => console.log(e.target.value)}
-            />
-            upload <UploadFileRoundedIcon />
-          </Button> */}
+          <Button variant="contained" onClick={handleClose}>
+            finalizar
+          </Button>
         </Stack>
       </DialogActions>
     </Dialog>

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined'
-import axios from 'axios'
+// import axios from 'axios'
 import { ApiCore } from '@/lib/api'
 import { GetServerSideProps } from 'next/types'
 import path from 'path'
@@ -39,17 +39,17 @@ interface MyDropzoneProps {
   dirs?: string[]
 }
 
-async function savePathTemp(filesList = []) {
-  try {
-    if (!(filesList.length > 0)) return
-    const formData = new FormData()
-    formData.append('image', filesList[0])
-    const { data } = await axios.post('/api/uploadimage', formData)
-    console.log(data)
-  } catch (error: any) {
-    console.log(error.response?.data)
-  }
-}
+// async function savePathTemp(filesList = []) {
+//   try {
+//     if (!(filesList.length > 0)) return
+//     const formData = new FormData()
+//     formData.append('image', filesList[0])
+//     const { data } = await axios.post('/api/uploadimage', formData)
+//     console.log(data)
+//   } catch (error: any) {
+//     console.log(error.response?.data)
+//   }
+// }
 
 export function MyDropzone({ dirs }: MyDropzoneProps) {
   // const [uploading, setUploading] = useState(false)
@@ -58,17 +58,14 @@ export function MyDropzone({ dirs }: MyDropzoneProps) {
   const onDrop = useCallback(async (acceptedFiles: any) => {
     // console.log(acceptedFiles)
     const formData = new FormData()
+    // eslint-disable-next-line no-unused-vars
     const acceptedFilesList = acceptedFiles.map((file: File) => {
-      formData.append('image', file)
-      // console.log('formData', formData)
-      // console.log('file', file)
-      // console.log(`${file.name} - ${file.size} bytes`)
+      formData.append('file', file)
       return file
     })
-    savePathTemp(acceptedFilesList)
-    // formData.append('image', acceptedFiles[0])
+
     api
-      .create('/file-upload/image', formData, {
+      .create('/uploads', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((response) => console.log(response))
