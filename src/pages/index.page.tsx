@@ -134,7 +134,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session?.user?.token) {
     return {
       redirect: {
-        destination: '/panel/company',
+        destination: '/company',
         permanent: false,
       },
     }
