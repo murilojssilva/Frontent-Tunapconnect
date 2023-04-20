@@ -226,50 +226,6 @@ export default function ServiceSchedulesList() {
     enabled: !!router?.query?.companyId,
   })
 
-  // useEffect(() => {
-  //   setLoadingData(true)
-  //   if (company?.id) {
-  //     api
-  //       .get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
-  //       .then((response) => {
-  //         const resp = response.data.data
-  //         setRows(`
-  //           resp.map((data: any) => ({
-  //             id: data?.id ?? 'Não informado',
-  //             client: data?.client?.name ?? 'Não informado',
-  //             plate: data?.client_vehicle?.plate ?? 'Não informado',
-  //             chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-  //             technical_consultant:
-  //               data?.technical_consultant?.name ?? 'Não informado',
-  //             typeEstimate: 'não definido',
-  //             totalDiscount: 0,
-  //             total: 0,
-  //           })),
-  //         )
-  //       })
-  //       .catch((error) => {
-  //         console.error(error)
-  //         setRows([])
-  //       })
-  //       .finally(() => {
-  //         setLoadingData(false)
-  //       })
-  //   }
-  // }, [router])
-
-  // if (isLoading) {
-  //   return (
-  //     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-  //       <Skeleton
-  //         variant="rectangular"
-  //         width="100%"
-  //         height={400}
-  //         sx={{ borderRadius: 2 }}
-  //       />
-  //     </Container>
-  //   )
-  // }
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
@@ -291,7 +247,6 @@ export default function ServiceSchedulesList() {
                   <TextField
                     label="Procura"
                     id="outlined-size-small"
-                    // defaultValue="Pro"
                     size="small"
                     sx={{ flex: 1, width: '100%' }}
                     {...register('search')}
@@ -360,6 +315,8 @@ export default function ServiceSchedulesList() {
     </Container>
   )
 }
+
+// export default React.memo(ServiceSchedulesList)
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)

@@ -36,7 +36,13 @@ const rejectStyle = {
 }
 
 interface MyDropzoneProps {
-  dirs?: string[]
+  // dirs?: string[]
+  handleAddImageUrlList: (value: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }) => void
 }
 
 // async function savePathTemp(filesList = []) {
@@ -51,15 +57,13 @@ interface MyDropzoneProps {
 //   }
 // }
 
-export function MyDropzone({ dirs }: MyDropzoneProps) {
-  // const [uploading, setUploading] = useState(false)
+export function MyDropzone({ handleAddImageUrlList }: MyDropzoneProps) {
   const api = new ApiCore()
 
   const onDrop = useCallback(async (acceptedFiles: any) => {
-    // console.log(acceptedFiles)
     const formData = new FormData()
     // eslint-disable-next-line no-unused-vars
-    const acceptedFilesList = acceptedFiles.map((file: File) => {
+    acceptedFiles.map((file: File) => {
       formData.append('file', file)
       return file
     })
@@ -68,7 +72,15 @@ export function MyDropzone({ dirs }: MyDropzoneProps) {
       .create('/uploads', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then((response) => console.log(response))
+      .then((response) => {
+        console.log(response)
+        handleAddImageUrlList({
+          id: response.data.data.id,
+          name: response.data.data.original_name,
+          url: response.data.data.url,
+          size: response.data.data.size,
+        })
+      })
       .catch((error) => console.error(error))
   }, [])
 

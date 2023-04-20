@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 
-import { TabItem, TabsContainer } from './styles'
+import { MyButton, TabItem, TabsContainer } from './styles'
 import { TabContent } from './TabContent'
 import { ApiCore } from '@/lib/api'
 import { Button, Skeleton, Stack } from '@mui/material'
@@ -222,16 +222,16 @@ export default function ChecklistCreate() {
               }}
             >
               <Stack direction="row" spacing={2}>
-                <Button
+                <MyButton
                   type="submit"
                   variant="contained"
                   form={`form-${data.stages[value]?.name || ''}`}
                 >
                   Salvar
-                </Button>
-                <Button type="submit" variant="contained">
+                </MyButton>
+                <MyButton type="submit" variant="contained">
                   Finalizar
-                </Button>
+                </MyButton>
               </Stack>
             </Grid>
           </Grid>
