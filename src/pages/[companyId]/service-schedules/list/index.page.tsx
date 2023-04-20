@@ -30,9 +30,9 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-import { GetServerSidePropsContext } from 'next/types'
+// import { getServerSession } from 'next-auth/next'
+// import { authOptions } from '@/pages/api/auth/[...nextauth].api'
+// import { GetServerSidePropsContext } from 'next/types'
 // import { Skeleton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
@@ -318,19 +318,19 @@ export default function ServiceSchedulesList() {
 
 // export default React.memo(ServiceSchedulesList)
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
-}
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   const session = await getServerSession(context.req, context.res, authOptions)
+//   if (!session?.user?.token) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       },
+//     }
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   }
+// }
