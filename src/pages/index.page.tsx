@@ -13,9 +13,9 @@ import Container from '@mui/material/Container'
 import { useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
 // import { getSession } from 'next-auth/react'
-import { GetServerSidePropsContext } from 'next/types'
-import { getServerSession } from 'next-auth'
-import { authOptions } from './api/auth/[...nextauth].api'
+// import { GetServerSidePropsContext } from 'next/types'
+// import { getServerSession } from 'next-auth'
+// import { authOptions } from './api/auth/[...nextauth].api'
 
 function Copyright(props: any) {
   return (
@@ -128,21 +128,4 @@ export default function SignIn() {
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
 }
