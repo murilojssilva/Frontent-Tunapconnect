@@ -1,7 +1,7 @@
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-import { getServerSession } from 'next-auth/next'
+// import { authOptions } from '@/pages/api/auth/[...nextauth].api'
+// import { getServerSession } from 'next-auth/next'
 import { useSession } from 'next-auth/react'
-import { GetServerSidePropsContext } from 'next/types'
+// import { GetServerSidePropsContext } from 'next/types'
 import { ReactNode } from 'react'
 import { DashboardContent } from './DashboardContent'
 
