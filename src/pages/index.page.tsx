@@ -12,8 +12,10 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
-import { getSession } from 'next-auth/react'
-import { GetServerSideProps } from 'next/types'
+// import { getSession } from 'next-auth/react'
+import { GetServerSidePropsContext } from 'next/types'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './api/auth/[...nextauth].api'
 
 function Copyright(props: any) {
   return (
@@ -128,18 +130,19 @@ export default function SignIn() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
-
-  if (session?.user?.token) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions)
+  if (!session?.user?.token) {
     return {
       redirect: {
-        destination: '/company',
+        destination: '/',
         permanent: false,
       },
     }
   }
   return {
-    props: {},
+    props: {
+      session,
+    },
   }
 }

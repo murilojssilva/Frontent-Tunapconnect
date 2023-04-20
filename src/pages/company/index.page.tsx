@@ -2,9 +2,8 @@ import * as React from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
-import { getSession } from 'next-auth/react'
 import { useContext } from 'react'
-import { GetServerSideProps } from 'next/types'
+import { GetServerSidePropsContext } from 'next/types'
 import { ApiCore } from '@/lib/api'
 import { Skeleton, Typography } from '@mui/material'
 import Title from '@/components/Title'
@@ -13,6 +12,8 @@ import { ContainerItem } from './styles'
 // import { useRouter } from 'next/router'
 import { CompanyContext } from '@/contexts/CompanyContext'
 import { useQuery } from '@tanstack/react-query'
+import { authOptions } from '../api/auth/[...nextauth].api'
+import { getServerSession } from 'next-auth'
 
 interface companyProps {
   id: number
@@ -99,9 +100,8 @@ export default function DashboardContent() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
-
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions)
   if (!session?.user?.token) {
     return {
       redirect: {
@@ -111,6 +111,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   }
   return {
-    props: {},
+    props: {
+      session,
+    },
   }
 }
