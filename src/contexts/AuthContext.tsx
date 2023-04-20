@@ -45,7 +45,7 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
     })
 
     if (resp?.ok && resp?.status === 200) {
-      Router.push('/panel/company')
+      Router.push('/company')
     }
   }
 

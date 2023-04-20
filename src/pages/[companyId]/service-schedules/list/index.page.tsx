@@ -54,7 +54,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
   },
   {
     label: 'Lista de agendamentos',
-    href: '/panel/service-schedules/list',
+    href: '/service-schedules/list',
   },
 ]
 

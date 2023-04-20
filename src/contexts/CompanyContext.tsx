@@ -2,8 +2,8 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 // import { parseCookies, setCookie } from 'nookies'
 
-import { ApiCore } from '@/lib/api'
-import { useQuery } from '@tanstack/react-query'
+// import { ApiCore } from '@/lib/api'
+// import { useQuery } from '@tanstack/react-query'
 // import { useSession } from 'next-auth/react'
 // import { useQuery } from '@tanstack/react-query'
 
@@ -30,22 +30,22 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   const [company, setCompany] = useState<CompanyProps | null>(null)
   // const [companyList, setCompanyList] = useState<CompanyProps[] | null>(null)
 
-  const api = new ApiCore()
+  // const api = new ApiCore()
   // const { status } = useSession()
 
   // isCompanyId = () => {}
 
   const router = useRouter()
 
-  const { data } = useQuery({
-    queryKey: ['company-page-list-company-context'],
-    queryFn: () =>
-      api.get(`/user/companies`).then((response) => {
-        // setCompanyList(response.data.data)
-        // console.log(response.data.data)
-        return response.data.data
-      }),
-  })
+  // const { data } = useQuery({
+  //   queryKey: ['company-page-list-company-context'],
+  //   queryFn: () =>
+  //     api.get(`/user/companies`).then((response) => {
+  //       // setCompanyList(response.data.data)
+  //       // console.log(response.data.data)
+  //       return response.data.data
+  //     }),
+  // })
 
   useEffect(() => {
     // if (!company && !router?.query?.companyId) {
@@ -71,13 +71,13 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     // }
   }, [router?.query?.companyId, company])
 
-  useEffect(() => {
-    if (data) {
-      data.findIndex(
-        (item: any) => item.id === parseInt(router?.query?.companyId as string),
-      ) < 0 && router.push('/company')
-    }
-  }, [router?.query?.companyId])
+  // useEffect(() => {
+  //   if (data) {
+  //     data.findIndex(
+  //       (item: any) => item.id === parseInt(router?.query?.companyId as string),
+  //     ) < 0 && router.push('/company')
+  //   }
+  // }, [router?.query?.companyId])
 
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
