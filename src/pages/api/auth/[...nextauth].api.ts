@@ -23,17 +23,23 @@ export const authOptions: NextAuthOptions = {
           throw new Error('error')
         }
 
-        const res = await fetch(`${process.env.APP_API_URL}/login`, {
-          method: 'POST',
-          body: JSON.stringify({
-            username: credentials.username,
-            password: credentials.password,
-          }),
-          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        })
+        let res
 
-        const user = await res.json()
-        if (res.ok && user) {
+        try {
+          res = await fetch(`${process.env.APP_API_URL}/login`, {
+            method: 'POST',
+            body: JSON.stringify({
+              username: credentials.username,
+              password: credentials.password,
+            }),
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          })
+        } catch (error) {
+          console.log(error)
+        }
+
+        const user = await res?.json()
+        if (res?.ok && user) {
           return user
         }
         return null

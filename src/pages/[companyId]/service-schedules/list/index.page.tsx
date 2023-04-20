@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { useContext, useState } from 'react'
+import { useContext, useState, useMemo } from 'react'
 
 import Container from '@mui/material/Container'
 
@@ -30,10 +30,11 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-import { useQuery } from 'react-query'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/pages/api/auth/[...nextauth].api'
 import { GetServerSidePropsContext } from 'next/types'
+// import { Skeleton } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
   search: string
@@ -64,7 +65,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  const { company } = useContext(CompanyContext)
+  const { campanyId } = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -79,7 +80,9 @@ export default function ServiceSchedulesList() {
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push('/panel/service-schedules/list?search=' + data.search)
+    router.push(
+      `/${router?.query?.id}/service-schedules/list?search=${data.search}`,
+    )
   }
 
   const handleDelete = (id: number) => {
@@ -90,129 +93,138 @@ export default function ServiceSchedulesList() {
     setPages(nextPage)
   }
 
-  const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'Número',
-      headerClassName: 'super-app-theme--header',
-      width: 90,
-      type: 'number',
-      align: 'center',
-      sortable: false,
-    },
-    {
-      field: 'client',
-      headerName: 'Cliente',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 230,
-      minWidth: 120,
-      align: 'left',
-      sortable: false,
-    },
-    {
-      field: 'plate',
-      headerName: 'Placa',
-      headerClassName: 'super-app-theme--header',
-      width: 90,
-      sortable: false,
-    },
-    {
-      field: 'chassis',
-      headerName: 'Chassis',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 200,
-      minWidth: 120,
-      sortable: false,
-    },
-    {
-      field: 'technical_consultant',
-      headerName: 'Responsavél',
-      headerClassName: 'super-app-theme--header',
-      flex: 1,
-      maxWidth: 120,
-      minWidth: 80,
-      sortable: false,
-    },
-    {
-      field: 'typeEstimate',
-      headerName: 'Tipo Orçamento',
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      sortable: false,
-    },
-    {
-      field: 'totalDiscount',
-      headerName: 'Tipo Desconto',
-      headerClassName: 'super-app-theme--header',
-      // type: 'number',
-      width: 110,
-      align: 'center',
-      sortable: false,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${formatMoneyPtBR(params.row.totalDiscount) || ''}`,
-    },
-    {
-      field: 'total',
-      headerName: 'Total Geral',
-      headerClassName: 'super-app-theme--header',
-      // type: 'number',
-      width: 110,
-      align: 'center',
-      sortable: false,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${formatMoneyPtBR(params.row.total) || ''}`,
-    },
-    {
-      field: 'action',
-      headerName: 'Ação',
-      headerClassName: 'super-app-theme--header',
-      sortable: false,
-      width: 80,
-      align: 'left',
-      renderCell: (params: GridRenderCellParams) => {
-        const onClick = (e: React.MouseEvent<HTMLElement>) => {
-          e.stopPropagation()
-          const id = params.id
-          ActionDeleteConfirmations(id as number, handleDelete)
-        }
-        return (
-          <IconButton
-            aria-label="search"
-            color="warning"
-            onClick={onClick}
-            sx={{ marginLeft: 1, color: 'red' }}
-          >
-            <Delete />
-          </IconButton>
-        )
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: 'Número',
+        headerClassName: 'super-app-theme--header',
+        width: 90,
+        type: 'number',
+        align: 'center',
+        sortable: false,
       },
-    },
-  ]
-
-  const { data: rows, isFetching } = useQuery<ServiceSchedulesListProps[] | []>(
-    ['service-scheduler-list', company?.id],
-    async () => {
-      const response = await api.get(
-        `/service-schedule?company_id=${company?.id}&limit=2&page=2`,
-      )
-
-      const resp = response.data.data.map((data: any) => ({
-        id: data?.id ?? 'Não informado',
-        client: data?.client?.name ?? 'Não informado',
-        plate: data?.client_vehicle?.plate ?? 'Não informado',
-        chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-        technical_consultant:
-          data?.technical_consultant?.name ?? 'Não informado',
-        typeEstimate: 'não definido',
-        totalDiscount: 0,
-        total: 0,
-      }))
-      return resp
-    },
-    { enabled: !!company?.id },
+      {
+        field: 'client',
+        headerName: 'Cliente',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 230,
+        minWidth: 120,
+        align: 'left',
+        sortable: false,
+      },
+      {
+        field: 'plate',
+        headerName: 'Placa',
+        headerClassName: 'super-app-theme--header',
+        width: 90,
+        sortable: false,
+      },
+      {
+        field: 'chassis',
+        headerName: 'Chassis',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 200,
+        minWidth: 120,
+        sortable: false,
+      },
+      {
+        field: 'technical_consultant',
+        headerName: 'Responsavél',
+        headerClassName: 'super-app-theme--header',
+        flex: 1,
+        maxWidth: 120,
+        minWidth: 80,
+        sortable: false,
+      },
+      {
+        field: 'typeEstimate',
+        headerName: 'Tipo Orçamento',
+        headerClassName: 'super-app-theme--header',
+        width: 120,
+        sortable: false,
+      },
+      {
+        field: 'totalDiscount',
+        headerName: 'Tipo Desconto',
+        headerClassName: 'super-app-theme--header',
+        // type: 'number',
+        width: 110,
+        align: 'center',
+        sortable: false,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${formatMoneyPtBR(params.row.totalDiscount) || ''}`,
+      },
+      {
+        field: 'total',
+        headerName: 'Total Geral',
+        headerClassName: 'super-app-theme--header',
+        // type: 'number',
+        width: 110,
+        align: 'center',
+        sortable: false,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${formatMoneyPtBR(params.row.total) || ''}`,
+      },
+      {
+        field: 'action',
+        headerName: 'Ação',
+        headerClassName: 'super-app-theme--header',
+        sortable: false,
+        width: 80,
+        align: 'left',
+        renderCell: (params: GridRenderCellParams) => {
+          const onClick = (e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation()
+            const id = params.id
+            ActionDeleteConfirmations(id as number, handleDelete)
+          }
+          return (
+            <IconButton
+              aria-label="search"
+              color="warning"
+              onClick={onClick}
+              sx={{ marginLeft: 1, color: 'red' }}
+            >
+              <Delete />
+            </IconButton>
+          )
+        },
+      },
+    ],
+    [],
   )
+
+  const {
+    data: rows,
+    isSuccess,
+    isLoading,
+  } = useQuery<ServiceSchedulesListProps[] | []>({
+    queryKey: ['service-scheduler-list'],
+    queryFn: () =>
+      api
+        .get(
+          `/service-schedule?company_id=${router?.query?.companyId}&limit=2&page=2`,
+        )
+        .then((response) => {
+          const resp = response.data.data.map((data: any) => ({
+            id: data?.id ?? 'Não informado',
+            client: data?.client?.name ?? 'Não informado',
+            plate: data?.client_vehicle?.plate ?? 'Não informado',
+            chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+            technical_consultant:
+              data?.technical_consultant?.name ?? 'Não informado',
+            typeEstimate: 'não definido',
+            totalDiscount: 0,
+            total: 0,
+          }))
+          return resp
+        })
+        .catch(() => []),
+    enabled: !!router?.query?.companyId,
+  })
 
   // useEffect(() => {
   //   setLoadingData(true)
@@ -244,6 +256,19 @@ export default function ServiceSchedulesList() {
   //       })
   //   }
   // }, [router])
+
+  // if (isLoading) {
+  //   return (
+  //     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+  //       <Skeleton
+  //         variant="rectangular"
+  //         width="100%"
+  //         height={400}
+  //         sx={{ borderRadius: 2 }}
+  //       />
+  //     </Container>
+  //   )
+  // }
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -303,7 +328,7 @@ export default function ServiceSchedulesList() {
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={async () => {
-                    await router.push('/panel/service-schedules/create')
+                    await router.push(`/${campanyId}/service-schedules/create`)
                   }}
                 >
                   Adicionar novo
@@ -320,13 +345,16 @@ export default function ServiceSchedulesList() {
         </Grid>
 
         <Grid item xs={12}>
+          {/* {(isSuccess || isFetched) && ( */}
           <TableApp
             columns={columns}
-            rowsData={rows || []}
+            // rowsData={rows || []}
+            rowsData={isSuccess ? rows : []}
             handlePages={handlePages}
             pages={pages}
-            loading={isFetching}
+            loading={isLoading}
           />
+          {/* )} */}
         </Grid>
       </Grid>
     </Container>

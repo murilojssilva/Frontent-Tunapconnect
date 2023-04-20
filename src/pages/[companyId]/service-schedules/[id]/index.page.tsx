@@ -204,8 +204,8 @@ export default function ServiceSchedulesEdit() {
             id: client.id,
             name: client.name ?? 'Não informado',
             cpf: client.document ?? 'Não informado',
-            email: client.email[0] ?? 'Não informado',
-            telefone: client.phone[0] ?? 'Não informado',
+            email: client.email ?? 'Não informado',
+            telefone: client.phone ?? 'Não informado',
             address: client.address ?? 'Não informado',
           })
 
@@ -230,6 +230,7 @@ export default function ServiceSchedulesEdit() {
           })
         })
         .catch((err) => {
+          console.log(err)
           setClient(null)
           setClientVehicle(null)
           setTechnicalConsultant(null)
@@ -243,7 +244,7 @@ export default function ServiceSchedulesEdit() {
 
       if (company?.id) {
         api
-          .get(`/technical-consultant?company_id=${company?.id}`)
+          .get(`/technical-consultant?company_id=${router.query?.companyId}`)
           .then((resp) => {
             setTechnicalConsultantsList(
               resp.data.data.map((item: TechnicalConsultant) => ({
@@ -497,7 +498,9 @@ export default function ServiceSchedulesEdit() {
               <ButtonRight
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={async () =>
-                  await router.push('/panel/checklist/create')
+                  await router.push(
+                    `/${router?.query?.companyId}/checklist/create`,
+                  )
                 }
               >
                 Novo

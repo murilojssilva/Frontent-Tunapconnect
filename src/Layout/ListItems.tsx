@@ -10,8 +10,9 @@ import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { ListItemButton } from './styles'
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 type memuListProps = Array<{
   path: string
@@ -23,19 +24,19 @@ type memuListProps = Array<{
 const memuList: memuListProps = [
   {
     path: '/company',
-    href: '/panel/company',
+    href: '/company',
     component: <DashboardIcon />,
     title: 'Empresas',
   },
   {
     path: '/service-schedules',
-    href: '/panel/service-schedules/list',
+    href: '/service-schedules/list',
     component: <AccessTimeFilledOutlinedIcon />,
     title: 'Agendamento',
   },
   {
     path: '/checklist',
-    href: '/checklist/10',
+    href: '/checklist',
     component: <AccessTimeFilledOutlinedIcon />,
     title: 'Checklist',
   },
@@ -44,14 +45,29 @@ const memuList: memuListProps = [
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
+  const { campanyId } = useContext(CompanyContext)
   // console.log('aberto',opended)
+
+  const menuListCompanyId = useMemo(
+    () =>
+      memuList.map((item) => {
+        return item.path === '/company'
+          ? item
+          : {
+              ...item,
+              href: `/${campanyId}${item.href}`,
+            }
+      }),
+    [campanyId],
+  )
+
   useEffect(() => {
     setRouteActual(router.pathname)
   }, [router])
 
   return (
     <React.Fragment>
-      {memuList.map((menu, index) => {
+      {menuListCompanyId.map((menu, index) => {
         return (
           <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
