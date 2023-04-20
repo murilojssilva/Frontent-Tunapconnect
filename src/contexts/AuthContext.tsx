@@ -44,10 +44,9 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
       password: data.password,
     })
 
-    console.log(resp)
-
     if (resp?.ok && resp?.status === 200) {
-      Router.push('/company')
+      console.log(resp)
+      await Router.push('/company')
     }
   }
 
