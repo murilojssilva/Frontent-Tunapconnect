@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import { MyButton, TabItem, TabsContainer } from './styles'
 import { TabContent } from './TabContent'
 import { ApiCore } from '@/lib/api'
-import { Button, Skeleton, Stack } from '@mui/material'
+import { Skeleton, Stack } from '@mui/material'
 import { ChecklistProps, StagesDataProps } from '../../types'
 
 import { CompanyContext } from '@/contexts/CompanyContext'

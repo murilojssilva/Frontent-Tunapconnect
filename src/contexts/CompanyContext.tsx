@@ -48,27 +48,27 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   })
 
   useEffect(() => {
-    if (!company && !router?.query?.companyId) {
-      // console.log('SEM COMPANY E ROUTE', company, router?.query?.companyId)
-      router.push('/company')
-    }
-    if (!!router?.query?.companyId && !company) {
-      if (data) {
-        data.findIndex(
-          (item: any) =>
-            item.id === parseInt(router?.query?.companyId as string),
-        ) < 0 && router.push('/company')
-      } else {
-        api
-          .get(`/company/${router?.query?.companyId}`)
-          .then((response) => {
-            setCompany(response.data.data)
-          })
-          .catch(() => {
-            router.push('/company')
-          })
-      }
-    }
+    // if (!company && !router?.query?.companyId) {
+    //   // console.log('SEM COMPANY E ROUTE', company, router?.query?.companyId)
+    //   router.push('/company')
+    // }
+    // if (!!router?.query?.companyId && !company) {
+    //   if (data) {
+    //     data.findIndex(
+    //       (item: any) =>
+    //         item.id === parseInt(router?.query?.companyId as string),
+    //     ) < 0 && router.push('/company')
+    //   } else {
+    //     api
+    //       .get(`/company/${router?.query?.companyId}`)
+    //       .then((response) => {
+    //         setCompany(response.data.data)
+    //       })
+    //       .catch(() => {
+    //         router.push('/company')
+    //       })
+    //   }
+    // }
   }, [router?.query?.companyId, company])
 
   useEffect(() => {
