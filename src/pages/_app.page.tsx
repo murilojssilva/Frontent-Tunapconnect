@@ -19,14 +19,13 @@ import { Box, CircularProgress } from '@mui/material'
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
-type CustomAppProps = AppProps & {
-  Component: NextComponentType & { auth?: boolean } // add auth type
+export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
 
-// export interface MyAppProps extends AppProps {
-//   emotionCache?: EmotionCache
-// }
+type CustomAppProps = MyAppProps & {
+  Component: NextComponentType & { auth?: boolean } // add auth type
+}
 
 const MyApp = (props: CustomAppProps) => {
   const {
