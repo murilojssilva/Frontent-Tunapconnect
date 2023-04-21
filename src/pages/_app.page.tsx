@@ -41,7 +41,7 @@ const MyApp = (props: CustomAppProps) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <SessionProvider session={session} refetchInterval={10}>
+        <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <CompanyProvider>
