@@ -5,7 +5,8 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24, // 24 hour
+    // maxAge: 60 * 60 * 24, // 24 hour
+    maxAge: 20, // 24 hour
   },
   jwt: {
     secret: process.env.JWT_SIGNIN_PRIVATE_KEY,
@@ -48,23 +49,23 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      return {
-        ...token,
-        ...user,
+      if (user) {
+        token.username = user.name
+        token.privilege = user.privilege
+        token.accessToken = user.token
+        token.id = user.id
       }
+      return token
     },
     async session({ session, token, user }) {
-      session.user = token as any
-      // session.expires = token.exp as string
+      if (token) {
+        session.user.name = token.name
+        session.user.id = token.id
+        session.user.accessToken = token.accessToken
+        session.user.privilege = token.privilege
+      }
       return session
     },
-    // async redirect({ url, baseUrl }) {
-    //   // Allows relative callback URLs
-    //   if (url.startsWith("/")) return `${baseUrl}${url}`
-    //   // Allows callback URLs on the same origin
-    //   else if (new URL(url).origin === baseUrl) return url
-    //   return baseUrl
-    // }
   },
 }
 

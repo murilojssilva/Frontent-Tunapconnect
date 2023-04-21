@@ -30,10 +30,6 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-// import { getServerSession } from 'next-auth/next'
-// import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-// import { GetServerSidePropsContext } from 'next/types'
-// import { Skeleton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
@@ -65,7 +61,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  const { campanyId } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -283,7 +279,7 @@ export default function ServiceSchedulesList() {
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={async () => {
-                    await router.push(`/${campanyId}/service-schedules/create`)
+                    await router.push(`/${companyId}/service-schedules/create`)
                   }}
                 >
                   Adicionar novo
@@ -316,21 +312,4 @@ export default function ServiceSchedulesList() {
   )
 }
 
-// export default React.memo(ServiceSchedulesList)
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const session = await getServerSession(context.req, context.res, authOptions)
-//   if (!session?.user?.token) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     }
-//   }
-//   return {
-//     props: {
-//       session,
-//     },
-//   }
-// }
+ServiceSchedulesList.auth = true

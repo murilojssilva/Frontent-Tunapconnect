@@ -45,7 +45,7 @@ const memuList: memuListProps = [
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
-  const { campanyId } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
   // console.log('aberto',opended)
 
   const menuListCompanyId = useMemo(
@@ -55,10 +55,10 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
           ? item
           : {
               ...item,
-              href: `/${campanyId}${item.href}`,
+              href: `/${companyId}${item.href}`,
             }
       }),
-    [campanyId],
+    [companyId],
   )
 
   useEffect(() => {

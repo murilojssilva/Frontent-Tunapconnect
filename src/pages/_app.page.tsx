@@ -7,51 +7,33 @@ import { CacheProvider, EmotionCache } from '@emotion/react'
 import createEmotionCache from '@/styles/config/createEmotionCache'
 import theme from '@/styles/config/theme'
 import { AuthProvider } from '@/contexts/AuthContext'
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+import { ReactNode } from 'react'
+import Router from 'next/router'
 import Layout from '@/Layout'
 import { CompanyProvider } from '@/contexts/CompanyContext'
-
+import { SessionProvider, useSession } from 'next-auth/react'
 import { queryClient } from '@/lib/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
-
+import { NextComponentType } from 'next/types'
+import { Box, CircularProgress } from '@mui/material'
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
-export interface MyAppProps extends AppProps {
+type CustomAppProps = AppProps & {
+  Component: NextComponentType & { auth?: boolean } // add auth type
   emotionCache?: EmotionCache
 }
 
-const MyApp = (props: MyAppProps) => {
+// export interface MyAppProps extends AppProps {
+//   emotionCache?: EmotionCache
+// }
+
+const MyApp = (props: CustomAppProps) => {
   const {
     Component,
     emotionCache = clientSideEmotionCache,
     pageProps: { session, ...pageProps },
   } = props
-
-  const router = useRouter()
-
-  useEffect(() => {
-    const handleStart = (url: string) => {
-      NProgress.start()
-    }
-
-    const handleStop = () => {
-      NProgress.done()
-    }
-
-    router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleStop)
-    router.events.on('routeChangeError', handleStop)
-
-    return () => {
-      router.events.off('routeChangeStart', handleStart)
-      router.events.off('routeChangeComplete', handleStop)
-      router.events.off('routeChangeError', handleStop)
-    }
-  }, [router])
 
   return (
     <CacheProvider value={emotionCache}>
@@ -60,23 +42,59 @@ const MyApp = (props: MyAppProps) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider session={session}>
-            <CompanyProvider>
-              {router.route === '/' && <Component {...pageProps} />}
-              {router.route !== '/' && (
-                <Layout>
-                  <Component {...props.pageProps} />
-                </Layout>
-              )}
+        <SessionProvider session={session} refetchInterval={10}>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <CompanyProvider>
+                {/* {router.route === '/' && <Component {...pageProps} />} */}
 
-              {/* <Component {...pageProps} /> */}
-            </CompanyProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+                {Component.auth ? (
+                  // @ts-ignore
+                  <Auth>
+                    <Layout>
+                      <Component {...props.pageProps} />
+                    </Layout>
+                  </Auth>
+                ) : (
+                  <Component {...pageProps} />
+                )}
+
+                {/* <Component {...pageProps} /> */}
+              </CompanyProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </SessionProvider>
       </ThemeProvider>
     </CacheProvider>
   )
 }
 
 export default MyApp
+
+function Auth({ children }: { children: ReactNode }) {
+  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      Router.replace('/')
+    },
+  })
+
+  if (status === 'loading') {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress size={150} />
+      </Box>
+    )
+  }
+
+  return children
+}
