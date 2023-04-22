@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 
 interface companyProps {
-  id: number
+  id: string
   name: string
   cnpj: string | null
   cpf: string | null
