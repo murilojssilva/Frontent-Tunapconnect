@@ -45,8 +45,6 @@ const MyApp = (props: CustomAppProps) => {
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <CompanyProvider>
-                {/* {router.route === '/' && <Component {...pageProps} />} */}
-
                 {Component.auth ? (
                   // @ts-ignore
                   <Auth>

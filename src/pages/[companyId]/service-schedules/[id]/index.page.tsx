@@ -3,7 +3,6 @@ import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
 import Container from '@mui/material/Container'
-import { GetServerSidePropsContext } from 'next/types'
 
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -54,11 +53,9 @@ import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-
 import { PrintInspectionModal } from './components/PrintInspectionModal'
 import { TableModal } from './components/TableModal'
+import { useQuery } from '@tanstack/react-query'
 
 const api = new ApiCore()
 
@@ -75,7 +72,7 @@ type updateData = {
   technical_consultant_id: number | undefined
   client_id: number | undefined
   client_vehicle_id: number | undefined
-  company_id: number | undefined
+  company_id: string | undefined
   chasis: string | undefined
   plate: string | undefined
   claims_service: any[]
@@ -115,7 +112,7 @@ export default function ServiceSchedulesEdit() {
 
   const router = useRouter()
 
-  const { company } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
 
   // const handleDelete = (id: number) => {
   //   setRows(rows.filter((row) => row.id !== id))
@@ -163,7 +160,7 @@ export default function ServiceSchedulesEdit() {
       technical_consultant_id: technicalConsultant?.id,
       client_id: client?.id,
       client_vehicle_id: clientVehicle?.id,
-      company_id: company?.id,
+      company_id: companyId,
       chasis: clientVehicle?.chassis,
       plate: clientVehicle?.plate,
       claims_service: [],
@@ -188,77 +185,153 @@ export default function ServiceSchedulesEdit() {
     }
   }
 
+  // useEffect(() => {
+  //   if (!wasEdited) {
+  //     const { id } = router.query
+  //     api
+  //       .get(`/service-schedule/${id}`)
+  //       .then((response) => {
+  //         const {
+  //           client,
+  //           client_vehicle,
+  //           technical_consultant,
+  //           promised_date,
+  //         } = response.data.data
+  //         setClient({
+  //           id: client.id,
+  //           name: client.name ?? 'Não informado',
+  //           cpf: client.document ?? 'Não informado',
+  //           email: client.email ?? 'Não informado',
+  //           telefone: client.phone ?? 'Não informado',
+  //           address: client.address ?? 'Não informado',
+  //         })
+
+  //         setClientVehicle({
+  //           id: client_vehicle.id,
+  //           brand:
+  //             client_vehicle?.vehicle?.model?.brand?.name ?? 'Não informado',
+  //           chassis: client_vehicle?.chasis ?? 'Não informado',
+  //           vehicle: client_vehicle?.vehicle?.name ?? 'Não informado',
+  //           model:
+  //             `${client_vehicle?.vehicle?.model?.name} - ${client_vehicle.vehicle.model_year}` ??
+  //             'Não informado',
+  //           color: client_vehicle?.color ?? 'Não informado',
+  //           plate: client_vehicle?.plate ?? 'Não informado',
+  //         })
+  //         const promisedDate = dayjs(new Date(promised_date))
+  //         setVisitDate(promisedDate)
+
+  //         setTechnicalConsultant({
+  //           id: technical_consultant?.id ?? 'Não informado',
+  //           name: technical_consultant?.name ?? 'Não informado',
+  //         })
+  //       })
+  //       .catch((err) => {
+  //         console.log(err)
+  //         setClient(null)
+  //         setClientVehicle(null)
+  //         setTechnicalConsultant(null)
+  //         setActionAlerts({
+  //           isOpen: true,
+  //           title: `${err.response?.data?.msg ?? 'Error inesperado'}!`,
+  //           type: 'error',
+  //           redirectTo: '/service-schedules/list',
+  //         })
+  //       })
+
+  //     if (companyId) {
+  //       api
+  //         .get(`/technical-consultant?company_id=${router.query?.companyId}`)
+  //         .then((resp) => {
+  //           setTechnicalConsultantsList(
+  //             resp.data.data.map((item: TechnicalConsultant) => ({
+  //               id: item.id,
+  //               name: item.name,
+  //             })),
+  //           )
+  //         })
+  //         .catch((err) => {
+  //           console.log(err)
+  //         })
+  //     }
+  //   }
+  // }, [router.query, companyId, wasEdited])
+
+  const {
+    data: dataTechnicalConsultantList,
+    status: dataTechnicalConsultantListStatus,
+  } = useQuery<TechnicalConsultant[]>({
+    queryKey: [
+      'service_schedule',
+      'by_id',
+      'edit',
+      'technical-consultant-list',
+      'options',
+    ],
+    queryFn: async () => {
+      const resp = await api.get(
+        `/technical-consultant?company_id=${companyId}`,
+      )
+      return resp.data.data
+    },
+    enabled: !!companyId && wasEdited,
+  })
+
+  const { data: dataServiceSchedule, status: dataServiceScheduleStatus } =
+    useQuery({
+      queryKey: ['service_schedule', 'by_id', 'edit'],
+      queryFn: async () => {
+        const { id } = router.query
+        const resp = await api.get(`/service-schedule/${id}`)
+        return resp.data.data
+      },
+      enabled: !!router?.query?.id && !!companyId && !wasEdited,
+    })
+
   useEffect(() => {
-    if (!wasEdited) {
-      const { id } = router.query
-      api
-        .get(`/service-schedule/${id}`)
-        .then((response) => {
-          const {
-            client,
-            client_vehicle,
-            technical_consultant,
-            promised_date,
-          } = response.data.data
-          setClient({
-            id: client.id,
-            name: client.name ?? 'Não informado',
-            cpf: client.document ?? 'Não informado',
-            email: client.email ?? 'Não informado',
-            telefone: client.phone ?? 'Não informado',
-            address: client.address ?? 'Não informado',
-          })
-
-          setClientVehicle({
-            id: client_vehicle.id,
-            brand:
-              client_vehicle?.vehicle?.model?.brand?.name ?? 'Não informado',
-            chassis: client_vehicle?.chasis ?? 'Não informado',
-            vehicle: client_vehicle?.vehicle?.name ?? 'Não informado',
-            model:
-              `${client_vehicle?.vehicle?.model?.name} - ${client_vehicle.vehicle.model_year}` ??
-              'Não informado',
-            color: client_vehicle?.color ?? 'Não informado',
-            plate: client_vehicle?.plate ?? 'Não informado',
-          })
-          const promisedDate = dayjs(new Date(promised_date))
-          setVisitDate(promisedDate)
-
-          setTechnicalConsultant({
-            id: technical_consultant?.id ?? 'Não informado',
-            name: technical_consultant?.name ?? 'Não informado',
-          })
-        })
-        .catch((err) => {
-          console.log(err)
-          setClient(null)
-          setClientVehicle(null)
-          setTechnicalConsultant(null)
-          setActionAlerts({
-            isOpen: true,
-            title: `${err.response?.data?.msg ?? 'Error inesperado'}!`,
-            type: 'error',
-            redirectTo: '/service-schedules/list',
-          })
-        })
-
-      if (company?.id) {
-        api
-          .get(`/technical-consultant?company_id=${router.query?.companyId}`)
-          .then((resp) => {
-            setTechnicalConsultantsList(
-              resp.data.data.map((item: TechnicalConsultant) => ({
-                id: item.id,
-                name: item.name,
-              })),
-            )
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      }
+    if (dataTechnicalConsultantListStatus === 'success') {
+      setTechnicalConsultantsList(
+        dataTechnicalConsultantList.map((item: TechnicalConsultant) => ({
+          id: item.id,
+          name: item.name,
+        })),
+      )
     }
-  }, [router.query, company?.id, wasEdited])
+  }, [dataTechnicalConsultantListStatus, dataTechnicalConsultantList])
+
+  useEffect(() => {
+    if (dataServiceScheduleStatus === 'success') {
+      const { client, client_vehicle, technical_consultant, promised_date } =
+        dataServiceSchedule
+      setClient({
+        id: client.id,
+        name: client.name ?? 'Não informado',
+        cpf: client.document ?? 'Não informado',
+        email: client.email ?? 'Não informado',
+        telefone: client.phone ?? 'Não informado',
+        address: client.address ?? 'Não informado',
+      })
+
+      setClientVehicle({
+        id: client_vehicle.id,
+        brand: client_vehicle?.vehicle?.model?.brand?.name ?? 'Não informado',
+        chassis: client_vehicle?.chasis ?? 'Não informado',
+        vehicle: client_vehicle?.vehicle?.name ?? 'Não informado',
+        model:
+          `${client_vehicle?.vehicle?.model?.name} - ${client_vehicle.vehicle.model_year}` ??
+          'Não informado',
+        color: client_vehicle?.color ?? 'Não informado',
+        plate: client_vehicle?.plate ?? 'Não informado',
+      })
+      const promisedDate = dayjs(new Date(promised_date))
+      setVisitDate(promisedDate)
+
+      setTechnicalConsultant({
+        id: technical_consultant?.id ?? 'Não informado',
+        name: technical_consultant?.name ?? 'Não informado',
+      })
+    }
+  }, [dataServiceScheduleStatus, dataServiceSchedule])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -744,19 +817,4 @@ export default function ServiceSchedulesEdit() {
   )
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
-}
+ServiceSchedulesEdit.auth = true

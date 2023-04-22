@@ -40,7 +40,6 @@ type SearchFormProps = {
 //   search: string
 // }
 
-// eslint-disable-next-line new-cap
 const api = new ApiCore()
 
 const HeaderBreadcrumbData: listBreadcrumb[] = [
@@ -196,7 +195,8 @@ export default function ServiceSchedulesList() {
   const {
     data: rows,
     isSuccess,
-    isLoading,
+    isInitialLoading,
+    isFetching,
   } = useQuery<ServiceSchedulesListProps[] | []>({
     queryKey: ['service-scheduler-list'],
     queryFn: () =>
@@ -221,6 +221,8 @@ export default function ServiceSchedulesList() {
         .catch(() => []),
     enabled: !!router?.query?.companyId,
   })
+
+  console.log(isFetching)
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -296,16 +298,14 @@ export default function ServiceSchedulesList() {
         </Grid>
 
         <Grid item xs={12}>
-          {/* {(isSuccess || isFetched) && ( */}
           <TableApp
             columns={columns}
-            // rowsData={rows || []}
             rowsData={isSuccess ? rows : []}
             handlePages={handlePages}
             pages={pages}
-            loading={isLoading}
+            loading={isInitialLoading || isFetching}
+            companyId={companyId}
           />
-          {/* )} */}
         </Grid>
       </Grid>
     </Container>

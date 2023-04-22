@@ -34,6 +34,8 @@ export const BoxContainer = styled(Box)(({ theme }) => ({
     // backgroundColor: '#1c4961',
     // color: 'white',
   },
+  // height: 400,
+  width: '100%',
 }))
 
 export const TableDataGrid = styled(DataGrid)(({ theme }) => ({

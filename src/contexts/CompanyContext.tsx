@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 // import { parseCookies, setCookie } from 'nookies'
 
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 // import { useQuery } from '@tanstack/react-query'
 
 type CompanyProps = {
-  id: number
+  id: string
   name: string
   cnpj: string | null
   cpf: string | null
@@ -16,7 +16,7 @@ type CompanyProps = {
 
 type CompanyContextType = {
   company: CompanyProps | null | undefined
-  companyId: number | undefined
+  companyId: string | undefined
   createCompany: (company: CompanyProps) => void
 }
 
@@ -28,15 +28,28 @@ export const CompanyContext = createContext({} as CompanyContextType)
 
 export function CompanyProvider({ children }: CompanyProviderProps) {
   const [company, setCompany] = useState<CompanyProps | null>(null)
-  const [companyId, setCompanyId] = useState<number>()
+  const [companyId, setCompanyId] = useState<string>()
 
   const router = useRouter()
+
+  const isCompanyId = !!companyId
 
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
     setCompanyId(newCompany.id)
     await router.push(`/${newCompany.id}/service-schedules/list`)
   }
+
+  useEffect(() => {
+    if (!isCompanyId) {
+      if (router?.query?.companyId) {
+        const regex = /[1-9]+/
+        regex.test(router?.query?.companyId as string)
+          ? setCompanyId(router?.query?.companyId as string)
+          : router.push('/company')
+      }
+    }
+  }, [router?.query?.companyId])
 
   return (
     <CompanyContext.Provider value={{ companyId, company, createCompany }}>
