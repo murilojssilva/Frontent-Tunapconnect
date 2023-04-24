@@ -5,8 +5,10 @@ export interface Apointment {
 }
 
 export interface Image {
-  id_image: number
-  'url:image': string
+  id: number
+  name: string
+  url: string
+  size: string
 }
 
 export interface Values {
@@ -15,7 +17,7 @@ export interface Values {
 }
 export interface Value {
   value: string
-  images?: Image[] | undefined
+  images?: Image[] | undefined | []
   label?: string | undefined
   values?: Values | undefined
   options?: string[] | undefined
@@ -77,7 +79,7 @@ export interface Company {
   address_1: any
   address_2: any
   integration_code: any
-  image: any
+  image: any[]
   corporate_name: any
   address: any
   phone: any

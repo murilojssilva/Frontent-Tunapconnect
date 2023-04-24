@@ -48,7 +48,6 @@ export function PrintInspection(props: {
   // }
 
   // const getData = () => {
-  //   console.log('/vehicle-service/' + props?.checklistId)
   //   if (props?.id) {
   //     let ajaxCall
 

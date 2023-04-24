@@ -15,39 +15,54 @@ import {
 
 import DeleteIcon from '@mui/icons-material/Delete'
 import { MyDropzone } from './DropZone'
-import { useState } from 'react'
 import Image from 'next/image'
 import { MyButton } from './styles'
 
+type ListImages = Array<{
+  id: number
+  images: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }[]
+}>
+
 interface IModalImageProps {
-  isOpen: boolean
+  isOpen: { id: number | null; open: boolean }
   closeModalImage: () => void
+  handleAddImageInListImage: (
+    index: number,
+    images: {
+      id: number
+      name: string
+      url: string
+      size: string
+    },
+  ) => void
+  handleRemoveImageInListImage: (index: number, idImage: number) => void
+  listImage: ListImages
 }
 
 export default function ModalImages({
   isOpen,
   closeModalImage,
+  handleAddImageInListImage,
+  listImage,
+  handleRemoveImageInListImage,
 }: IModalImageProps) {
-  const [imageUrlList, setImageUrlList] = useState<
-    Array<{ id: number; name: string; url: string; size: string }>
-  >([])
-
   async function handleAddImageUrlList(imageData: {
     id: number
     name: string
     url: string
     size: string
   }) {
-    setImageUrlList((prevState) => {
-      return [...prevState, imageData]
-    })
+    if (isOpen.id) {
+      handleAddImageInListImage(isOpen.id, imageData)
+    }
   }
 
-  async function handleRemoveImageUrlList(id: number) {
-    setImageUrlList((prevState) => {
-      return prevState.filter((item) => item.id !== id)
-    })
-  }
+  const ImagesActual = listImage.filter((image) => image.id === isOpen.id)[0]
 
   const handleClose = () => {
     closeModalImage()
@@ -55,7 +70,7 @@ export default function ModalImages({
 
   return (
     <Dialog
-      open={isOpen}
+      open={isOpen.open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -65,7 +80,7 @@ export default function ModalImages({
         <Box>
           <MyDropzone handleAddImageUrlList={handleAddImageUrlList} />
         </Box>
-        {imageUrlList.length > 0 && (
+        {ImagesActual?.images.length > 0 ? (
           <Paper
             style={{
               maxHeight: 300,
@@ -75,50 +90,56 @@ export default function ModalImages({
             }}
           >
             <List>
-              {imageUrlList.map((item) => (
-                <ListItem
-                  sx={{
-                    border: '1px solid #e1e1e1',
-                    borderRadius: '2px',
-                    px: 1,
-                    marginBottom: '5px',
-                    overflowY: '',
-                    maxHeight: 100,
-                  }}
-                  key={item.id}
-                  dense
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleRemoveImageUrlList(item.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Image
-                      alt={item.name}
-                      src={item.url}
-                      fill
-                      style={{
-                        maxWidth: '50px',
-                        maxHeight: '60px',
-                        objectFit: 'scale-down',
-                        margin: '0 8px',
+              {ImagesActual?.images.length > 0
+                ? ImagesActual?.images.map((item) => (
+                    <ListItem
+                      sx={{
+                        border: '1px solid #e1e1e1',
+                        borderRadius: '2px',
+                        px: 1,
+                        marginBottom: '5px',
+                        overflowY: '',
+                        maxHeight: 100,
                       }}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={item.name}
-                    secondary={`${item.size} MB`}
-                  />
-                </ListItem>
-              ))}
+                      key={item.id}
+                      dense
+                      secondaryAction={
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => {
+                            if (isOpen?.id) {
+                              handleRemoveImageInListImage(isOpen?.id, item.id)
+                            }
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      }
+                    >
+                      <ListItemAvatar>
+                        <Image
+                          alt={item.name}
+                          src={item.url}
+                          fill
+                          style={{
+                            maxWidth: '50px',
+                            maxHeight: '60px',
+                            objectFit: 'scale-down',
+                            margin: '0 8px',
+                          }}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.name}
+                        secondary={`${item.size} MB`}
+                      />
+                    </ListItem>
+                  ))
+                : null}
             </List>
           </Paper>
-        )}
+        ) : null}
       </DialogContent>
       <DialogActions sx={{ paddingX: 3, paddingBottom: 2, paddingTop: 0 }}>
         <Stack direction="row" spacing={2}>
@@ -126,7 +147,6 @@ export default function ModalImages({
             variant="contained"
             onClick={() => {
               handleClose()
-              setImageUrlList([])
             }}
           >
             cancelar

@@ -196,7 +196,6 @@ export default function ServiceSchedulesList() {
     data: rows,
     isSuccess,
     isInitialLoading,
-    isFetching,
   } = useQuery<ServiceSchedulesListProps[] | []>({
     queryKey: ['service-scheduler-list'],
     queryFn: () =>
@@ -301,7 +300,7 @@ export default function ServiceSchedulesList() {
             rowsData={isSuccess ? rows : []}
             handlePages={handlePages}
             pages={pages}
-            loading={isInitialLoading || isFetching}
+            loading={isInitialLoading}
             companyId={companyId}
           />
         </Grid>

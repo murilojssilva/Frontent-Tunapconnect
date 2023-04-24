@@ -13,19 +13,17 @@ export default function ChecklistCreate() {
     async function createCheckListBase() {
       try {
         const modelChecklist = await api.get('/checklist_model/list/')
-        // console.log(modelChecklist.data.data[0])
-        console.log(router.query)
         const dataCreateChecklist = {
           company_id:
             router?.query?.companyId &&
             parseInt(router?.query?.companyId as string),
           brand_id: null,
-          vehicle_id: null,
+          vehicle_id: null, //  vehicle id
           model_id: null,
           vehicle_client_id: null,
           km: null,
           fuel: null,
-          client_id: null,
+          client_id: null, // client id
           service_schedule_id: router?.query?.service_schedule_id
             ? parseInt(router?.query?.service_schedule_id as string)
             : null,
@@ -33,8 +31,6 @@ export default function ChecklistCreate() {
           status: 'rascunho', // salvo // finalizado // rascunho
           stages: modelChecklist.data.data[0].stages,
         }
-
-        console.log(dataCreateChecklist)
         if (modelChecklist.data.data.length > 0) {
           const createdDefault = await api.create(
             '/checklist',

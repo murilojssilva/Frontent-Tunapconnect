@@ -55,7 +55,7 @@ export default function ChecklistCreateById() {
   // const [stageData, setStageData] = useState([])
   const queryClient = useQueryClient()
   const api = new ApiCore()
-  const { company } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
   const router = useRouter()
 
   const updateChecklistmutations = useMutation({
@@ -63,12 +63,12 @@ export default function ChecklistCreateById() {
       return api
         .update(`/checklist/${router?.query?.id}`, newDataChecklist)
         .then((resp) => {
-          return resp.data.data
+          console.log(resp.data.data)
+          return resp.data.data[0]
         })
     },
 
     onSuccess: (data) => {
-      console.log('onSuccess', data)
       // queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
       queryClient.setQueryData(['checklist-createByID'], data)
       queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
@@ -83,15 +83,13 @@ export default function ChecklistCreateById() {
     queryKey: ['checklist-createByID'],
     queryFn: () =>
       api
-        .get(`/checklist/${router?.query?.id}?company_id=${company?.id}`)
+        .get(`/checklist/${router?.query?.id}?company_id=${companyId}`)
         .then((response) => {
-          // console.log(response.data.data)
           return response.data.data
         }),
-    refetchOnMount: 'always',
+    // refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
   })
-  console.log('get', data)
   async function handleAddListCheckList(stageData: StagesDataProps) {
     const dataForPost = {
       company_id: data?.company_id,
@@ -109,7 +107,6 @@ export default function ChecklistCreateById() {
         return item.name === stageData.name ? stageData : item
       }),
     }
-    console.log(dataForPost)
     // const resp = await api.update('/checklist/21', dataForPost)
     // @ts-ignore
     updateChecklistmutations.mutate(dataForPost)
@@ -118,7 +115,6 @@ export default function ChecklistCreateById() {
     //     return item.name === data.name ? data : item
     //   })
     // })
-    // console.log(resp)
   }
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -129,10 +125,6 @@ export default function ChecklistCreateById() {
   //   const isStage = stages.filter((stage) => stage.name === stageActual)
   //   return isStage[0]
   // }
-
-  // console.log('isLoading', isLoading)
-  // console.log('isSuccess', isSuccess)
-  // console.log('data', data)
 
   if (isLoading) {
     return (
@@ -173,7 +165,7 @@ export default function ChecklistCreateById() {
                   scrollButtons="auto"
                   aria-label="scrollable auto tabs example"
                 >
-                  {data.stages.length > 0 &&
+                  {data?.stages?.length > 0 &&
                     data.stages.map((stage, index) => {
                       // const isDisabled =
                       //   getSavedStage(stages, stage.name)?.status === 'closed'
@@ -188,9 +180,8 @@ export default function ChecklistCreateById() {
                     })}
                 </TabsContainer>
               </Box>
-              {data.stages.length > 0 &&
+              {data?.stages?.length > 0 &&
                 data.stages.map((stage, index) => {
-                  // console.log(getSavedStage(stages, stage.name))
                   return (
                     <TabPanel
                       key={`${Math.random() * 2000}-${stage.name}-${index}`}
@@ -202,7 +193,7 @@ export default function ChecklistCreateById() {
                         stageData={stage}
                         checklistModel={data}
                         stageName={stage.name}
-                        formIDSubmit={`form-${stage.name}`}
+                        formIDSubmit={`form-${stage.name}-${index}`}
                         handleAddListCheckList={handleAddListCheckList}
                         isClosed={stage.status === 'closed' && false}
                         // stageSaved={getSavedStage(stageSaved, stage.name)}
@@ -226,7 +217,7 @@ export default function ChecklistCreateById() {
                 <MyButton
                   type="submit"
                   variant="contained"
-                  form={`form-${data.stages[value]?.name || ''}`}
+                  form={`form-${data?.stages[value].name ?? ''}-${value}`}
                 >
                   Salvar
                 </MyButton>
