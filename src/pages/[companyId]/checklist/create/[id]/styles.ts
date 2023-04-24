@@ -83,3 +83,17 @@ export const InputLabelRow = styled(Typography)(({ theme }) => ({
 export const InputText = styled(OutlinedInput)(({ theme }) => ({
   flex: 1,
 }))
+
+export const MyButton = styled(Button)(({ theme }) => ({
+  color: 'white',
+  background: '#0E948B',
+  borderRadius: 4,
+  // borderTopRightRadius: 0,
+  // borderBottomRightRadius: 0,
+  // padding: '5px 16px',
+  flex: 1,
+  textTransform: 'none',
+  '&:hover': {
+    background: '#1ACABA',
+  },
+}))

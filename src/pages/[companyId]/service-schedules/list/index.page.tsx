@@ -30,10 +30,6 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-import { GetServerSidePropsContext } from 'next/types'
-// import { Skeleton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
 type SearchFormProps = {
@@ -44,7 +40,6 @@ type SearchFormProps = {
 //   search: string
 // }
 
-// eslint-disable-next-line new-cap
 const api = new ApiCore()
 
 const HeaderBreadcrumbData: listBreadcrumb[] = [
@@ -54,7 +49,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
   },
   {
     label: 'Lista de agendamentos',
-    href: '/panel/service-schedules/list',
+    href: '/service-schedules/list',
   },
 ]
 
@@ -65,7 +60,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  const { campanyId } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
 
   const router = useRouter()
 
@@ -200,7 +195,8 @@ export default function ServiceSchedulesList() {
   const {
     data: rows,
     isSuccess,
-    isLoading,
+    isInitialLoading,
+    isFetching,
   } = useQuery<ServiceSchedulesListProps[] | []>({
     queryKey: ['service-scheduler-list'],
     queryFn: () =>
@@ -226,49 +222,7 @@ export default function ServiceSchedulesList() {
     enabled: !!router?.query?.companyId,
   })
 
-  // useEffect(() => {
-  //   setLoadingData(true)
-  //   if (company?.id) {
-  //     api
-  //       .get(`/service-schedule?company_id=${company?.id}&limit=2&page=2`)
-  //       .then((response) => {
-  //         const resp = response.data.data
-  //         setRows(`
-  //           resp.map((data: any) => ({
-  //             id: data?.id ?? 'Não informado',
-  //             client: data?.client?.name ?? 'Não informado',
-  //             plate: data?.client_vehicle?.plate ?? 'Não informado',
-  //             chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-  //             technical_consultant:
-  //               data?.technical_consultant?.name ?? 'Não informado',
-  //             typeEstimate: 'não definido',
-  //             totalDiscount: 0,
-  //             total: 0,
-  //           })),
-  //         )
-  //       })
-  //       .catch((error) => {
-  //         console.error(error)
-  //         setRows([])
-  //       })
-  //       .finally(() => {
-  //         setLoadingData(false)
-  //       })
-  //   }
-  // }, [router])
-
-  // if (isLoading) {
-  //   return (
-  //     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-  //       <Skeleton
-  //         variant="rectangular"
-  //         width="100%"
-  //         height={400}
-  //         sx={{ borderRadius: 2 }}
-  //       />
-  //     </Container>
-  //   )
-  // }
+  console.log(isFetching)
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -291,7 +245,6 @@ export default function ServiceSchedulesList() {
                   <TextField
                     label="Procura"
                     id="outlined-size-small"
-                    // defaultValue="Pro"
                     size="small"
                     sx={{ flex: 1, width: '100%' }}
                     {...register('search')}
@@ -328,7 +281,7 @@ export default function ServiceSchedulesList() {
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={async () => {
-                    await router.push(`/${campanyId}/service-schedules/create`)
+                    await router.push(`/${companyId}/service-schedules/create`)
                   }}
                 >
                   Adicionar novo
@@ -345,35 +298,18 @@ export default function ServiceSchedulesList() {
         </Grid>
 
         <Grid item xs={12}>
-          {/* {(isSuccess || isFetched) && ( */}
           <TableApp
             columns={columns}
-            // rowsData={rows || []}
             rowsData={isSuccess ? rows : []}
             handlePages={handlePages}
             pages={pages}
-            loading={isLoading}
+            loading={isInitialLoading || isFetching}
+            companyId={companyId}
           />
-          {/* )} */}
         </Grid>
       </Grid>
     </Container>
   )
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
-}
+ServiceSchedulesList.auth = true

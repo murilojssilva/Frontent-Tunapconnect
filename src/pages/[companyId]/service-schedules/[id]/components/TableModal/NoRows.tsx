@@ -28,7 +28,7 @@ const StyledGridOverlay = styled('div')(({ theme }) => ({
 
 export function CustomNoRowsOverlay() {
   return (
-    <StyledGridOverlay>
+    <StyledGridOverlay sx={{ marginTop: 2 }}>
       <svg
         width="120"
         height="100"

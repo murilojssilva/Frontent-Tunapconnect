@@ -74,7 +74,7 @@ interface DashboardContentProps {
 }
 
 type CompanyProps = {
-  id: number
+  id: string
   name: string
   cnpj: string | null
   cpf: string | null

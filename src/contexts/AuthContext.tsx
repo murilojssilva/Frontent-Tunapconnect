@@ -1,12 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
-import {
-  getSession,
-  SessionProvider,
-  signIn as signInRequest,
-  // signOut,
-  // useSession,
-} from 'next-auth/react'
-import { Session } from 'next-auth'
+import { signIn as signInRequest, useSession } from 'next-auth/react'
+
 import Router from 'next/router'
 
 type SignInData = {
@@ -15,7 +9,7 @@ type SignInData = {
 }
 
 type User = {
-  id: number | undefined
+  id: string | undefined
   name: string | undefined
   privilege: string | undefined
 }
@@ -28,12 +22,12 @@ type AuthContextType = {
 
 type AuthProviderProps = {
   children: ReactNode
-  session: Session | undefined
 }
 
 export const AuthContext = createContext({} as AuthContextType)
 
-export function AuthProvider({ children, session }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderProps) {
+  const { status, data: session } = useSession()
   const [user, setUser] = useState<User | null>(null)
   const isAuthenticated = !!user
 
@@ -45,29 +39,22 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
     })
 
     if (resp?.ok && resp?.status === 200) {
-      Router.push('/panel/company')
+      setUser({
+        id: session?.user.id,
+        name: session?.user.name,
+        privilege: session?.user.privilege,
+      })
+      await Router.push('/company')
     }
   }
 
   useEffect(() => {
-    getSession()
-      .then((session) => {
-        if (session) {
-          setUser({
-            id: session?.user?.id,
-            name: session?.user?.name,
-            privilege: session?.user?.privilege,
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [session])
+    if (status === 'unauthenticated') Router.replace('/')
+  }, [status])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>
-      <SessionProvider session={session}>{children}</SessionProvider>
+      {children}
     </AuthContext.Provider>
   )
 }

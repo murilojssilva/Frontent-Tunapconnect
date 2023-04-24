@@ -19,6 +19,7 @@ interface TableAppProps {
   handlePages: (nextPage: string) => void
   pages: { current: number; next: boolean; previous: boolean }
   loading: boolean
+  companyId: string | undefined
 }
 
 declare module '@mui/x-data-grid' {
@@ -36,6 +37,7 @@ export function TableApp({
   handlePages,
   pages,
   loading,
+  companyId,
 }: TableAppProps) {
   const [rows, setRows] = useState<ServiceSchedulesListProps[]>([])
 
@@ -90,13 +92,11 @@ export function TableApp({
               },
             }}
             loading={loading}
-            onRowClick={(id) => {
-              router.push(
-                `/${router?.query?.companyId}/service-schedules/${id.id}`,
-              )
+            onRowDoubleClick={(id) => {
+              router.push(`/${companyId}/service-schedules/${id.id}`)
             }}
             pageSizeOptions={[7]}
-            disableRowSelectionOnClick
+            // disableRowSelectionOnClick
             disableColumnFilter
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

@@ -2,9 +2,7 @@ import * as React from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
-import { getSession } from 'next-auth/react'
 import { useContext } from 'react'
-import { GetServerSideProps } from 'next/types'
 import { ApiCore } from '@/lib/api'
 import { Skeleton, Typography } from '@mui/material'
 import Title from '@/components/Title'
@@ -13,16 +11,18 @@ import { ContainerItem } from './styles'
 // import { useRouter } from 'next/router'
 import { CompanyContext } from '@/contexts/CompanyContext'
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 
 interface companyProps {
-  id: number
+  id: string
   name: string
   cnpj: string | null
   cpf: string | null
 }
 
-export default function DashboardContent() {
-  // const [company, setCompany] = useState<companyProps[] | []>()
+export default function CompanyList() {
+  // eslint-disable-next-line no-unused-vars
+  const { data: session } = useSession()
 
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
@@ -99,18 +99,4 @@ export default function DashboardContent() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
-
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {},
-  }
-}
+CompanyList.auth = true

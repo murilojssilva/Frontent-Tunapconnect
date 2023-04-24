@@ -14,7 +14,7 @@ export class ApiCore {
     api.interceptors.request.use(
       async function (config) {
         const session = await getSession()
-        const token = session?.user.token
+        const token = session?.user.accessToken
         config.headers.Authorization = token ? ` Bearer ${token}` : ''
 
         return config

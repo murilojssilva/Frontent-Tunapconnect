@@ -1,102 +1,54 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
+  DialogTitle,
   IconButton,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
   Stack,
 } from '@mui/material'
 
 import DeleteIcon from '@mui/icons-material/Delete'
 import { MyDropzone } from './DropZone'
+import { useState } from 'react'
+import Image from 'next/image'
+import { MyButton } from './styles'
 
 interface IModalImageProps {
   isOpen: boolean
   closeModalImage: () => void
 }
 
-const itemData = [
-  {
-    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-    title: 'Breakfast',
-    author: '@bkristastucchio',
-    rows: 2,
-    cols: 2,
-    featured: true,
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-    title: 'Burger',
-    author: '@rollelflex_graphy726',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-    title: 'Camera',
-    author: '@helloimnik',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-    title: 'Coffee',
-    author: '@nolanissac',
-    cols: 2,
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-    title: 'Hats',
-    author: '@hjrc33',
-    cols: 2,
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-    title: 'Honey',
-    author: '@arwinneil',
-    rows: 2,
-    cols: 2,
-    featured: true,
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-    title: 'Basketball',
-    author: '@tjdragotta',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-    title: 'Fern',
-    author: '@katie_wasserman',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-    title: 'Mushrooms',
-    author: '@silverdalex',
-    rows: 2,
-    cols: 2,
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-    title: 'Tomato basil',
-    author: '@shelleypauls',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-    title: 'Sea star',
-    author: '@peterlaster',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-    title: 'Bike',
-    author: '@southside_customs',
-    cols: 2,
-  },
-]
-
 export default function ModalImages({
   isOpen,
   closeModalImage,
 }: IModalImageProps) {
+  const [imageUrlList, setImageUrlList] = useState<
+    Array<{ id: number; name: string; url: string; size: string }>
+  >([])
+
+  async function handleAddImageUrlList(imageData: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }) {
+    setImageUrlList((prevState) => {
+      return [...prevState, imageData]
+    })
+  }
+
+  async function handleRemoveImageUrlList(id: number) {
+    setImageUrlList((prevState) => {
+      return prevState.filter((item) => item.id !== id)
+    })
+  }
+
   const handleClose = () => {
     closeModalImage()
   }
@@ -108,49 +60,80 @@ export default function ModalImages({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      {/* <DialogTitle id="alert-dialog-title">{'Images'}</DialogTitle> */}
+      <DialogTitle id="alert-dialog-title">{'Imagens'}</DialogTitle>
       <DialogContent>
         <Box>
-          <MyDropzone />
+          <MyDropzone handleAddImageUrlList={handleAddImageUrlList} />
         </Box>
-        <ImageList sx={{ width: 500, height: 450 }}>
-          <ImageListItem key="Subheader" cols={2}>
-            {/* <ListSubheader component="div">December</ListSubheader> */}
-          </ImageListItem>
-          {itemData.map((item) => (
-            <ImageListItem key={item.img}>
-              <img
-                src={`${item.img}?w=248&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                alt={item.title}
-                loading="lazy"
-              />
-              <ImageListItemBar
-                sx={{
-                  background: 'transparent',
-                }}
-                position="bottom"
-                actionIcon={
-                  <IconButton
-                    sx={{ color: 'red' }}
-                    aria-label={`info about ${item.title}`}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                }
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
+        {imageUrlList.length > 0 && (
+          <Paper
+            style={{
+              maxHeight: 300,
+              overflow: 'auto',
+              marginTop: 10,
+              padding: '5px 10px 0px 10px',
+            }}
+          >
+            <List>
+              {imageUrlList.map((item) => (
+                <ListItem
+                  sx={{
+                    border: '1px solid #e1e1e1',
+                    borderRadius: '2px',
+                    px: 1,
+                    marginBottom: '5px',
+                    overflowY: '',
+                    maxHeight: 100,
+                  }}
+                  key={item.id}
+                  dense
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleRemoveImageUrlList(item.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Image
+                      alt={item.name}
+                      src={item.url}
+                      fill
+                      style={{
+                        maxWidth: '50px',
+                        maxHeight: '60px',
+                        objectFit: 'scale-down',
+                        margin: '0 8px',
+                      }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`${item.size} MB`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        )}
       </DialogContent>
       <DialogActions sx={{ paddingX: 3, paddingBottom: 2, paddingTop: 0 }}>
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={handleClose}>
+          <MyButton
+            variant="contained"
+            onClick={() => {
+              handleClose()
+              setImageUrlList([])
+            }}
+          >
             cancelar
-          </Button>
-          <Button variant="contained" onClick={handleClose}>
+          </MyButton>
+          <MyButton variant="contained" onClick={handleClose}>
             finalizar
-          </Button>
+          </MyButton>
         </Stack>
       </DialogActions>
     </Dialog>

@@ -71,7 +71,7 @@ type updateData = {
   technical_consultant_id: number | undefined
   client_id: number | undefined
   client_vehicle_id: number | undefined
-  company_id: number | undefined
+  company_id: string | undefined
   chasis: string | undefined
   plate: string | undefined
   claims_service: any[]

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useMemo } from 'react'
 
 import {
   GridColDef,
@@ -21,6 +21,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
 import { CompanyContext } from '@/contexts/CompanyContext'
+import { useQuery } from '@tanstack/react-query'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -57,108 +58,87 @@ export function TableModal({
   closeChecklistModal,
   serviceScheduleId,
 }: TableAppProps) {
-  const [rows, setRows] = useState<RowsProps[]>([])
-  const [open, setOpen] = React.useState(false)
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { company } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
 
-  const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'Código',
-      headerClassName: 'super-app-theme--header',
-      width: 90,
-      type: 'number',
-      align: 'center',
-      sortable: false,
-    },
-    {
-      field: 'createAt',
-      headerName: 'Data',
-      headerClassName: 'super-app-theme--header',
-      // flex: 1,
-      maxWidth: 220,
-      minWidth: 220,
-      sortable: false,
-    },
-    {
-      field: 'checklistModel',
-      headerName: 'Versão',
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      sortable: false,
-    },
-    {
-      field: 'action',
-      headerName: 'Ação',
-      headerClassName: 'super-app-theme--header',
-      sortable: false,
-      width: 80,
-      align: 'left',
-      renderCell: (params: GridRenderCellParams) => {
-        // const onClick = (e:React.MouseEvent<HTMLElement>) => {
-        //   e.stopPropagation();
-        //   const id = params.id;
-        // }
-        return <MoreOptionsButtonSelect />
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: 'Código',
+        headerClassName: 'super-app-theme--header',
+        width: 90,
+        type: 'number',
+        align: 'center',
+        sortable: false,
       },
-    },
-  ]
-
-  const handleClose = () => {
-    setOpen(false)
-    closeChecklistModal()
-  }
+      {
+        field: 'createAt',
+        headerName: 'Data',
+        headerClassName: 'super-app-theme--header',
+        // flex: 1,
+        maxWidth: 220,
+        minWidth: 220,
+        sortable: false,
+      },
+      {
+        field: 'checklistModel',
+        headerName: 'Versão',
+        headerClassName: 'super-app-theme--header',
+        width: 120,
+        sortable: false,
+      },
+      {
+        field: 'action',
+        headerName: 'Ação',
+        headerClassName: 'super-app-theme--header',
+        sortable: false,
+        width: 80,
+        align: 'left',
+        renderCell: (params: GridRenderCellParams) => {
+          // const onClick = (e:React.MouseEvent<HTMLElement>) => {
+          //   e.stopPropagation();
+          //   const id = params.id;
+          // }
+          return <MoreOptionsButtonSelect />
+        },
+      },
+    ],
+    [],
+  )
 
   // const router = useRouter()
 
   const apiRef = useGridApiRef()
-  // console.log('rowsData', rowsData)
 
-  // useEffect(() => {
-  //   setRows(rowsData)
-  // },[rowsData])
-
-  useEffect(() => {
-    setRows([
-      {
-        id: 1,
-        checklistModel: 'Toyota',
-        createAt: '27-01-2023',
-      },
-      {
-        id: 2,
-        checklistModel: 'Toyota',
-        createAt: '27-01-2023',
-      },
-      {
-        id: 3,
-        checklistModel: 'Toyota',
-        createAt: '27-01-2023',
-      },
-    ])
-
-    if (isOpen) {
-      setOpen(true)
-      api
+  const {
+    data: dataCheckList,
+    isFetching,
+    isInitialLoading,
+    isSuccess,
+  } = useQuery<RowsProps[]>({
+    queryKey: ['checklist', 'service_schedule', 'by_id', 'modal'],
+    queryFn: () => {
+      return api
         .get(
-          `checklist/list/?company_id=${company?.id}&service_schedule_id=${serviceScheduleId}`,
+          `/checklist/list/?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
         )
-        .then((response) => console.log(response.data))
-        .catch((error) => console.log(error))
-    }
-  }, [isOpen, company?.id])
+        .then((response) => response.data.data)
+    },
+    enabled: isOpen && !!companyId,
+  })
+
+  console.log(dataCheckList)
 
   return (
     <>
       <Dialog
-        // fullScreen={fullScreen}
         fullScreen={fullScreen}
         maxWidth="lg"
-        open={open}
-        onClose={handleClose}
+        open={isOpen}
+        onClose={closeChecklistModal}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
@@ -169,7 +149,7 @@ export function TableModal({
         >
           <BoxContainer>
             <TableDataGrid
-              rows={rows}
+              rows={isSuccess ? dataCheckList : []}
               columns={columns}
               autoHeight
               columnHeaderHeight={70}
@@ -189,7 +169,7 @@ export function TableModal({
                   },
                 },
               }}
-              loading={false}
+              loading={isInitialLoading || isFetching}
               onRowClick={(id) => {
                 // router.push(`/service-schedules/${id.id}`)
               }}
@@ -201,10 +181,10 @@ export function TableModal({
           </BoxContainer>
         </DialogContent>
         <DialogActions>
-          {/* <Button autoFocus onClick={handleClose}>
+          {/* <Button autoFocus onClick={closeChecklistModal}>
             Disagree
           </Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={closeChecklistModal} autoFocus>
             Agree
           </Button> */}
         </DialogActions>
