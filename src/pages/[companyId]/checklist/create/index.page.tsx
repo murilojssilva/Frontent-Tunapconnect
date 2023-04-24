@@ -1,6 +1,3 @@
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-import { GetServerSidePropsContext } from 'next/types'
 import { useEffect } from 'react'
 import Container from '@mui/material/Container'
 
@@ -17,8 +14,11 @@ export default function ChecklistCreate() {
       try {
         const modelChecklist = await api.get('/checklist_model/list/')
         // console.log(modelChecklist.data.data[0])
+        console.log(router.query)
         const dataCreateChecklist = {
-          company_id: 1,
+          company_id:
+            router?.query?.companyId &&
+            parseInt(router?.query?.companyId as string),
           brand_id: null,
           vehicle_id: null,
           model_id: null,
@@ -26,22 +26,26 @@ export default function ChecklistCreate() {
           km: null,
           fuel: null,
           client_id: null,
-          service_schedule_id: null,
+          service_schedule_id: router?.query?.service_schedule_id
+            ? parseInt(router?.query?.service_schedule_id as string)
+            : null,
           checklist_model: 1,
           status: 'rascunho', // salvo // finalizado // rascunho
           stages: modelChecklist.data.data[0].stages,
         }
+
+        console.log(dataCreateChecklist)
         if (modelChecklist.data.data.length > 0) {
           const createdDefault = await api.create(
             '/checklist',
             dataCreateChecklist,
           )
-          await router.push(
+          await router.replace(
             `/${router?.query?.companyId}/checklist/create/${createdDefault?.data?.data?.id}`,
           )
         }
       } catch (error) {
-        // console.log(error)
+        console.log(error)
       }
     }
     createCheckListBase()
@@ -59,19 +63,4 @@ export default function ChecklistCreate() {
   )
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
-}
+ChecklistCreate.auth = true

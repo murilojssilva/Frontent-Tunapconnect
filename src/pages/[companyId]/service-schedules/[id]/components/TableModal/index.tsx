@@ -130,8 +130,6 @@ export function TableModal({
     enabled: isOpen && !!companyId,
   })
 
-  console.log(dataCheckList)
-
   return (
     <>
       <Dialog
