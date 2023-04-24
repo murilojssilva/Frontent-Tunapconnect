@@ -222,8 +222,6 @@ export default function ServiceSchedulesList() {
     enabled: !!router?.query?.companyId,
   })
 
-  console.log(isFetching)
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>

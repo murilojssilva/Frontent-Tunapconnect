@@ -572,7 +572,7 @@ export default function ServiceSchedulesEdit() {
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={async () =>
                   await router.push(
-                    `/${router?.query?.companyId}/checklist/create`,
+                    `/${router?.query?.companyId}/checklist/create?service_schedule_id=${router?.query?.id}`,
                   )
                 }
               >

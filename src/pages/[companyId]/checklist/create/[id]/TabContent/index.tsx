@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react'
 
 import { useFieldArray, useForm } from 'react-hook-form'
 import {
-  ChecklistProps,
   Itens,
+  ReponseGetCheckList,
   StageFormData,
   StagesDataProps,
 } from '../../../types'
@@ -28,7 +28,7 @@ import ModalImages from './ModalImages'
 
 type TabContentProps = {
   stageData: StagesDataProps | undefined
-  checklistModel: ChecklistProps | undefined
+  checklistModel: ReponseGetCheckList | undefined
   stageName: string
   stageItems: Itens[]
   formIDSubmit: string
@@ -45,12 +45,22 @@ export function TabContent({
   isClosed,
 }: TabContentProps) {
   const [openModalImage, setOpenModalImage] = useState(false)
+  // const [listImage, setListImage] = useState<
+  //   Array<{ id: number; images: string[] }>
+  // >([])
 
   const { control, register, handleSubmit } = useForm()
   const { update } = useFieldArray({
     control,
     name: stageName,
   })
+
+  // function handleListImage(index: number, url: string) {
+  //   setListImage((prevState) => {
+  //     const findImage = prevState.findIndex((image) => image.id === index)
+  //     return [...prevState]
+  //   })
+  // }
 
   function onSubmitData(data: { [key: string]: StageFormData[] }) {
     const dataFormatted = {
@@ -161,7 +171,11 @@ export function TabContent({
           </TableBody>
         </Table>
       </TableContainer>
-      <ModalImages isOpen={openModalImage} closeModalImage={closeModalImage} />
+      <ModalImages
+        isOpen={openModalImage}
+        closeModalImage={closeModalImage}
+        // handleListImage={handleListImage}
+      />
     </>
   )
 }

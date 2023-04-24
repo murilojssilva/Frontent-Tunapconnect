@@ -114,7 +114,6 @@ export function TableModal({
   const router = useRouter()
 
   const apiRef = useGridApiRef()
-  // console.log('rowsData', rowsData)
 
   // useEffect(() => {
   //   setRows(rowsData)

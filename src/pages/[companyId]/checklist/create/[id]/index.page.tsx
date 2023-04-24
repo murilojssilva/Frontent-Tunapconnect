@@ -1,6 +1,3 @@
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/pages/api/auth/[...nextauth].api'
-import { GetServerSidePropsContext } from 'next/types'
 import { ReactNode, SyntheticEvent, useContext, useState } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
@@ -11,7 +8,11 @@ import { MyButton, TabItem, TabsContainer } from './styles'
 import { TabContent } from './TabContent'
 import { ApiCore } from '@/lib/api'
 import { Skeleton, Stack } from '@mui/material'
-import { ChecklistProps, StagesDataProps } from '../../types'
+import {
+  ChecklistProps,
+  ReponseGetCheckList,
+  StagesDataProps,
+} from '../../types'
 
 import { CompanyContext } from '@/contexts/CompanyContext'
 import { useRouter } from 'next/router'
@@ -46,7 +47,7 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-export default function ChecklistCreate() {
+export default function ChecklistCreateById() {
   const [value, setValue] = useState(0)
   // const [checklistModel, setChecklistModel] = useState<ChecklistProps>()
   // const [stages, setStages] = useState<StagesDataProps[]>([])
@@ -78,7 +79,7 @@ export default function ChecklistCreate() {
     },
   })
 
-  const { data, isSuccess, isLoading } = useQuery<ChecklistProps>({
+  const { data, isSuccess, isLoading } = useQuery<ReponseGetCheckList>({
     queryKey: ['checklist-createByID'],
     queryFn: () =>
       api
@@ -87,22 +88,22 @@ export default function ChecklistCreate() {
           // console.log(response.data.data)
           return response.data.data
         }),
-    // refetchOnMount: 'always',
+    refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
   })
-
+  console.log('get', data)
   async function handleAddListCheckList(stageData: StagesDataProps) {
     const dataForPost = {
-      company_id: 1,
-      brand_id: null,
-      vehicle_id: null,
-      model_id: null,
-      vehicle_client_id: null,
-      km: null,
-      fuel: null,
-      client_id: null,
-      service_schedule_id: null,
-      checklist_model: 1,
+      company_id: data?.company_id,
+      brand_id: data?.brand_id,
+      vehicle_id: data?.vehicle_id,
+      model_id: data?.vehicle, // verificar
+      vehicle_client_id: data?.vehicle_client_id,
+      km: data?.km,
+      fuel: data?.fuel,
+      client_id: data?.client_id,
+      service_schedule_id: data?.service_schedule_id,
+      checklist_model: data?.checklist_model,
       status: 'salvo', // salvo // finalizado // rascunho
       stages: data?.stages.map((item) => {
         return item.name === stageData.name ? stageData : item
@@ -241,19 +242,4 @@ export default function ChecklistCreate() {
   }
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-  if (!session?.user?.token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: {
-      session,
-    },
-  }
-}
+ChecklistCreateById.auth = true
