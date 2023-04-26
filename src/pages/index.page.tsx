@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Image from 'next/image'
-import Link from '@mui/material/Link'
+// import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 
 import Typography from '@mui/material/Typography'
@@ -14,24 +14,26 @@ import { AuthContext } from '@/contexts/AuthContext'
 
 // import backgroundImageTunap from '@/assets/images/background-logo-login.svg'
 import tunapLogoImg from '@/assets/images/tunap-login.svg'
+import { alpha, Link, Paper, Stack } from '@mui/material'
+import styled from '@emotion/styled'
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Tunnap Connect
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+// function Copyright(props: any) {
+//   return (
+//     <Typography
+//       variant="body2"
+//       color="text.secondary"
+//       align="center"
+//       {...props}
+//     >
+//       {'Copyright © '}
+//       <Link color="inherit" href="#">
+//         Tunnap Connect
+//       </Link>{' '}
+//       {new Date().getFullYear()}
+//       {'.'}
+//     </Typography>
+//   )
+// }
 
 type SignInDataProps = {
   username: string
@@ -54,16 +56,47 @@ export default function SignIn() {
   function handleSignIn(data: SignInDataProps) {
     signIn(data)
   }
+  const ButtonAdd = styled(Button)(({ theme }) => ({
+    color: 'white',
+    background: '#1C4961',
+    maxWidth: 150,
+    borderRadius: 6,
+    '&:hover': {
+      background: alpha('#1C4961', 0.7),
+    },
+  }))
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container
+      // maxWidth="xs"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100vw',
+        height: '100vh',
+        // background:
+        //   'url("/images/background-logo-login.svg") no-repeat center center',
+        backgroundAttachment: 'fixed',
+        backgroundImage: 'url("/images/background-logo-login.svg")',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        // backgroundSize: '50% 100%',
+        backgroundSize: '930px 100%',
+      }}
+    >
       <Box
         sx={{
-          marginTop: 8,
+          // marginTop: 8,
           display: 'flex',
+          p: 4,
           flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
+          maxWidth: '440px',
+          borderRadius: 4,
         }}
+        component={Paper}
       >
         <Image
           priority
@@ -75,11 +108,18 @@ export default function SignIn() {
         <Typography component="h1" variant="h6">
           Entrar
         </Typography>
-        <Box
+        <Stack
           component="form"
           onSubmit={handleSubmit(handleSignIn)}
           noValidate
-          sx={{ mt: 1 }}
+          sx={{
+            mt: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            px: 5,
+            width: '400px',
+          }}
+          gap={1}
         >
           <TextField
             margin="normal"
@@ -90,6 +130,7 @@ export default function SignIn() {
             placeholder="E-email ou CPF:"
             autoComplete="email"
             autoFocus
+            size="small"
             {...register('username')}
           />
           <TextField
@@ -98,6 +139,7 @@ export default function SignIn() {
             fullWidth
             label="Senha:"
             placeholder="Senha:"
+            size="small"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -107,14 +149,14 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
-          <Button
+          <ButtonAdd
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 2, mb: 3 }}
           >
-            Sign In
-          </Button>
+            entrar
+          </ButtonAdd>
           {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -127,9 +169,15 @@ export default function SignIn() {
                 </Link>
               </Grid>
             </Grid> */}
-        </Box>
+          <Link href="#" variant="body2">
+            {'Perdeu sua senha? Recupere sua senha'}
+          </Link>
+          <Link href="#" variant="body2">
+            {'Termos de uso e a Política de privacidade'}
+          </Link>
+        </Stack>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+      {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
     </Container>
   )
 }

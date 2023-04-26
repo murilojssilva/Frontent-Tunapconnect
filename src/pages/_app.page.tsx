@@ -15,7 +15,8 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { queryClient } from '@/lib/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { NextComponentType } from 'next/types'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, GlobalStyles } from '@mui/material'
+import { globals } from '@/styles/globals'
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
@@ -41,6 +42,7 @@ const MyApp = (props: CustomAppProps) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <GlobalStyles styles={globals} />
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
