@@ -31,6 +31,7 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from '@tanstack/react-query'
+import Skeleton from '@mui/material/Skeleton'
 
 type SearchFormProps = {
   search: string
@@ -195,7 +196,10 @@ export default function ServiceSchedulesList() {
   const {
     data: rows,
     isSuccess,
-    isInitialLoading,
+    // isInitialLoading,
+    // isLoading,
+    // isFetched,
+    isFetching,
   } = useQuery<ServiceSchedulesListProps[] | []>({
     queryKey: ['service-scheduler-list'],
     queryFn: () =>
@@ -218,7 +222,8 @@ export default function ServiceSchedulesList() {
           return resp
         })
         .catch(() => []),
-    enabled: !!router?.query?.companyId,
+    enabled: !!companyId,
+    refetchOnWindowFocus: false,
   })
 
   return (
@@ -295,14 +300,18 @@ export default function ServiceSchedulesList() {
         </Grid>
 
         <Grid item xs={12}>
-          <TableApp
-            columns={columns}
-            rowsData={isSuccess ? rows : []}
-            handlePages={handlePages}
-            pages={pages}
-            loading={isInitialLoading}
-            companyId={companyId}
-          />
+          {!isFetching ? (
+            <TableApp
+              columns={columns}
+              rowsData={isSuccess ? rows : []}
+              handlePages={handlePages}
+              pages={pages}
+              loading={isFetching}
+              companyId={companyId}
+            />
+          ) : (
+            <Skeleton variant="rounded" sx={{ width: '100%' }} height={150} />
+          )}
         </Grid>
       </Grid>
     </Container>

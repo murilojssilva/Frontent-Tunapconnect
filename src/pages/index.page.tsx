@@ -1,21 +1,19 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import Avatar from '@mui/material/Avatar'
+
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
+import Image from 'next/image'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
-// import { getSession } from 'next-auth/react'
-// import { GetServerSidePropsContext } from 'next/types'
-// import { getServerSession } from 'next-auth'
-// import { authOptions } from './api/auth/[...nextauth].api'
+
+// import backgroundImageTunap from '@/assets/images/background-logo-login.svg'
+import tunapLogoImg from '@/assets/images/tunap-login.svg'
 
 function Copyright(props: any) {
   return (
@@ -67,11 +65,15 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
+        <Image
+          priority
+          src={tunapLogoImg}
+          height={90}
+          width={221}
+          alt="Follow us on Twitter"
+        />
+        <Typography component="h1" variant="h6">
+          Entrar
         </Typography>
         <Box
           component="form"
@@ -84,7 +86,8 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="E-email ou CPF:"
+            placeholder="E-email ou CPF:"
             autoComplete="email"
             autoFocus
             {...register('username')}
@@ -93,7 +96,8 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            label="Password"
+            label="Senha:"
+            placeholder="Senha:"
             type="password"
             id="password"
             autoComplete="current-password"
