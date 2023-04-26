@@ -177,7 +177,6 @@ export default function SignIn() {
           </Link>
         </Stack>
       </Box>
-      {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
     </Container>
   )
 }
