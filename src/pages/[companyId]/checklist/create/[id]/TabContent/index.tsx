@@ -36,6 +36,21 @@ type TabContentProps = {
   handleAddListCheckList: (data: StagesDataProps) => void
 }
 
+type ImageListProps = Array<{
+  id: number
+  images: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }[]
+}>
+
+type OpenModalImage = {
+  id: number | null
+  open: boolean
+}
+
 export function TabContent({
   stageData,
   stageName,
@@ -44,10 +59,11 @@ export function TabContent({
   handleAddListCheckList,
   isClosed,
 }: TabContentProps) {
-  const [openModalImage, setOpenModalImage] = useState(false)
-  // const [listImage, setListImage] = useState<
-  //   Array<{ id: number; images: string[] }>
-  // >([])
+  const [openModalImage, setOpenModalImage] = useState<OpenModalImage>({
+    id: null,
+    open: false,
+  })
+  const [listImage, setListImage] = useState<ImageListProps>([])
 
   const { control, register, handleSubmit } = useForm()
   const { update } = useFieldArray({
@@ -55,23 +71,60 @@ export function TabContent({
     name: stageName,
   })
 
-  // function handleListImage(index: number, url: string) {
-  //   setListImage((prevState) => {
-  //     const findImage = prevState.findIndex((image) => image.id === index)
-  //     return [...prevState]
-  //   })
-  // }
+  function handleAddImageInListImage(
+    index: number,
+    image: {
+      id: number
+      name: string
+      url: string
+      size: string
+    },
+  ) {
+    setListImage((prevState) => {
+      const findImage = prevState.findIndex((img) => img.id === index)
+      const newData = [...prevState]
+
+      if (findImage >= 0) {
+        newData[findImage].images.push(image)
+        return newData
+      }
+
+      return [
+        ...newData,
+        {
+          id: index,
+          images: [image],
+        },
+      ]
+    })
+  }
+
+  function handleRemoveImageInListImage(index: number, imageId: number) {
+    console.log(index)
+    const findIndexListImage = listImage.findIndex((item) => item.id === index)
+    console.log(listImage[findIndexListImage])
+    setListImage((prevState) => {
+      const newListImage = [...prevState]
+      newListImage[findIndexListImage].images = newListImage[
+        findIndexListImage
+      ].images.filter((image) => image.id !== imageId)
+
+      return newListImage
+    })
+  }
 
   function onSubmitData(data: { [key: string]: StageFormData[] }) {
     const dataFormatted = {
       ...stageData,
       status: 'closed',
       itens: stageItems.map((item, index) => {
+        console.log(!!listImage[index]?.id)
         return {
           ...item,
           comment: data[stageName][index]?.observation,
           values: {
             ...item.values,
+            images: listImage[index]?.id ? listImage[index].images : [],
             value: data[stageName][index]?.inputs,
           },
         }
@@ -79,11 +132,16 @@ export function TabContent({
     }
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
-    // console.log(dataFormatted)
+    console.log(dataFormatted)
   }
 
   function closeModalImage() {
-    setOpenModalImage(false)
+    setOpenModalImage({ id: null, open: false })
+  }
+
+  function getBagdeAmountImages(index: number) {
+    const imgs = listImage.filter((image) => image.id === index)[0]
+    return imgs?.images.length ?? 0
   }
 
   useEffect(() => {
@@ -131,27 +189,28 @@ export function TabContent({
                       {<Typography>{item.name}</Typography>}
                     </TableCell>
                     <TableCell>
-                      <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="label"
-                        size="small"
-                        disabled={isClosed}
-                        onClick={() => setOpenModalImage(true)}
-                      >
-                        {/* <input
-                          hidden
-                          accept="image/*"
-                          type="file"
-                          {...register(`${stageName}.${index}.images`)}
-                        /> */}
-                        <ImageUploadBadge
-                          badgeContent={item?.values?.images?.length}
-                          color="warning"
+                      {item?.rules?.type !== 'visual_inspect' && (
+                        <IconButton
+                          color="primary"
+                          aria-label="upload picture"
+                          component="label"
+                          size="small"
+                          disabled={isClosed}
+                          onClick={() => {
+                            setOpenModalImage({
+                              id: index,
+                              open: true,
+                            })
+                          }}
                         >
-                          <ImageUploadImg />
-                        </ImageUploadBadge>
-                      </IconButton>
+                          <ImageUploadBadge
+                            badgeContent={getBagdeAmountImages(index) ?? ''}
+                            color="warning"
+                          >
+                            <ImageUploadImg />
+                          </ImageUploadBadge>
+                        </IconButton>
+                      )}
                     </TableCell>
                     <TableCell>
                       <InputContainer>
@@ -174,7 +233,9 @@ export function TabContent({
       <ModalImages
         isOpen={openModalImage}
         closeModalImage={closeModalImage}
-        // handleListImage={handleListImage}
+        handleAddImageInListImage={handleAddImageInListImage}
+        handleRemoveImageInListImage={handleRemoveImageInListImage}
+        listImage={listImage}
       />
     </>
   )

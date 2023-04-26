@@ -51,9 +51,7 @@ interface MyDropzoneProps {
 //     const formData = new FormData()
 //     formData.append('image', filesList[0])
 //     const { data } = await axios.post('/api/uploadimage', formData)
-//     console.log(data)
 //   } catch (error: any) {
-//     console.log(error.response?.data)
 //   }
 // }
 

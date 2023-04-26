@@ -129,12 +129,6 @@ export function TabContent({
                         disabled={isClosed}
                         onClick={() => setOpenModalImage(true)}
                       >
-                        {/* <input
-                          hidden
-                          accept="image/*"
-                          type="file"
-                          {...register(`${stageName}.${index}.images`)}
-                        /> */}
                         <ImageUploadBadge
                           badgeContent={item?.values?.images?.length}
                           color="warning"
