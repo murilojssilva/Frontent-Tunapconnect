@@ -47,7 +47,7 @@ const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
   '& .MuiDrawer-paper': {
-    position: 'relative',
+    position: 'block',
     whiteSpace: 'nowrap',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
@@ -165,6 +165,15 @@ export function DashboardContent({ children }: DashboardContentProps) {
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
+            maxWidth: {
+              md: open ? `calc(100vw - 240px)` : `calc(100vw - 71px)`,
+              xs: `100vw`,
+            },
+            marginLeft: {
+              md: open ? '240px' : '71px',
+              xs: '71px',
+            },
+            transition: 'all 0.3s ease-in-out',
           }}
         >
           <Toolbar />

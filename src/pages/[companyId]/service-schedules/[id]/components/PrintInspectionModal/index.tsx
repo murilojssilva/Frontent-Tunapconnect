@@ -27,7 +27,7 @@ export function PrintInspectionModal({
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { company } = useContext(CompanyContext)
+  const { companyId } = useContext(CompanyContext)
 
   const printInspectionRef = useRef(null)
 
@@ -40,7 +40,7 @@ export function PrintInspectionModal({
     if (isOpen) {
       setOpen(true)
     }
-  }, [isOpen, company?.id])
+  }, [isOpen, companyId])
 
   return (
     <>
@@ -63,7 +63,7 @@ export function PrintInspectionModal({
               refPrint={printInspectionRef}
               checklistId={1}
               type="service-schedules"
-              company={2}
+              company={companyId}
               id={1}
             />
           </BoxContainer>

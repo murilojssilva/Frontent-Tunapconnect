@@ -24,7 +24,7 @@ export default function HeaderBreadcrumb({
           justifyContent="space-between"
         >
           <Title>{title}</Title>
-          <Breadcrumbs
+          {/* <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" />}
             aria-label="breadcrumb"
           >
@@ -49,7 +49,7 @@ export default function HeaderBreadcrumb({
                   </LinkMaterial>
                 )
               })}
-          </Breadcrumbs>
+          </Breadcrumbs> */}
         </Stack>
       )}
       {title === undefined && (
