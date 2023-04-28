@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import MuiDrawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
@@ -20,7 +20,6 @@ import { MainListItems, secondaryListItems } from './ListItems'
 import { CompanyContext } from '@/contexts/CompanyContext'
 import tunapLogoImg from '@/assets/images/tunap-login.svg'
 import Image from 'next/image'
-import useMediaQuery from '@mui/material/useMediaQuery'
 const drawerWidth: number = 240
 
 interface AppBarProps extends MuiAppBarProps {
@@ -88,34 +87,9 @@ export function DashboardContent({ children }: DashboardContentProps) {
   const toggleDrawer = () => {
     setOpen(!open)
   }
-  const theme = useTheme()
-  const isWeb = useMediaQuery(theme.breakpoints.up('sm'))
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  // const router = useRouter()
   const { company } = useContext(CompanyContext)
-
-  console.log(isWeb)
-
-  // if (!isWeb) {
-  //   console.log(' if Mobile true')
-  //   if (open) {
-  //     setOpen(false)
-  //   }
-  // }
-  // if (isWeb) {
-  //   console.log(' if isWeb true')
-  // }
-  useEffect(() => {
-    if (!isWeb) {
-      console.log('Mobile true')
-      if (open) {
-        setOpen(false)
-      }
-    } else {
-      if (!open) {
-        setOpen(true)
-      }
-    }
-  }, [isWeb])
 
   useEffect(() => {
     if (company) {
@@ -162,13 +136,7 @@ export function DashboardContent({ children }: DashboardContentProps) {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer
-          variant="permanent"
-          open={open}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
+        <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -205,16 +173,14 @@ export function DashboardContent({ children }: DashboardContentProps) {
             height: '100vh',
             overflow: 'auto',
             maxWidth: {
-              sm: open
-                ? `calc(100vw - ${drawerWidth}px)`
-                : `calc(100vw - 71px)`,
+              md: open ? `calc(100vw - 240px)` : `calc(100vw - 71px)`,
               xs: `100vw`,
             },
             marginLeft: {
-              sm: open ? `${drawerWidth}px` : '71px',
+              md: open ? '240px' : '71px',
               xs: '71px',
             },
-            transition: 'all 0.1s ease-in-out',
+            transition: 'all 0.3s ease-in-out',
           }}
         >
           <Toolbar />
