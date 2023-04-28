@@ -12,6 +12,9 @@ export const TableDataGrid = styled(DataGrid)(({ theme }) => ({
       visibility: 'hidden',
     },
   },
+  '& .MuiDataGrid-cell:focus': {
+    outline: 0,
+  },
   '& .MuiDataGrid-columnHeaders': {
     // display: "none",
     marginBottom: 40,

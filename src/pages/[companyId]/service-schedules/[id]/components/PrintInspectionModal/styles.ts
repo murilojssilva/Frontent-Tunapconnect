@@ -33,6 +33,10 @@ export const BoxContainer = styled(Box)(({ theme }) => ({
     border: 'none',
     // backgroundColor: '#1c4961',
     // color: 'white',
+
+    '& .MuiDataGrid-cell:focus': {
+      outline: 0,
+    },
   },
 }))
 
@@ -42,6 +46,9 @@ export const TableDataGrid = styled(DataGrid)(({ theme }) => ({
     '& svg': {
       visibility: 'hidden',
     },
+  },
+  '& .MuiDataGrid-cell:focus': {
+    outline: 0,
   },
   '& .MuiDataGrid-columnHeaders': {
     // display: "none",

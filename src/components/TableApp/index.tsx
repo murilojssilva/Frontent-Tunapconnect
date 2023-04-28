@@ -92,7 +92,7 @@ export function TableApp({
               },
             }}
             loading={loading}
-            onRowDoubleClick={(id) => {
+            onRowClick={(id) => {
               router.push(`/${companyId}/service-schedules/${id.id}`)
             }}
             pageSizeOptions={[7]}
