@@ -58,12 +58,6 @@ export function TableApp({
           sx={{
             width: '100%',
             marginTop: '-105px',
-
-            '& .super-app-theme--header': {
-              border: 'none',
-              backgroundColor: '#1c4961',
-              color: 'white',
-            },
           }}
         >
           <TableDataGrid

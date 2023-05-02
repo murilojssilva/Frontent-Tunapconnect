@@ -90,23 +90,10 @@ export function DashboardContent({ children }: DashboardContentProps) {
   }
   const theme = useTheme()
   const isWeb = useMediaQuery(theme.breakpoints.up('sm'))
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const { company } = useContext(CompanyContext)
 
-  console.log(isWeb)
-
-  // if (!isWeb) {
-  //   console.log(' if Mobile true')
-  //   if (open) {
-  //     setOpen(false)
-  //   }
-  // }
-  // if (isWeb) {
-  //   console.log(' if isWeb true')
-  // }
   useEffect(() => {
     if (!isWeb) {
-      console.log('Mobile true')
       if (open) {
         setOpen(false)
       }

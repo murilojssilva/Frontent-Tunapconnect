@@ -12,11 +12,15 @@ import Router from 'next/router'
 import Layout from '@/Layout'
 import { CompanyProvider } from '@/contexts/CompanyContext'
 import { SessionProvider, useSession } from 'next-auth/react'
-import { queryClient } from '@/lib/react-query'
-import { QueryClientProvider } from '@tanstack/react-query'
+// import { queryClient } from '@/lib/react-query'
+
 import { NextComponentType } from 'next/types'
 import { Box, CircularProgress, GlobalStyles } from '@mui/material'
 import { globals } from '@/styles/globals'
+
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
@@ -34,6 +38,8 @@ const MyApp = (props: CustomAppProps) => {
     emotionCache = clientSideEmotionCache,
     pageProps: { session, ...pageProps },
   } = props
+
+  const [queryClient] = React.useState(() => new QueryClient())
 
   return (
     <CacheProvider value={emotionCache}>
@@ -59,6 +65,7 @@ const MyApp = (props: CustomAppProps) => {
                 )}
 
                 {/* <Component {...pageProps} /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
               </CompanyProvider>
             </AuthProvider>
           </QueryClientProvider>

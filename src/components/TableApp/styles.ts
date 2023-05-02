@@ -7,19 +7,48 @@ const ODD_OPACITY = 0.2
 
 export const TableDataGrid = styled(DataGrid)(({ theme }) => ({
   border: 0,
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    display: 'block',
+    left: -15,
+    top: 0,
+    width: 19,
+    height: '69px',
+    background: '#1C4961',
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    display: 'block',
+    right: -15,
+    top: 0,
+    width: 19,
+    height: '69px',
+    background: '#1C4961',
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
   '& .MuiDataGrid-columnSeparator': {
     '& svg': {
       visibility: 'hidden',
     },
   },
+  '& .super-app-theme--header': {
+    border: 'none',
+    backgroundColor: '#1c4961',
+    color: 'white',
+  },
   '& .MuiDataGrid-cell:focus': {
     outline: 0,
   },
   '& .MuiDataGrid-columnHeaders': {
-    // display: "none",
+    display: 'relative',
     marginBottom: 40,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
+    // borderBottomLeftRadius: 5,
+    // borderBottomRightRadius: 5,
   },
   '& .MuiDataGrid-virtualScroller': { marginTop: '0!important' },
   [`& .${gridClasses.row}.even`]: {

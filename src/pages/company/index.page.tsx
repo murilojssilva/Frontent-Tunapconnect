@@ -10,8 +10,9 @@ import { ContainerItem } from './styles'
 
 // import { useRouter } from 'next/router'
 import { CompanyContext } from '@/contexts/CompanyContext'
-import { useQuery } from '@tanstack/react-query'
+
 import { useSession } from 'next-auth/react'
+import { useQuery } from 'react-query'
 
 interface companyProps {
   id: string
@@ -19,7 +20,6 @@ interface companyProps {
   cnpj: string | null
   cpf: string | null
 }
-
 export default function CompanyList() {
   // eslint-disable-next-line no-unused-vars
   const { data: session } = useSession()
@@ -33,11 +33,56 @@ export default function CompanyList() {
     createCompany(newCompany)
   }
 
-  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>({
-    queryKey: ['company-page-list-company'],
-    queryFn: () =>
-      api.get(`/user/companies`).then((response) => response.data.data),
-  })
+  // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
+  //   companyProps[] | null
+  // >(['company-page-list-company'],
+  //   queryFn: async () => {
+  //     let resp
+  //     console.log('entrou')
+  //     try {
+  //       resp = await api.get(`/user/companies`)
+  //       console.log(resp.data.data)
+
+  //       return resp.data.data
+  //     } catch (error) {
+  //       console.log(error)
+  //       return error
+  //     }
+  //   },
+  //   // initialData: [],
+  // refetchOnWindowFocus: false,
+  // retry: false,
+  // })
+  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
+    ['company-page-list-company'],
+    () =>
+      api.get(`/user/companies`).then((response) => {
+        console.log(response.data.data)
+
+        return response.data.data
+      }),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  )
+
+  // useEffect(() => {
+  //   api
+  //     .get(`/user/companies`)
+  //     .then((response) => {
+  //       console.log(response.data.data)
+
+  //       return response.data.data
+  //     })
+  //     .catch((error) => console.error(error))
+  // }, [])
+
+  // console.log(data)
+  // console.log(isSuccess)
+  // console.log(isLoading)
+
+  // if (error) return <p>erro</p>
 
   return (
     <>
@@ -100,3 +145,18 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
+// function useQuery<T>(arg0: {
+//   queryKey: string[]
+//   queryFn: () => Promise<any>
+//   // initialData: [],
+//   refetchOnWindowFocus: boolean
+//   retry: boolean
+// }): {
+//   data: any
+//   isSuccess: any
+//   isLoading: any
+//   isFetching: any
+//   isFetched: any
+// } {
+//   throw new Error('Function not implemented.')
+// }

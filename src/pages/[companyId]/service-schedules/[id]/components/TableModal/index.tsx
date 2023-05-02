@@ -11,17 +11,17 @@ import { BoxContainer, TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
 
-import { useTheme } from '@mui/material/styles'
+// import { useTheme } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 
 import DialogTitle from '@mui/material/DialogTitle'
-import useMediaQuery from '@mui/material/useMediaQuery'
+// import useMediaQuery from '@mui/material/useMediaQuery'
 import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
 import { CompanyContext } from '@/contexts/CompanyContext'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'react-query'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -58,8 +58,8 @@ export function TableModal({
   closeChecklistModal,
   serviceScheduleId,
 }: TableAppProps) {
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+  // const theme = useTheme()
+  // const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const { companyId } = useContext(CompanyContext)
 
@@ -115,25 +115,24 @@ export function TableModal({
 
   const {
     data: dataCheckList,
-    isFetching,
-    isInitialLoading,
+    isLoading,
     isSuccess,
-  } = useQuery<RowsProps[]>({
-    queryKey: ['checklist', 'service_schedule', 'by_id', 'modal'],
-    queryFn: () => {
+  } = useQuery<RowsProps[]>(
+    ['checklist', 'service_schedule', 'by_id', 'modal'],
+    () => {
       return api
         .get(
           `/checklist/list/?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
         )
         .then((response) => response.data.data)
     },
-    enabled: isOpen && !!companyId,
-  })
+    { enabled: isOpen && !!companyId },
+  )
 
   return (
     <>
       <Dialog
-        fullScreen={fullScreen}
+        // fullScreen={fullScreen}
         maxWidth="lg"
         open={isOpen}
         onClose={closeChecklistModal}
@@ -167,7 +166,7 @@ export function TableModal({
                   },
                 },
               }}
-              loading={isInitialLoading || isFetching}
+              loading={isLoading}
               onRowClick={(id) => {
                 // router.push(`/service-schedules/${id.id}`)
               }}
