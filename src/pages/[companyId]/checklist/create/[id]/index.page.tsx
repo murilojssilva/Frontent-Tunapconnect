@@ -16,7 +16,7 @@ import {
 
 import { CompanyContext } from '@/contexts/CompanyContext'
 import { useRouter } from 'next/router'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -58,8 +58,8 @@ export default function ChecklistCreateById() {
   const { companyId } = useContext(CompanyContext)
   const router = useRouter()
 
-  const updateChecklistmutations = useMutation({
-    mutationFn: (newDataChecklist: ChecklistProps) => {
+  const updateChecklistmutations = useMutation(
+    (newDataChecklist: ChecklistProps) => {
       return api
         .update(`/checklist/${router?.query?.id}`, newDataChecklist)
         .then((resp) => {
@@ -68,20 +68,22 @@ export default function ChecklistCreateById() {
         })
     },
 
-    onSuccess: (data) => {
-      // queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
-      queryClient.setQueryData(['checklist-createByID'], data)
-      queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
-      return data
+    {
+      onSuccess: (data) => {
+        // queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
+        queryClient.setQueryData(['checklist-createByID'], data)
+        queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
+        return data
+      },
+      onError: (err: any) => {
+        console.log(err)
+      },
     },
-    onError: (err: any) => {
-      console.log(err)
-    },
-  })
+  )
 
-  const { data, isSuccess, isLoading } = useQuery<ReponseGetCheckList>({
-    queryKey: ['checklist-createByID'],
-    queryFn: () =>
+  const { data, isSuccess, isLoading } = useQuery<ReponseGetCheckList>(
+    ['checklist-createByID'],
+    () =>
       api
         .get(`/checklist/${router?.query?.id}?company_id=${companyId}`)
         .then((response) => {
@@ -89,7 +91,7 @@ export default function ChecklistCreateById() {
         }),
     // refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
-  })
+  )
   async function handleAddListCheckList(stageData: StagesDataProps) {
     const dataForPost = {
       company_id: data?.company_id,
