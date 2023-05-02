@@ -4,6 +4,7 @@ import { useContext, useMemo } from 'react'
 import {
   GridColDef,
   GridRenderCellParams,
+  GridValueFormatterParams,
   useGridApiRef,
 } from '@mui/x-data-grid'
 
@@ -22,6 +23,7 @@ import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
 import { CompanyContext } from '@/contexts/CompanyContext'
 import { useQuery } from 'react-query'
+import { formatDateTime } from '@/ultis/formatDate'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -79,9 +81,18 @@ export function TableModal({
         headerName: 'Data',
         headerClassName: 'super-app-theme--header',
         // flex: 1,
-        maxWidth: 220,
-        minWidth: 220,
+        maxWidth: 150,
+        minWidth: 150,
         sortable: false,
+        valueFormatter: (params: GridValueFormatterParams) => {
+          if (params.value == null) {
+            return 'Não informado'
+          }
+
+          const dateFormatted = formatDateTime(params.value)
+          console.log(dateFormatted)
+          return `${dateFormatted}`
+        },
       },
       {
         field: 'checklistModel',
@@ -124,7 +135,17 @@ export function TableModal({
         .get(
           `/checklist/list/?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
         )
-        .then((response) => response.data.data)
+        .then((response) => {
+          const { data } = response.data
+          // return response.data.data
+          return data.map((item: any) => {
+            return {
+              id: item?.id,
+              createAt: item?.created_at,
+              checklistModel: item?.checklistmodels?.name,
+            }
+          })
+        })
     },
     { enabled: isOpen && !!companyId },
   )
