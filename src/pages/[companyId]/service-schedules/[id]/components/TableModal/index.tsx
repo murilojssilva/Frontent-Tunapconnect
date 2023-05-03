@@ -90,7 +90,6 @@ export function TableModal({
           }
 
           const dateFormatted = formatDateTime(params.value)
-          console.log(dateFormatted)
           return `${dateFormatted}`
         },
       },

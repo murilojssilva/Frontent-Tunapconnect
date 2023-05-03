@@ -51,7 +51,7 @@ export default function ChecklistCreateById() {
   const [value, setValue] = useState(0)
   // const [checklistModel, setChecklistModel] = useState<ChecklistProps>()
   // const [stages, setStages] = useState<StagesDataProps[]>([])
-  // const [stageSaved, setStageSaved] = useState<StagesDataProps[]>([])
+  // const [stageValues, setStaStageValues] = useState<StagesDataProps[]>([])
   // const [stageData, setStageData] = useState([])
   const queryClient = useQueryClient()
   const api = new ApiCore()

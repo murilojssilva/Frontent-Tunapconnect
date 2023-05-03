@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { useEffect, useState } from 'react'
 
-import { useFieldArray, useForm } from 'react-hook-form'
+import { FieldValues, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import {
   Itens,
   ReponseGetCheckList,
@@ -58,18 +58,53 @@ export function TabContent({
   formIDSubmit,
   handleAddListCheckList,
   isClosed,
+  checklistModel,
 }: TabContentProps) {
   const [openModalImage, setOpenModalImage] = useState<OpenModalImage>({
     id: null,
     open: false,
   })
   const [listImage, setListImage] = useState<ImageListProps>([])
+  // const [stageValues, setStageValues] = useState<FieldValues | []>([])
+  // const [count, setCount] = useState()
 
-  const { control, register, handleSubmit } = useForm()
+  const defaultValues = {
+    [stageName]: stageData?.itens.map((item, index) => {
+      if (item.rules.type === 'select') {
+        return {
+          inputs: item.values.value ?? '-',
+          observation: item.comment,
+        }
+      }
+      if (item.rules.type === 'visual_inspect') {
+        return {
+          observation: item.comment,
+        }
+      }
+      return { inputs: item.values.value, observation: item.comment }
+    }),
+  }
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm({
+    defaultValues,
+  })
   const { update } = useFieldArray({
     control,
     name: stageName,
   })
+
+  const stageValuesWatch = useWatch({
+    name: stageName,
+    control,
+  })
+
+  // console.log('dirtyFields', dirtyFields)
+  // console.log(checklistModel)
 
   function handleAddImageInListImage(
     index: number,
@@ -145,18 +180,48 @@ export function TabContent({
   }
 
   useEffect(() => {
-    stageData?.itens.forEach((item, index) => {
-      if (item.rules.type === 'boolean') {
-        update(index, { inputs: item.values.value, observation: item.comment })
+    const sessionStorageData = sessionStorage.getItem(
+      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+    )
+
+    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+
+    if (data && Object.hasOwn(data, stageName)) {
+      console.log('entrou')
+      data[stageName].forEach((item: any, index: number) => {
+        update(index, { inputs: item.inputs, observation: item.observation })
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('render')
+    console.log('isDirty', isDirty)
+    if (isDirty) {
+      const sessionStorageData = sessionStorage.getItem(
+        `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+      )
+      const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+
+      if (data) {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            ...data,
+            [stageName]: stageValuesWatch,
+          }),
+        )
+      } else {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            ...data,
+            [stageName]: stageValuesWatch,
+          }),
+        )
       }
-      if (item.rules.type === 'select') {
-        update(index, {
-          inputs: item.values.value ?? '-',
-          observation: item.comment,
-        })
-      }
-    })
-  }, [stageData?.itens])
+    }
+  }, [stageValuesWatch])
 
   return (
     <>
