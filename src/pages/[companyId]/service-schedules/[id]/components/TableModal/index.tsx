@@ -132,7 +132,7 @@ export function TableModal({
     () => {
       return api
         .get(
-          `/checklist/list/?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
+          `/checklist/list?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
         )
         .then((response) => {
           const { data } = response.data
