@@ -9,12 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import { useEffect, useState } from 'react'
 
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
-import {
-  Itens,
-  ReponseGetCheckList,
-  StageFormData,
-  StagesDataProps,
-} from '../../../types'
+import { Itens, ReponseGetCheckList, StagesDataProps } from '../../../types'
 import {
   // ButtonItemChecklist,
   ImageUploadBadge,
@@ -49,6 +44,21 @@ type ImageListProps = Array<{
 type OpenModalImage = {
   id: number | null
   open: boolean
+}
+
+type OnSubmitData = {
+  [x: string]:
+    | (
+        | {
+            inputs: string
+            observation: string | undefined
+          }
+        | {
+            observation: string | undefined
+            inputs?: undefined
+          }
+      )[]
+    | undefined
 }
 
 export function TabContent({
@@ -148,7 +158,7 @@ export function TabContent({
     })
   }
 
-  function onSubmitData(data: { [key: string]: StageFormData[] }) {
+  function onSubmitData(data: OnSubmitData) {
     const dataFormatted = {
       ...stageData,
       status: 'closed',
@@ -156,11 +166,11 @@ export function TabContent({
         console.log(!!listImage[index]?.id)
         return {
           ...item,
-          comment: data[stageName][index]?.observation,
+          comment: data[stageName]?.[index]?.observation,
           values: {
             ...item.values,
             images: listImage[index]?.id ? listImage[index].images : [],
-            value: data[stageName][index]?.inputs,
+            value: data[stageName]?.[index]?.inputs,
           },
         }
       }),
