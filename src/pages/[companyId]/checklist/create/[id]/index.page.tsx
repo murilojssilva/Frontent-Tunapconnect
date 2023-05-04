@@ -91,6 +91,9 @@ export default function ChecklistCreateById() {
         }),
     // refetchOnMount: 'always',
     // enabled: !!router?.query?.id,
+    {
+      refetchOnWindowFocus: false,
+    },
   )
   async function handleAddListCheckList(stageData: StagesDataProps) {
     const dataForPost = {

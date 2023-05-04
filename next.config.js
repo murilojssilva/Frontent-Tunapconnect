@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'a.tunapconnect.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'tunapconnect-api.herokuapp.com',
+      },
     ],
   },
 }

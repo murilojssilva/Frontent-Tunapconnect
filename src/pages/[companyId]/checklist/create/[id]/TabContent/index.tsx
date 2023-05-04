@@ -32,12 +32,14 @@ type TabContentProps = {
 }
 
 type ImageListProps = Array<{
-  id: number
-  images: {
+  [key: string]: {
     id: number
-    name: string
-    url: string
-    size: string
+    images: {
+      id: number
+      name: string
+      url: string
+      size: string
+    }[]
   }[]
 }>
 
@@ -116,6 +118,10 @@ export function TabContent({
   // console.log('dirtyFields', dirtyFields)
   // console.log(checklistModel)
 
+  function getIndexStageNameInListImage() {
+    return listImage.findIndex((item) => Object.hasOwn(item, stageName))
+  }
+
   function handleAddImageInListImage(
     index: number,
     image: {
@@ -126,33 +132,59 @@ export function TabContent({
     },
   ) {
     setListImage((prevState) => {
-      const findImage = prevState.findIndex((img) => img.id === index)
-      const newData = [...prevState]
+      const newListImage = [...prevState]
+      const indexStageName = newListImage.findIndex((item) =>
+        Object.hasOwn(item, stageName),
+      )
 
-      if (findImage >= 0) {
-        newData[findImage].images.push(image)
-        return newData
+      console.log(indexStageName)
+
+      if (indexStageName < 0) {
+        return [
+          {
+            [stageName]: [
+              {
+                id: index,
+                images: [{ ...image }],
+              },
+            ],
+          },
+        ]
       }
 
-      return [
-        ...newData,
-        {
+      const indexImage = prevState[indexStageName][stageName].findIndex(
+        (item) => item.id === index,
+      )
+      console.log(indexImage)
+      if (indexImage >= 0) {
+        newListImage[indexStageName][stageName][indexStageName].images.push(
+          image,
+        )
+        return newListImage
+      } else {
+        newListImage[indexStageName][stageName].push({
           id: index,
-          images: [image],
-        },
-      ]
+          images: [{ ...image }],
+        })
+        return newListImage
+      }
     })
   }
 
   function handleRemoveImageInListImage(index: number, imageId: number) {
-    console.log(index)
-    const findIndexListImage = listImage.findIndex((item) => item.id === index)
-    console.log(listImage[findIndexListImage])
+    const indexStageName = listImage.findIndex((item) =>
+      Object.hasOwn(item, stageName),
+    )
+    const findIndexListImage = listImage[indexStageName][stageName].findIndex(
+      (item) => item.id === index,
+    )
+    console.log(listImage[indexStageName][stageName][findIndexListImage])
     setListImage((prevState) => {
       const newListImage = [...prevState]
-      newListImage[findIndexListImage].images = newListImage[
-        findIndexListImage
-      ].images.filter((image) => image.id !== imageId)
+      newListImage[indexStageName][stageName][findIndexListImage].images =
+        newListImage[indexStageName][stageName][
+          findIndexListImage
+        ].images.filter((image) => image.id !== imageId)
 
       return newListImage
     })
@@ -185,7 +217,10 @@ export function TabContent({
   }
 
   function getBagdeAmountImages(index: number) {
-    const imgs = listImage.filter((image) => image.id === index)[0]
+    const IndexStageNameInListImage = getIndexStageNameInListImage()
+    const imgs = listImage[IndexStageNameInListImage]?.[stageName].filter(
+      (image) => image.id === index,
+    )[0]
     return imgs?.images.length ?? 0
   }
 
@@ -195,43 +230,103 @@ export function TabContent({
     )
 
     const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-
     if (data && Object.hasOwn(data, stageName)) {
-      console.log('entrou')
-      data[stageName].forEach((item: any, index: number) => {
+      console.log('entrou', data)
+      data[stageName]?.formState?.forEach((item: any, index: number) => {
         update(index, { inputs: item.inputs, observation: item.observation })
       })
+      if (data[stageName].imagesList.length > 0) {
+        setListImage((prevState) => {
+          const indexStageName = prevState.findIndex((item) =>
+            Object.hasOwn(item, stageName),
+          )
+          const newListImage = [...prevState]
+          if (indexStageName > -1) {
+            newListImage[indexStageName][stageName] = data[stageName].imagesList
+            return newListImage
+          } else {
+            return [
+              ...newListImage,
+              {
+                [stageName]: data[stageName].imagesList,
+              },
+            ]
+          }
+        })
+      }
     }
-  }, [])
+  }, [stageName])
 
   useEffect(() => {
-    console.log('render')
-    console.log('isDirty', isDirty)
     if (isDirty) {
       const sessionStorageData = sessionStorage.getItem(
         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
       )
       const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+      // console.log(listImage)
+      console.log(stageValuesWatch)
 
       if (data) {
         sessionStorage.setItem(
           `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
           JSON.stringify({
             ...data,
-            [stageName]: stageValuesWatch,
+            [stageName]: {
+              ...data[stageName],
+              formState: stageValuesWatch,
+            },
           }),
         )
       } else {
         sessionStorage.setItem(
           `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
           JSON.stringify({
-            ...data,
-            [stageName]: stageValuesWatch,
+            [stageName]: {
+              ...data[stageName],
+              formState: stageValuesWatch,
+            },
           }),
         )
       }
     }
   }, [stageValuesWatch])
+
+  useEffect(() => {
+    const indexStageName = listImage.findIndex((item) =>
+      Object.hasOwn(item, stageName),
+    )
+    const sessionStorageData = sessionStorage.getItem(
+      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+    )
+
+    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+    console.log(listImage)
+    // console.log(data)
+    if (indexStageName > -1) {
+      if (data) {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            ...data,
+            [stageName]: {
+              ...data[stageName],
+              imagesList: listImage[indexStageName][stageName],
+            },
+          }),
+        )
+      } else {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            [stageName]: {
+              ...data[stageName],
+              imagesList: listImage[indexStageName][stageName],
+            },
+          }),
+        )
+      }
+    }
+  }, [listImage])
 
   return (
     <>
@@ -311,6 +406,7 @@ export function TabContent({
         handleAddImageInListImage={handleAddImageInListImage}
         handleRemoveImageInListImage={handleRemoveImageInListImage}
         listImage={listImage}
+        stageName={stageName}
       />
     </>
   )
