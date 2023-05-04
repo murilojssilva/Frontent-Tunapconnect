@@ -282,7 +282,6 @@ export function TabContent({
           `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
           JSON.stringify({
             [stageName]: {
-              ...data[stageName],
               formState: stageValuesWatch,
             },
           }),
@@ -319,7 +318,6 @@ export function TabContent({
           `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
           JSON.stringify({
             [stageName]: {
-              ...data[stageName],
               imagesList: listImage[indexStageName][stageName],
             },
           }),
