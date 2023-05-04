@@ -19,12 +19,14 @@ import Image from 'next/image'
 import { MyButton } from './styles'
 
 type ListImages = Array<{
-  id: number
-  images: {
+  [key: string]: {
     id: number
-    name: string
-    url: string
-    size: string
+    images: {
+      id: number
+      name: string
+      url: string
+      size: string
+    }[]
   }[]
 }>
 
@@ -42,6 +44,7 @@ interface IModalImageProps {
   ) => void
   handleRemoveImageInListImage: (index: number, idImage: number) => void
   listImage: ListImages
+  stageName: string
 }
 
 export default function ModalImages({
@@ -50,6 +53,7 @@ export default function ModalImages({
   handleAddImageInListImage,
   listImage,
   handleRemoveImageInListImage,
+  stageName,
 }: IModalImageProps) {
   async function handleAddImageUrlList(imageData: {
     id: number
@@ -61,8 +65,17 @@ export default function ModalImages({
       handleAddImageInListImage(isOpen.id, imageData)
     }
   }
+  const indexStageNameInListImage = listImage.findIndex((item) => {
+    return Object.hasOwn(item, stageName)
+  })
 
-  const ImagesActual = listImage.filter((image) => image.id === isOpen.id)[0]
+  let imagesActual
+
+  if (indexStageNameInListImage > -1) {
+    imagesActual = listImage[indexStageNameInListImage][stageName].filter(
+      (image) => image.id === isOpen.id,
+    )[0]
+  }
 
   const handleClose = () => {
     closeModalImage()
@@ -80,7 +93,7 @@ export default function ModalImages({
         <Box>
           <MyDropzone handleAddImageUrlList={handleAddImageUrlList} />
         </Box>
-        {ImagesActual?.images.length > 0 ? (
+        {imagesActual && imagesActual?.images?.length > 0 ? (
           <Paper
             style={{
               maxHeight: 300,
@@ -90,8 +103,8 @@ export default function ModalImages({
             }}
           >
             <List>
-              {ImagesActual?.images.length > 0
-                ? ImagesActual?.images.map((item) => (
+              {imagesActual && imagesActual?.images.length > 0
+                ? imagesActual?.images.map((item) => (
                     <ListItem
                       sx={{
                         border: '1px solid #e1e1e1',
@@ -120,13 +133,14 @@ export default function ModalImages({
                       <ListItemAvatar>
                         <Image
                           alt={item.name}
-                          src={item.url}
-                          fill
+                          src={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${item.url}`}
+                          width={50}
+                          height={60}
                           style={{
                             maxWidth: '50px',
                             maxHeight: '60px',
                             objectFit: 'scale-down',
-                            margin: '0 8px',
+                            display: 'flex',
                           }}
                         />
                       </ListItemAvatar>

@@ -3,7 +3,11 @@
     "@rocketseat/eslint-config/react",
     "next/core-web-vitals"
   ],
+  // "plugins": ["@tanstack/query"],
   "rules": {
-    "camelcase": "off"
+    "camelcase": "off",
+    "react-hooks/exhaustive-deps": "off"
+    // "@tanstack/query/exhaustive-deps": "error",
+    // "@tanstack/query/prefer-query-object-syntax": "error"
   }
 }

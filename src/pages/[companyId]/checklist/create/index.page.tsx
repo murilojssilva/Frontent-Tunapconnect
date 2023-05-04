@@ -12,7 +12,7 @@ export default function ChecklistCreate() {
   useEffect(() => {
     async function createCheckListBase() {
       try {
-        const modelChecklist = await api.get('/checklist_model/list/')
+        const modelChecklist = await api.get('/checklist_model/list')
         const dataCreateChecklist = {
           company_id:
             router?.query?.companyId &&
@@ -31,7 +31,9 @@ export default function ChecklistCreate() {
           status: 'rascunho', // salvo // finalizado // rascunho
           stages: modelChecklist.data.data[0].stages,
         }
+
         if (modelChecklist.data.data.length > 0) {
+          console.log()
           const createdDefault = await api.create(
             '/checklist',
             dataCreateChecklist,

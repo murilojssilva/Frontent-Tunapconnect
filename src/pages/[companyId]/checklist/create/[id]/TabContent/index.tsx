@@ -8,13 +8,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { useEffect, useState } from 'react'
 
-import { useFieldArray, useForm } from 'react-hook-form'
-import {
-  Itens,
-  ReponseGetCheckList,
-  StageFormData,
-  StagesDataProps,
-} from '../../../types'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { Itens, ReponseGetCheckList, StagesDataProps } from '../../../types'
 import {
   // ButtonItemChecklist,
   ImageUploadBadge,
@@ -37,18 +32,35 @@ type TabContentProps = {
 }
 
 type ImageListProps = Array<{
-  id: number
-  images: {
+  [key: string]: {
     id: number
-    name: string
-    url: string
-    size: string
+    images: {
+      id: number
+      name: string
+      url: string
+      size: string
+    }[]
   }[]
 }>
 
 type OpenModalImage = {
   id: number | null
   open: boolean
+}
+
+type OnSubmitData = {
+  [x: string]:
+    | (
+        | {
+            inputs: string
+            observation: string | undefined
+          }
+        | {
+            observation: string | undefined
+            inputs?: undefined
+          }
+      )[]
+    | undefined
 }
 
 export function TabContent({
@@ -58,18 +70,57 @@ export function TabContent({
   formIDSubmit,
   handleAddListCheckList,
   isClosed,
+  checklistModel,
 }: TabContentProps) {
   const [openModalImage, setOpenModalImage] = useState<OpenModalImage>({
     id: null,
     open: false,
   })
   const [listImage, setListImage] = useState<ImageListProps>([])
+  // const [stageValues, setStageValues] = useState<FieldValues | []>([])
+  // const [count, setCount] = useState()
 
-  const { control, register, handleSubmit } = useForm()
+  const defaultValues = {
+    [stageName]: stageData?.itens.map((item, index) => {
+      if (item.rules.type === 'select') {
+        return {
+          inputs: item.values.value ?? '-',
+          observation: item.comment,
+        }
+      }
+      if (item.rules.type === 'visual_inspect') {
+        return {
+          observation: item.comment,
+        }
+      }
+      return { inputs: item.values.value, observation: item.comment }
+    }),
+  }
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm({
+    defaultValues,
+  })
   const { update } = useFieldArray({
     control,
     name: stageName,
   })
+
+  const stageValuesWatch = useWatch({
+    name: stageName,
+    control,
+  })
+
+  // console.log('dirtyFields', dirtyFields)
+  // console.log(checklistModel)
+
+  function getIndexStageNameInListImage() {
+    return listImage.findIndex((item) => Object.hasOwn(item, stageName))
+  }
 
   function handleAddImageInListImage(
     index: number,
@@ -81,39 +132,65 @@ export function TabContent({
     },
   ) {
     setListImage((prevState) => {
-      const findImage = prevState.findIndex((img) => img.id === index)
-      const newData = [...prevState]
+      const newListImage = [...prevState]
+      const indexStageName = newListImage.findIndex((item) =>
+        Object.hasOwn(item, stageName),
+      )
 
-      if (findImage >= 0) {
-        newData[findImage].images.push(image)
-        return newData
+      console.log(indexStageName)
+
+      if (indexStageName < 0) {
+        return [
+          {
+            [stageName]: [
+              {
+                id: index,
+                images: [{ ...image }],
+              },
+            ],
+          },
+        ]
       }
 
-      return [
-        ...newData,
-        {
+      const indexImage = prevState[indexStageName][stageName].findIndex(
+        (item) => item.id === index,
+      )
+      console.log(indexImage)
+      if (indexImage >= 0) {
+        newListImage[indexStageName][stageName][indexStageName].images.push(
+          image,
+        )
+        return newListImage
+      } else {
+        newListImage[indexStageName][stageName].push({
           id: index,
-          images: [image],
-        },
-      ]
+          images: [{ ...image }],
+        })
+        return newListImage
+      }
     })
   }
 
   function handleRemoveImageInListImage(index: number, imageId: number) {
-    console.log(index)
-    const findIndexListImage = listImage.findIndex((item) => item.id === index)
-    console.log(listImage[findIndexListImage])
+    const indexStageName = listImage.findIndex((item) =>
+      Object.hasOwn(item, stageName),
+    )
+    const findIndexListImage = listImage[indexStageName][stageName].findIndex(
+      (item) => item.id === index,
+    )
+    console.log(listImage[indexStageName][stageName][findIndexListImage])
     setListImage((prevState) => {
       const newListImage = [...prevState]
-      newListImage[findIndexListImage].images = newListImage[
-        findIndexListImage
-      ].images.filter((image) => image.id !== imageId)
+      newListImage[indexStageName][stageName][findIndexListImage].images =
+        newListImage[indexStageName][stageName][
+          findIndexListImage
+        ].images.filter((image) => image.id !== imageId)
 
       return newListImage
     })
   }
 
-  function onSubmitData(data: { [key: string]: StageFormData[] }) {
+  function onSubmitData(data: OnSubmitData) {
     const dataFormatted = {
       ...stageData,
       status: 'closed',
@@ -121,11 +198,11 @@ export function TabContent({
         console.log(!!listImage[index]?.id)
         return {
           ...item,
-          comment: data[stageName][index]?.observation,
+          comment: data[stageName]?.[index]?.observation,
           values: {
             ...item.values,
             images: listImage[index]?.id ? listImage[index].images : [],
-            value: data[stageName][index]?.inputs,
+            value: data[stageName]?.[index]?.inputs,
           },
         }
       }),
@@ -140,23 +217,114 @@ export function TabContent({
   }
 
   function getBagdeAmountImages(index: number) {
-    const imgs = listImage.filter((image) => image.id === index)[0]
+    const IndexStageNameInListImage = getIndexStageNameInListImage()
+    const imgs = listImage[IndexStageNameInListImage]?.[stageName].filter(
+      (image) => image.id === index,
+    )[0]
     return imgs?.images.length ?? 0
   }
 
   useEffect(() => {
-    stageData?.itens.forEach((item, index) => {
-      if (item.rules.type === 'boolean') {
-        update(index, { inputs: item.values.value, observation: item.comment })
-      }
-      if (item.rules.type === 'select') {
-        update(index, {
-          inputs: item.values.value ?? '-',
-          observation: item.comment,
+    const sessionStorageData = sessionStorage.getItem(
+      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+    )
+
+    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+    if (data && Object.hasOwn(data, stageName)) {
+      console.log('entrou', data)
+      data[stageName]?.formState?.forEach((item: any, index: number) => {
+        update(index, { inputs: item.inputs, observation: item.observation })
+      })
+      if (data[stageName]?.imagesList?.length > 0) {
+        setListImage((prevState) => {
+          const indexStageName = prevState.findIndex((item) =>
+            Object.hasOwn(item, stageName),
+          )
+          const newListImage = [...prevState]
+          if (indexStageName > -1) {
+            newListImage[indexStageName][stageName] = data[stageName].imagesList
+            return newListImage
+          } else {
+            return [
+              ...newListImage,
+              {
+                [stageName]: data[stageName].imagesList,
+              },
+            ]
+          }
         })
       }
-    })
-  }, [stageData?.itens])
+    }
+  }, [stageName])
+
+  useEffect(() => {
+    if (isDirty) {
+      const sessionStorageData = sessionStorage.getItem(
+        `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+      )
+      const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+      // console.log(listImage)
+      console.log(stageValuesWatch)
+
+      if (data) {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            ...data,
+            [stageName]: {
+              ...data[stageName],
+              formState: stageValuesWatch,
+            },
+          }),
+        )
+      } else {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            [stageName]: {
+              formState: stageValuesWatch,
+            },
+          }),
+        )
+      }
+    }
+  }, [stageValuesWatch])
+
+  useEffect(() => {
+    const indexStageName = listImage.findIndex((item) =>
+      Object.hasOwn(item, stageName),
+    )
+    const sessionStorageData = sessionStorage.getItem(
+      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+    )
+
+    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+    console.log(listImage)
+    // console.log(data)
+    if (indexStageName > -1) {
+      if (data) {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            ...data,
+            [stageName]: {
+              ...data[stageName],
+              imagesList: listImage[indexStageName][stageName],
+            },
+          }),
+        )
+      } else {
+        sessionStorage.setItem(
+          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+          JSON.stringify({
+            [stageName]: {
+              imagesList: listImage[indexStageName][stageName],
+            },
+          }),
+        )
+      }
+    }
+  }, [listImage])
 
   return (
     <>
@@ -236,6 +404,7 @@ export function TabContent({
         handleAddImageInListImage={handleAddImageInListImage}
         handleRemoveImageInListImage={handleRemoveImageInListImage}
         listImage={listImage}
+        stageName={stageName}
       />
     </>
   )

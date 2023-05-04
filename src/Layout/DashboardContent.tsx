@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import MuiDrawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
@@ -18,7 +18,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import { MainListItems, secondaryListItems } from './ListItems'
 import { CompanyContext } from '@/contexts/CompanyContext'
-
+import tunapLogoImg from '@/assets/images/tunap-login.svg'
+import Image from 'next/image'
+import useMediaQuery from '@mui/material/useMediaQuery'
 const drawerWidth: number = 240
 
 interface AppBarProps extends MuiAppBarProps {
@@ -86,9 +88,21 @@ export function DashboardContent({ children }: DashboardContentProps) {
   const toggleDrawer = () => {
     setOpen(!open)
   }
-
-  // const router = useRouter()
+  const theme = useTheme()
+  const isWeb = useMediaQuery(theme.breakpoints.up('sm'))
   const { company } = useContext(CompanyContext)
+
+  useEffect(() => {
+    if (!isWeb) {
+      if (open) {
+        setOpen(false)
+      }
+    } else {
+      if (!open) {
+        setOpen(true)
+      }
+    }
+  }, [isWeb])
 
   useEffect(() => {
     if (company) {
@@ -135,7 +149,13 @@ export function DashboardContent({ children }: DashboardContentProps) {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer
+          variant="permanent"
+          open={open}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
           <Toolbar
             sx={{
               display: 'flex',
@@ -144,6 +164,12 @@ export function DashboardContent({ children }: DashboardContentProps) {
               px: [1],
             }}
           >
+            <Image
+              src={tunapLogoImg}
+              height={30}
+              alt="Tunap connect"
+              style={{ marginRight: '10px' }}
+            />
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
@@ -166,14 +192,16 @@ export function DashboardContent({ children }: DashboardContentProps) {
             height: '100vh',
             overflow: 'auto',
             maxWidth: {
-              md: open ? `calc(100vw - 240px)` : `calc(100vw - 71px)`,
+              sm: open
+                ? `calc(100vw - ${drawerWidth}px)`
+                : `calc(100vw - 71px)`,
               xs: `100vw`,
             },
             marginLeft: {
-              md: open ? '240px' : '71px',
+              sm: open ? `${drawerWidth}px` : '71px',
               xs: '71px',
             },
-            transition: 'all 0.3s ease-in-out',
+            transition: 'all 0.1s ease-in-out',
           }}
         >
           <Toolbar />

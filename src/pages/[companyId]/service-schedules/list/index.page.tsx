@@ -30,7 +30,7 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'react-query'
 import Skeleton from '@mui/material/Skeleton'
 
 type SearchFormProps = {
@@ -200,13 +200,11 @@ export default function ServiceSchedulesList() {
     // isLoading,
     // isFetched,
     isFetching,
-  } = useQuery<ServiceSchedulesListProps[] | []>({
-    queryKey: ['service-scheduler-list'],
-    queryFn: () =>
+  } = useQuery<ServiceSchedulesListProps[] | []>(
+    ['service-scheduler-list', companyId],
+    () =>
       api
-        .get(
-          `/service-schedule?company_id=${router?.query?.companyId}&limit=2&page=2`,
-        )
+        .get(`/service-schedule?company_id=${companyId}&limit=2&page=2`)
         .then((response) => {
           const resp = response.data.data.map((data: any) => ({
             id: data?.id ?? 'Não informado',
@@ -222,9 +220,8 @@ export default function ServiceSchedulesList() {
           return resp
         })
         .catch(() => []),
-    enabled: !!companyId,
-    refetchOnWindowFocus: false,
-  })
+    { enabled: !!companyId, refetchOnWindowFocus: false },
+  )
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

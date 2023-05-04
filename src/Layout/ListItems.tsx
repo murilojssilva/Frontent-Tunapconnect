@@ -2,12 +2,14 @@ import * as React from 'react'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
-import DashboardIcon from '@mui/icons-material/Dashboard'
 
 import AccessTimeFilledOutlinedIcon from '@mui/icons-material/AccessTimeFilledOutlined'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
 import Link from 'next/link'
 import { useContext, useEffect, useMemo, useState } from 'react'
@@ -25,13 +27,13 @@ const memuList: memuListProps = [
   {
     path: '/company',
     href: '/company',
-    component: <DashboardIcon />,
+    component: <AccountBalanceIcon />,
     title: 'Empresas',
   },
   {
     path: '/service-schedules',
     href: '/service-schedules/list',
-    component: <AccessTimeFilledOutlinedIcon />,
+    component: <CalendarMonthIcon />,
     title: 'Agendamento',
   },
   {

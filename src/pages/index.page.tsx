@@ -12,28 +12,9 @@ import Container from '@mui/material/Container'
 import { useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
 
-// import backgroundImageTunap from '@/assets/images/background-logo-login.svg'
 import tunapLogoImg from '@/assets/images/tunap-login.svg'
 import { alpha, Link, Paper, Stack } from '@mui/material'
 import styled from '@emotion/styled'
-
-// function Copyright(props: any) {
-//   return (
-//     <Typography
-//       variant="body2"
-//       color="text.secondary"
-//       align="center"
-//       {...props}
-//     >
-//       {'Copyright © '}
-//       <Link color="inherit" href="#">
-//         Tunnap Connect
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   )
-// }
 
 type SignInDataProps = {
   username: string
@@ -117,7 +98,7 @@ export default function SignIn() {
             alignItems: 'center',
             justifyContent: 'center',
             px: 5,
-            width: '400px',
+            maxWidth: '400px',
           }}
           gap={1}
         >

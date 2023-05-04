@@ -518,7 +518,7 @@ export function PrintInspection(props: {
                     </tbody>
                   </table>
                 </div>
-                <div className={style['col-5']}>
+                <div className={style['col-5']} style={{ marginTop: '-28px' }}>
                   <table
                     className={classNames(
                       style.bordered,
@@ -636,6 +636,7 @@ export function PrintInspection(props: {
                     style['p-1'],
                     style['lh-150'],
                   )}
+                  style={{ paddingBottom: '16px' }}
                 >
                   <div>
                     Pintura/Carroçaria: <hr className={style['bottom-line']} />
@@ -669,7 +670,12 @@ export function PrintInspection(props: {
           )}
         >
           <div className={style['col-6']}>
-            <div className={classNames(style['form-slot'], style['me-1'])}>
+            <div
+              className={classNames(style['form-slot'], style['me-1'])}
+              style={{
+                padding: '7px 5px',
+              }}
+            >
               <p className={style['mb-1']}>
                 Veículo oriundo de guincho/plataforma: ( &nbsp; ) Sim &nbsp; (
                 &nbsp; ) Nao
@@ -940,7 +946,7 @@ export function PrintInspection(props: {
                   </td>
                   <td>
                     Vazamentos de óleo, água, combustível
-                    <br />
+                    {/* <br /> */}
                     e/ou outros fluídos
                   </td>
                 </tr>

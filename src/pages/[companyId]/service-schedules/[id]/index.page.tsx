@@ -55,7 +55,7 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 
 import { PrintInspectionModal } from './components/PrintInspectionModal'
 import { TableModal } from './components/TableModal'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'react-query'
 
 const api = new ApiCore()
 
@@ -260,22 +260,22 @@ export default function ServiceSchedulesEdit() {
   const {
     data: dataTechnicalConsultantList,
     status: dataTechnicalConsultantListStatus,
-  } = useQuery<TechnicalConsultant[]>({
-    queryKey: [
+  } = useQuery<TechnicalConsultant[]>(
+    [
       'service_schedule',
       'by_id',
       'edit',
       'technical-consultant-list',
       'options',
     ],
-    queryFn: async () => {
+    async () => {
       const resp = await api.get(
         `/technical-consultant?company_id=${companyId}`,
       )
       return resp.data.data
     },
-    enabled: !!companyId && wasEdited,
-  })
+    { enabled: !!companyId && wasEdited },
+  )
 
   const { data: dataServiceSchedule, status: dataServiceScheduleStatus } =
     useQuery({
