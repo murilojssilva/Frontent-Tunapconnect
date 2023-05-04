@@ -235,7 +235,7 @@ export function TabContent({
       data[stageName]?.formState?.forEach((item: any, index: number) => {
         update(index, { inputs: item.inputs, observation: item.observation })
       })
-      if (data[stageName].imagesList.length > 0) {
+      if (data[stageName]?.imagesList?.length > 0) {
         setListImage((prevState) => {
           const indexStageName = prevState.findIndex((item) =>
             Object.hasOwn(item, stageName),
