@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import { signIn as signInRequest, useSession } from 'next-auth/react'
 
 import Router from 'next/router'
-import { parseCookies } from 'nookies';
 
 type SignInData = {
   username: string
