@@ -34,8 +34,8 @@ export default function SignIn() {
   })
   const { signIn } = useContext(AuthContext)
 
-  function handleSignIn(data: SignInDataProps) {
-    signIn(data)
+  async function handleSignIn(data: SignInDataProps) {
+    await signIn(data)
   }
   const ButtonAdd = styled(Button)(({ theme }) => ({
     color: 'white',
