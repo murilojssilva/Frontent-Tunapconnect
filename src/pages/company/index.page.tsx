@@ -149,7 +149,7 @@ export default function CompanyList() {
 CompanyList.auth = true
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {['']: token} = parseCookies(ctx)
+  const {['next-auth.session-token']: token} = parseCookies(ctx)
 
   if(!token) {
     return {
