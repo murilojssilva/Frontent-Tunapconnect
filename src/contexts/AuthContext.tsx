@@ -55,9 +55,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         name: session?.user.name,
         privilege: session?.user.privilege,
       })
+      console.log(user)
+      Router.push('/company')
     }
-    console.log(user)
-    if (user) Router.push('/company')
     else Router.push('/')
   },[session])
 
