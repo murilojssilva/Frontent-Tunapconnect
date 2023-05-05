@@ -56,6 +56,7 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import { PrintInspectionModal } from './components/PrintInspectionModal'
 import { TableModal } from './components/TableModal'
 import { useQuery } from 'react-query'
+import { formatCPF } from '@/ultis/formatCPF'
 
 const api = new ApiCore()
 
@@ -383,7 +384,7 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>CPF:</InfoCardName>{' '}
                   {client?.cpf ? (
-                    <InfoCardText>{client?.cpf}</InfoCardText>
+                    <InfoCardText>{formatCPF(client?.cpf)}</InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton

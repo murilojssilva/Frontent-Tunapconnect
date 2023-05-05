@@ -2,6 +2,8 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import { signIn as signInRequest, useSession } from 'next-auth/react'
 
 import Router from 'next/router'
+import { parseCookies, setCookie } from 'nookies'
+import { api } from '@/lib/api'
 
 type SignInData = {
   username: string
@@ -31,12 +33,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const isAuthenticated = !!user
 
+  
+
   async function signIn(data: SignInData) {
     const resp = await signInRequest('credentials', {
       redirect: false,
       username: data.username,
       password: data.password,
     })
+
+    const {'next-auth.session-token': token} = parseCookies()
+
+    setCookie(undefined, 'next-auth.session-token', token, {
+      maxAge: 60 *60 * 1
+    })
+
+    api.defaults.headers['Authorization'] = `Bearer ${token}`
 
     if (resp?.ok && resp?.status === 200) {
       setUser({

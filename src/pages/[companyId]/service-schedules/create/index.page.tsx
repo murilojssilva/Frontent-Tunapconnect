@@ -55,6 +55,8 @@ import { ActionAlertsStateProps } from '@/components/ActionAlerts/ActionAlerts'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import { TableModal } from './components/TableModal'
+import { parseCookies } from 'nookies'
+import { formatCPF } from '@/ultis/formatCPF'
 
 const api = new ApiCore()
 
@@ -300,7 +302,7 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>CPF:</InfoCardName>{' '}
                   {client?.cpf ? (
-                    <InfoCardText>{client?.cpf}</InfoCardText>
+                    <InfoCardText>{formatCPF(client?.cpf)}</InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton
@@ -718,17 +720,18 @@ export default function ServiceSchedulesEdit() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
+  const {['']: token} = parseCookies(ctx)
 
-  if (!session?.user?.token) {
+  if(!token) {
     return {
       redirect: {
         destination: '/',
-        permanent: false,
-      },
+        permanent: false
+      }
     }
   }
+
   return {
-    props: {},
+    props: {}
   }
 }
