@@ -81,8 +81,8 @@ export function TableModal({
         headerName: 'Data',
         headerClassName: 'super-app-theme--header',
         // flex: 1,
-        maxWidth: 150,
-        minWidth: 150,
+        maxWidth: 280,
+        minWidth: 180,
         sortable: false,
         valueFormatter: (params: GridValueFormatterParams) => {
           if (params.value == null) {

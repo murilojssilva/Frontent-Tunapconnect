@@ -806,7 +806,7 @@ export default function ServiceSchedulesEdit() {
       </Grid>
       <TableModal
         isOpen={openChecklistModal}
-        title="Lista de checklists"
+        title="Lista de checklists" 
         serviceScheduleId={router?.query?.id as string}
         closeChecklistModal={closeChecklistModal}
       />

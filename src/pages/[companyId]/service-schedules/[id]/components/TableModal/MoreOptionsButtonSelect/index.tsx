@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 // import MenuItem from '@mui/material/MenuItem'
@@ -7,6 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 // import { Settings } from "@mui/icons-material";
 import { MoreOptionsButtonSelectProps } from './types'
 import { MenuItemButton } from './styles'
+import { useRouter } from 'next/router'
 
 // const ITEM_HEIGHT = 38
 
@@ -19,11 +20,17 @@ export function MoreOptionsButtonSelect({
     event.stopPropagation()
     setAnchorEl(event.currentTarget)
   }
+  const router = useRouter()
+
+  console.log(router?.query)
+  
+  const { companyId, id } = router.query
+
   const handleClose = () => {
     setAnchorEl(null)
   }
   const handleClickEdit = () => {
-    setAnchorEl(null)
+    router.push(`/${companyId}/checklist/create/${id}`) //Está errado, porém irei deixar sinalizado
   }
   return (
     <div>

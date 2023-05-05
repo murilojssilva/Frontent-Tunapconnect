@@ -76,9 +76,7 @@ export default function ServiceSchedulesList() {
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push(
-      `/${router?.query?.id}/service-schedules/list?search=${data.search}`,
-    )
+    router.push(`/${companyId}/service-schedules/list?search=${data.search}`,)
   }
 
   const handleDelete = (id: number) => {
