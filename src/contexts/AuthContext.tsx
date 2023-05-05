@@ -50,9 +50,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    const cookies = parseCookies()
-    console.log({cookies, session})
-    
     setUser({
       id: session?.user.id,
       name: session?.user.name,
