@@ -59,11 +59,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   },[session])
 
-
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>
       {children}
     </AuthContext.Provider>
   )
 }
-
