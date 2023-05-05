@@ -49,11 +49,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    setUser({
-      id: session?.user.id,
-      name: session?.user.name,
-      privilege: session?.user.privilege,
-    })
+    if (session) {
+      setUser({
+        id: session?.user.id,
+        name: session?.user.name,
+        privilege: session?.user.privilege,
+      })
+    }
+    console.log(user)
     if (user) Router.push('/company')
     else Router.push('/')
   },[session])
