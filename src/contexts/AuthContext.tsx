@@ -55,7 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       privilege: session?.user.privilege,
     })
     Router.push('/company')
-  },[])
+  },[session])
 
   useEffect(() => {
     if (status === 'unauthenticated') Router.replace('/')
