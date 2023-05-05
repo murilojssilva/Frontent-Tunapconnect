@@ -58,7 +58,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log(user)
       Router.push('/company')
     }
-    else Router.push('/')
   },[session])
 
 
