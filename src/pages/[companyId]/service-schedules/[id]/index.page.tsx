@@ -57,6 +57,7 @@ import { PrintInspectionModal } from './components/PrintInspectionModal'
 import { TableModal } from './components/TableModal'
 import { useQuery } from 'react-query'
 import { formatCPF } from '@/ultis/formatCPF'
+import { formatPlate } from '@/ultis/formatPlate'
 
 const api = new ApiCore()
 
@@ -534,7 +535,7 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>Placa:</InfoCardName>{' '}
                   {clientVehicle?.plate ? (
-                    <InfoCardText>{clientVehicle?.plate}</InfoCardText>
+                    <InfoCardText>{formatPlate(clientVehicle?.plate)}</InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton
