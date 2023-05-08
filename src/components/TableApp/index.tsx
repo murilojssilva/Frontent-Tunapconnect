@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
+import { Loading } from '../Loading'
 
 interface TableAppProps {
   columns: GridColDef[]
@@ -51,7 +52,7 @@ export function TableApp({
 
   return (
     <>
-      <Paper
+      {rows ? <Paper
         sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
       >
         <Box
@@ -97,7 +98,20 @@ export function TableApp({
             }
           />
         </Box>
+      </Paper> :
+      <Paper
+        sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            marginTop: '-105px',
+          }}
+        >
+          <Loading />
+        </Box>
       </Paper>
+      }
     </>
   )
 }
