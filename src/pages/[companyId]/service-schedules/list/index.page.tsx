@@ -228,7 +228,7 @@ export default function ServiceSchedulesList() {
     if (rows) {
       setFilteredRows(rows as ServiceSchedulesListProps[])
     }
-  }, [])
+  }, [rows])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
