@@ -148,7 +148,7 @@ export default function CompanyList() {
 
 CompanyList.auth = true
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+/*export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const {['next-auth.session-token']: token} = parseCookies(ctx)
 
   if(!token) {
@@ -163,7 +163,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {}
   }
-}
+}*/
 
 // function useQuery<T>(arg0: {
 //   queryKey: string[]
