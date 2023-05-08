@@ -13,8 +13,8 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 
 import { useSession } from 'next-auth/react'
 import { useQuery } from 'react-query'
-import { GetServerSideProps } from 'next'
-import { parseCookies } from 'nookies'
+import { formatCPF } from '@/ultis/formatCPF'
+import { formatCNPJ } from '@/ultis/formatCNPJ'
 
 interface companyProps {
   id: string
@@ -135,7 +135,7 @@ export default function CompanyList() {
                     }}
                   >
                     <Title>{item.name || 'Não informado'}</Title>
-                    <Typography>{item.cnpj || item.cpf}</Typography>
+                    <Typography>{formatCNPJ(String(item.cnpj)) || formatCPF(String(item.cpf))}</Typography>
                   </ContainerItem>
                 </Grid>
               )
@@ -147,23 +147,6 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
-
-/*export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {['next-auth.session-token']: token} = parseCookies(ctx)
-
-  if(!token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    }
-  }
-
-  return {
-    props: {}
-  }
-}*/
 
 // function useQuery<T>(arg0: {
 //   queryKey: string[]

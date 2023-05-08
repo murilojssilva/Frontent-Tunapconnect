@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { useContext, useState, useMemo } from 'react'
+import { useContext, useState, useMemo, useEffect } from 'react'
 
 import Container from '@mui/material/Container'
 
@@ -63,6 +63,8 @@ export default function ServiceSchedulesList() {
 
   const { companyId } = useContext(CompanyContext)
 
+  const [filteredRows, setFilteredRows] = useState<ServiceSchedulesListProps[]>([])
+
   const router = useRouter()
 
   const {
@@ -77,6 +79,7 @@ export default function ServiceSchedulesList() {
 
   function onSubmitSearch(data: SearchFormProps) {
     router.push(`/${companyId}/service-schedules/list?search=${data.search}`,)
+    setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
   const handleDelete = (id: number) => {
@@ -221,6 +224,12 @@ export default function ServiceSchedulesList() {
     { enabled: !!companyId, refetchOnWindowFocus: false },
   )
 
+  useEffect(() => {
+    if (rows) {
+      setFilteredRows(rows as ServiceSchedulesListProps[])
+    }
+  }, [])
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
@@ -302,7 +311,7 @@ export default function ServiceSchedulesList() {
           {!isFetching ? (
             <TableApp
               columns={columns}
-              rowsData={isSuccess ? rows : []}
+              rowsData={isSuccess ? filteredRows : []}
               handlePages={handlePages}
               pages={pages}
               loading={isFetching}
