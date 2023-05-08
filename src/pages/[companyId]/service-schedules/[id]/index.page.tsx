@@ -56,6 +56,8 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import { PrintInspectionModal } from './components/PrintInspectionModal'
 import { TableModal } from './components/TableModal'
 import { useQuery } from 'react-query'
+import { formatCPF } from '@/ultis/formatCPF'
+import { formatPlate } from '@/ultis/formatPlate'
 
 const api = new ApiCore()
 
@@ -383,7 +385,7 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>CPF:</InfoCardName>{' '}
                   {client?.cpf ? (
-                    <InfoCardText>{client?.cpf}</InfoCardText>
+                    <InfoCardText>{formatCPF(client?.cpf)}</InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton
@@ -533,7 +535,7 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>Placa:</InfoCardName>{' '}
                   {clientVehicle?.plate ? (
-                    <InfoCardText>{clientVehicle?.plate}</InfoCardText>
+                    <InfoCardText>{formatPlate(clientVehicle?.plate)}</InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton
@@ -805,7 +807,7 @@ export default function ServiceSchedulesEdit() {
       </Grid>
       <TableModal
         isOpen={openChecklistModal}
-        title="Lista de checklists"
+        title="Lista de checklists" 
         serviceScheduleId={router?.query?.id as string}
         closeChecklistModal={closeChecklistModal}
       />

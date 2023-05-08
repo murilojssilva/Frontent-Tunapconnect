@@ -61,7 +61,7 @@ const MyApp = (props: CustomAppProps) => {
                     </Layout>
                   </Auth>
                 ) : (
-                  <Component {...pageProps} />
+                    <Component {...pageProps} />
                 )}
 
                 {/* <Component {...pageProps} /> */}

@@ -13,6 +13,8 @@ import { CompanyContext } from '@/contexts/CompanyContext'
 
 import { useSession } from 'next-auth/react'
 import { useQuery } from 'react-query'
+import { GetServerSideProps } from 'next'
+import { parseCookies } from 'nookies'
 
 interface companyProps {
   id: string
@@ -145,6 +147,24 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
+
+/*export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const {['next-auth.session-token']: token} = parseCookies(ctx)
+
+  if(!token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}*/
+
 // function useQuery<T>(arg0: {
 //   queryKey: string[]
 //   queryFn: () => Promise<any>

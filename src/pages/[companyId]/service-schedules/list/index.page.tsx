@@ -76,9 +76,7 @@ export default function ServiceSchedulesList() {
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push(
-      `/${router?.query?.id}/service-schedules/list?search=${data.search}`,
-    )
+    router.push(`/${companyId}/service-schedules/list?search=${data.search}`,)
   }
 
   const handleDelete = (id: number) => {
@@ -226,7 +224,7 @@ export default function ServiceSchedulesList() {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        {!isFetching ? <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
             <Grid container spacing={3}>
               <Grid
@@ -288,7 +286,11 @@ export default function ServiceSchedulesList() {
               </Grid>
             </Grid>
           </Paper>
+        </Grid> :
+          <Grid item xs={12}>
+            <Skeleton variant="rounded" sx={{ width: '100%' }} height={140} />
         </Grid>
+        }
         <Grid item xs={12}>
           <HeaderBreadcrumb
             data={HeaderBreadcrumbData}
@@ -307,7 +309,10 @@ export default function ServiceSchedulesList() {
               companyId={companyId}
             />
           ) : (
-            <Skeleton variant="rounded" sx={{ width: '100%' }} height={150} />
+            <Grid>
+              <Skeleton variant="rounded" sx={{ width: '100%' }} height={70} style={{marginBottom: 8}} />
+              <Skeleton variant="rounded" sx={{ width: '100%' }} height={150} />
+            </Grid>
           )}
         </Grid>
       </Grid>

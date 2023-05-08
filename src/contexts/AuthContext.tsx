@@ -49,8 +49,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    if (status === 'unauthenticated') Router.replace('/')
-  }, [status])
+    if (session) {
+      setUser({
+        id: session?.user.id,
+        name: session?.user.name,
+        privilege: session?.user.privilege,
+      })
+      Router.push('/company')
+    }
+  },[session])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>

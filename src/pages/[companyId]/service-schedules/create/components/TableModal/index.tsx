@@ -78,8 +78,8 @@ export function TableModal({
       headerName: 'Data',
       headerClassName: 'super-app-theme--header',
       flex: 1,
-      maxWidth: 220,
-      minWidth: 80,
+      maxWidth: 280,
+      minWidth: 180,
       sortable: false,
     },
     {

@@ -5,6 +5,7 @@ import Container from '@mui/material/Container'
 import { getSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next/types'
 import { useRouter } from 'next/router'
+import { parseCookies } from 'nookies'
 
 export default function CompanuId() {
   const router = useRouter()
@@ -21,17 +22,18 @@ export default function CompanuId() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
+  const {['next-auth.session-token']: token} = parseCookies(ctx)
 
-  if (!session?.user?.token) {
+  if(!token) {
     return {
       redirect: {
         destination: '/',
-        permanent: false,
-      },
+        permanent: false
+      }
     }
   }
+
   return {
-    props: {},
+    props: {}
   }
 }
