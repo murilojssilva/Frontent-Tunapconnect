@@ -26,11 +26,13 @@ export function MoreOptionsButtonSelect({
   
   const { companyId, id } = router.query
 
+  console.log({companyId, id})
+
   const handleClose = () => {
     setAnchorEl(null)
   }
   const handleClickEdit = () => {
-    router.push(`/checklist/create/${id}?company=${companyId}`) //Está errado, porém irei deixar sinalizado
+    router.push(`/checklist/create/${id}`)
   }
   return (
     <div>

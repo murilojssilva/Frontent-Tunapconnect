@@ -38,7 +38,7 @@ const memuList: memuListProps = [
   },
   {
     path: '/checklist',
-    href: '/checklist',
+    href: '/checklist/create',
     component: <AccessTimeFilledOutlinedIcon />,
     title: 'Checklist',
   },
@@ -57,7 +57,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
           ? item
           : {
               ...item,
-              href: `/${companyId}${item.href}`,
+              href: item.path === "/checklist" ? `/${item.href}/${companyId}` : `/${item.href}?company=${companyId}`,
             }
       }),
     [companyId],
