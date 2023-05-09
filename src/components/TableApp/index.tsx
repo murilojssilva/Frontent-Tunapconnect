@@ -88,7 +88,7 @@ export function TableApp({
             }}
             loading={loading}
             onRowClick={(id) => {
-              router.push(`/${companyId}/service-schedules/${id.id}`)
+              router.push(`/service-schedules/list/${id.id}?company=${companyId}`)
             }}
             pageSizeOptions={[7]}
             // disableRowSelectionOnClick

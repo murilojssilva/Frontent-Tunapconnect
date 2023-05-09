@@ -30,7 +30,7 @@ export function MoreOptionsButtonSelect({
     setAnchorEl(null)
   }
   const handleClickEdit = () => {
-    router.push(`/${companyId}/checklist/create/${id}`) //Está errado, porém irei deixar sinalizado
+    router.push(`/checklist/create/${id}?company=${companyId}`) //Está errado, porém irei deixar sinalizado
   }
   return (
     <div>

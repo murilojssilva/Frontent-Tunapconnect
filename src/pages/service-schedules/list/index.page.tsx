@@ -78,7 +78,7 @@ export default function ServiceSchedulesList() {
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push(`/${companyId}/service-schedules/list?search=${data.search}`,)
+    router.push(`/service-schedules/list?company=${companyId}&search=${data.search}`,)
     setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
@@ -287,7 +287,7 @@ export default function ServiceSchedulesList() {
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={async () => {
-                    await router.push(`/${companyId}/service-schedules/create`)
+                    await router.push(`/checklist/create/${companyId}`)
                   }}
                 >
                   Adicionar novo

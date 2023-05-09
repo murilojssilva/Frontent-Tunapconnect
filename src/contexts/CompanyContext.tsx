@@ -17,7 +17,7 @@ type CompanyProps = {
 type CompanyContextType = {
   company: CompanyProps | null | undefined
   companyId: string | undefined
-  createCompany: (company: CompanyProps) => void
+  createCompany: (company: CompanyProps) => Promise<void>
 }
 
 type CompanyProviderProps = {
@@ -37,7 +37,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
     setCompanyId(newCompany.id)
-    await router.push(`/${newCompany.id}/service-schedules/list`)
+    await router.push(`/service-schedules/list?company=${newCompany.id}`)
   }
 
   useEffect(() => {

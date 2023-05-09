@@ -27,7 +27,7 @@ type AuthProviderProps = {
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const { status, data: session } = useSession()
+  const { data: session } = useSession()
   const [user, setUser] = useState<User | null>(null)
   const isAuthenticated = !!user
 
@@ -50,12 +50,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     if (session) {
-      setUser({
-        id: session?.user.id,
-        name: session?.user.name,
-        privilege: session?.user.privilege,
-      })
-      Router.push('/company')
+      if (!user){
+        setUser({
+          id: session?.user.id,
+          name: session?.user.name,
+          privilege: session?.user.privilege,
+        })
+        Router.push('/company')
+      }
     }
   },[session])
 
