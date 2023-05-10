@@ -41,12 +41,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     await router.push(`/service-schedules/list?company=${newCompany.id}`)
   }
 
-  async function fetchCompany() {
-    const company = Router.query
-    //setCompanyId(company)
-    //console.log(companyId)
-  }
-
 
   useEffect(() => {
     if (!isCompanyId) {
@@ -56,7 +50,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
           ? setCompanyId(router?.query?.companyId as string)
           : router.push('/company')
       }
-      fetchCompany()
     }
   }, [router?.query?.companyId])
 

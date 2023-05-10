@@ -79,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
  
   useEffect(() => {
-    const path = router.asPath
+    const path = Router.asPath
     
     if (session) {
       if (!user){
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           name: session?.user.name,
           privilege: session?.user.privilege,
         })
-        router.push(path)
+        path === "/" ? Router.push("/company") : Router.push(path)
       }
     }
   },[session])
@@ -111,3 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   )
 }
+    
+
+      
+
