@@ -32,7 +32,7 @@ const memuList: memuListProps = [
   },
   {
     path: '/service-schedules',
-    href: '/service-schedules/list',
+    href: '/service-schedules',
     component: <CalendarMonthIcon />,
     title: 'Agendamento',
   },

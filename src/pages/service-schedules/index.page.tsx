@@ -33,6 +33,7 @@ import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from 'react-query'
 import Skeleton from '@mui/material/Skeleton'
 import { AuthContext } from '@/contexts/AuthContext'
+import { GetServerSideProps } from 'next'
 
 type SearchFormProps = {
   search: string
@@ -51,7 +52,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
   },
   {
     label: 'Lista de agendamentos',
-    href: '/service-schedules/list',
+    href: '/service-schedules',
   },
 ]
 
@@ -63,7 +64,7 @@ export default function ServiceSchedulesList() {
   }>({ current: 1, next: false, previous: false })
 
   //const { companyId } = useContext(CompanyContext)
-  const { companyId } = useContext(AuthContext)
+  const { companyId, user } = useContext(AuthContext)
 
   const [filteredRows, setFilteredRows] = useState<ServiceSchedulesListProps[]>([])
 
@@ -80,7 +81,7 @@ export default function ServiceSchedulesList() {
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push(`/service-schedules/list?company=${companyId}&search=${data.search}`,)
+    router.push(`/service-schedules?company=${companyId}&search=${data.search}`,)
     setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
@@ -231,6 +232,12 @@ export default function ServiceSchedulesList() {
       setFilteredRows(rows as ServiceSchedulesListProps[])
     }
   }, [rows])
+
+  useEffect(() => {
+    const companyIdNumeric = String(companyId).replace(/[^\d]/g, "")
+    user && !companyIdNumeric && router.push('/company')
+  }, [])
+
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

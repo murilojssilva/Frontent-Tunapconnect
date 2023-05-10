@@ -230,7 +230,7 @@ export default function ServiceSchedulesEdit() {
             isOpen: true,
             title: `${err.response.data.msg ?? 'Error inesperado'}!`,
             type: 'error',
-            redirectTo: '/service-schedules/list',
+            redirectTo: '/service-schedules',
           })
         })
 

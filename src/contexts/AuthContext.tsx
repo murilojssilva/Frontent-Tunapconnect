@@ -53,11 +53,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
     setCompanyId(newCompany.id)
-    await Router.push(`/service-schedules/list?company=${newCompany.id}`)
+    await Router.push(`/service-schedules?company=${newCompany.id}`)
   }
 
   function fetchCompany() {
-    return router.asPath.replace("/service-schedules/list?company=","")
+    return router.asPath.replace("/service-schedules?company=","")
   }
 
   async function signIn(data: SignInData) {
