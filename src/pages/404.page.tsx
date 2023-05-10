@@ -1,11 +1,14 @@
+import { GetServerSideProps } from "next";
+
 export default function Custom404() {
-    return null;
+  return null;
+}
+
+export const getStaticProps = () => {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: false
+    }
   }
-  
-  export const getStaticProps = () => {
-    return {
-      redirect: {
-        destination: '/',
-      },
-    };
-  };
+}
