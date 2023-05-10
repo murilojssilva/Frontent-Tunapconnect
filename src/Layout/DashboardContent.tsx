@@ -17,10 +17,10 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import { useContext, useEffect, useState } from 'react'
 
 import { MainListItems, secondaryListItems } from './ListItems'
-import { CompanyContext } from '@/contexts/CompanyContext'
 import tunapLogoImg from '@/assets/images/tunap-login.svg'
 import Image from 'next/image'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { AuthContext } from '@/contexts/AuthContext'
 const drawerWidth: number = 240
 
 interface AppBarProps extends MuiAppBarProps {
@@ -90,7 +90,7 @@ export function DashboardContent({ children }: DashboardContentProps) {
   }
   const theme = useTheme()
   const isWeb = useMediaQuery(theme.breakpoints.up('sm'))
-  const { company } = useContext(CompanyContext)
+  const { company } = useContext(AuthContext)
 
   useEffect(() => {
     if (!isWeb) {

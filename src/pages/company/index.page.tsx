@@ -9,12 +9,12 @@ import Title from '@/components/Title'
 import { ContainerItem } from './styles'
 
 // import { useRouter } from 'next/router'
-import { CompanyContext } from '@/contexts/CompanyContext'
 
 import { useSession } from 'next-auth/react'
 import { useQuery } from 'react-query'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
+import { AuthContext } from '@/contexts/AuthContext'
 
 interface companyProps {
   id: string
@@ -29,7 +29,7 @@ export default function CompanyList() {
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
   // const router = useRouter()
-  const { createCompany } = useContext(CompanyContext)
+  const { createCompany } = useContext(AuthContext)
 
   function handleSelectCompany(newCompany: companyProps) {
     createCompany(newCompany)

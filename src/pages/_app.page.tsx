@@ -52,7 +52,6 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              <CompanyProvider>
                 {Component.auth ? (
                   // @ts-ignore
                   <Auth>
@@ -66,7 +65,6 @@ const MyApp = (props: CustomAppProps) => {
 
                 {/* <Component {...pageProps} /> */}
                 <ReactQueryDevtools initialIsOpen={false} />
-              </CompanyProvider>
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>

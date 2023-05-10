@@ -65,8 +65,6 @@ export default function ServiceSchedulesList() {
   //const { companyId } = useContext(CompanyContext)
   const { companyId } = useContext(AuthContext)
 
-  console.log(companyId)
-
   const [filteredRows, setFilteredRows] = useState<ServiceSchedulesListProps[]>([])
 
   const router = useRouter()

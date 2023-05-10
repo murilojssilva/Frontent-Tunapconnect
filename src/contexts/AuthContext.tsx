@@ -94,16 +94,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   },[session])
 
   useEffect(() => {
-    setCompanyId(fetchCompany())
     if (!isCompanyId) {
       if (router?.query?.companyId) {
         const regex = /[1-9]+/
         regex.test(router?.query?.companyId as string)
-          ? fetchCompany()
+          ? setCompanyId(router?.query?.companyId as string)
           : router.push('/company')
       }
+      setCompanyId(fetchCompany())
     }
-  }, [router?.query?.companyId, company])
+  }, [router?.query?.companyId])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, user, companyId, company, createCompany, fetchCompany }}>

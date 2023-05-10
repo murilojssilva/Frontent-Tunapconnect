@@ -14,9 +14,9 @@ import {
   StagesDataProps,
 } from '../../types'
 
-import { CompanyContext } from '@/contexts/CompanyContext'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { AuthContext } from '@/contexts/AuthContext'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -55,7 +55,7 @@ export default function ChecklistCreateById() {
   // const [stageData, setStageData] = useState([])
   const queryClient = useQueryClient()
   const api = new ApiCore()
-  const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
   const router = useRouter()
 
   const updateChecklistmutations = useMutation(

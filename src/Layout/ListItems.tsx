@@ -14,7 +14,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import Link from 'next/link'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { ListItemButton } from './styles'
-import { CompanyContext } from '@/contexts/CompanyContext'
+import { AuthContext } from '@/contexts/AuthContext'
 
 type memuListProps = Array<{
   path: string
@@ -47,7 +47,7 @@ const memuList: memuListProps = [
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
-  const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
   // console.log('aberto',opended)
 
   const menuListCompanyId = useMemo(

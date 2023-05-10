@@ -43,7 +43,6 @@ import dayjs, { Dayjs } from 'dayjs'
 
 import MenuItem from '@mui/material/MenuItem'
 import { MoreOptionsButtonSelect } from '@/components/MoreOptionsButtonSelect'
-import { CompanyContext } from '@/contexts/CompanyContext'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import { formatDateTime, formatDateTimeTimezone } from '@/ultis/formatDate'
@@ -58,6 +57,7 @@ import { TableModal } from './components/TableModal'
 import { useQuery } from 'react-query'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatPlate } from '@/ultis/formatPlate'
+import { AuthContext } from '@/contexts/AuthContext'
 
 const api = new ApiCore()
 
@@ -114,7 +114,7 @@ export default function ServiceSchedulesEdit() {
 
   const router = useRouter()
 
-  const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
 
   // const handleDelete = (id: number) => {
   //   setRows(rows.filter((row) => row.id !== id))
