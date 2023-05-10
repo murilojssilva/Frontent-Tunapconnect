@@ -32,6 +32,7 @@ import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from 'react-query'
 import Skeleton from '@mui/material/Skeleton'
+import { AuthContext } from '@/contexts/AuthContext'
 
 type SearchFormProps = {
   search: string
@@ -61,7 +62,10 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
-  const { companyId } = useContext(CompanyContext)
+  //const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
+
+  console.log(companyId)
 
   const [filteredRows, setFilteredRows] = useState<ServiceSchedulesListProps[]>([])
 
