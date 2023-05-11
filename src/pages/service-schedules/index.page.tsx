@@ -103,6 +103,8 @@ export default function ServiceSchedulesList() {
     .catch(() => [])
 
     setSearchText(data.search)
+
+    searchText ===`${data.search}&search=${data.search}` && setSearchText(data.search)
     router.push(searchText === '' ?
     data.search === '' ?  
       `/service-schedules?company=${companyId}` :
