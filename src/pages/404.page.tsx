@@ -1,13 +1,13 @@
-import { GetStaticProps } from 'next';
+import Script from "next/script";
 
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    redirect: {
-      destination: '/',
-      fallback: true,
-      permanent: true,
-    },
-  };
-};
-
-export default getStaticProps;
+export default function Custom404() {
+  return(
+    <>
+      <Script>
+          {
+            `document.location.href="/"`
+          }
+      </Script>
+    </>
+  )
+}
