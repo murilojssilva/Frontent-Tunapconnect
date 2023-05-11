@@ -85,7 +85,8 @@ export default function ServiceSchedulesList() {
     setSearchText(data.search)
     const route = searchText ?
       `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,'') :
-      `/service-schedules?company=${companyId}&search=${data.search}`
+      data.search ? `/service-schedules?company=${companyId}&search=${data.search}` :
+      `/service-schedules?company=${companyId}`
     router.push(route)
     
     setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
