@@ -32,6 +32,7 @@ import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from 'react-query'
 import Skeleton from '@mui/material/Skeleton'
 import { AuthContext } from '@/contexts/AuthContext'
+import Script from 'next/script'
 
 type SearchFormProps = {
   search: string
@@ -68,6 +69,8 @@ export default function ServiceSchedulesList() {
 
   const router = useRouter()
 
+  const [path, setPath] = useState(router.asPath)
+
   const [searchText, setSearchText] = useState<string>(router.asPath.replace('/service-schedules?company=1', '').replace('&search=', ''))
 
 
@@ -81,9 +84,8 @@ export default function ServiceSchedulesList() {
     },
   })
 
-  
-
   async function onSubmitSearch(data: SearchFormProps) {
+    
     const response = await api
     .get(`/service-schedule?company_id=${companyId}&search=${data.search}`)
     .then((response) => {
@@ -105,13 +107,14 @@ export default function ServiceSchedulesList() {
     setSearchText(data.search)
 
     searchText ===`${data.search}&search=${data.search}` && setSearchText(data.search)
+    setFilteredRows(response?.filter((row: any) => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
+
     router.push(searchText === '' ?
     data.search === '' ?  
       `/service-schedules?company=${companyId}` :
       `/service-schedules?company=${companyId}&search=${data.search}`
-    : `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,''))
+    : `/service-schedules?company=${companyId}&search=${data.search}`)
 
-    setFilteredRows(response?.filter((row: any) => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
   const handleDelete = (id: number) => {
@@ -277,6 +280,13 @@ export default function ServiceSchedulesList() {
         router.push(`/service-schedules?company=${companyId}`)
     : onSubmitSearch({search: searchText})
   },[searchText])
+
+  useEffect(() => {
+    if (router.asPath === `/service-schedules?company=${companyId}`){ 
+      setFilteredRows(rows as ServiceSchedulesListProps[])
+      setSearchText('')
+    }
+  }, [router.asPath])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
