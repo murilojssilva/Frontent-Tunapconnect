@@ -81,15 +81,35 @@ export default function ServiceSchedulesList() {
     },
   })
 
-  function onSubmitSearch(data: SearchFormProps) {
+  
+
+  async function onSubmitSearch(data: SearchFormProps) {
+    const response = await api
+    .get(`/service-schedule?company_id=${companyId}&search=${data.search}`)
+    .then((response) => {
+      const resp = response.data.data.map((data: any) => ({
+        id: data?.id ?? 'Não informado',
+        client: data?.client?.name ?? 'Não informado',
+        plate: data?.client_vehicle?.plate ?? 'Não informado',
+        chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+        technical_consultant:
+          data?.technical_consultant?.name ?? 'Não informado',
+        typeEstimate: 'não definido',
+        totalDiscount: 0,
+        total: 0,
+      }))
+      return resp
+    })
+    .catch(() => [])
+
     setSearchText(data.search)
-    const route = searchText ?
-      `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,'') :
-      data.search ? `/service-schedules?company=${companyId}&search=${data.search}` :
-      `/service-schedules?company=${companyId}`
-    router.push(data.search ? route : `/service-schedules?company=${companyId}`)
-    
-    setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
+    router.push(searchText === '' ?
+    data.search === '' ?  
+      `/service-schedules?company=${companyId}` :
+      `/service-schedules?company=${companyId}&search=${data.search}`
+    : `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,''))
+
+    setFilteredRows(response?.filter((row: any) => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
   const handleDelete = (id: number) => {
@@ -215,7 +235,7 @@ export default function ServiceSchedulesList() {
     ['service-scheduler-list', companyId],
     () =>
       api
-        .get(`/service-schedule?company_id=${companyId}&limit=2&page=2`)
+        .get(`/service-schedule?company_id=${companyId}`)
         .then((response) => {
           const resp = response.data.data.map((data: any) => ({
             id: data?.id ?? 'Não informado',
@@ -243,13 +263,18 @@ export default function ServiceSchedulesList() {
   useEffect(() => {
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, "")
     user && !companyIdNumeric && router.push('/company')
-    searchText &&
+  }, [])
+
+  useEffect(() => {
+    searchText ?
       searchText === "/service-schedules?company=/" ? 
         user ?
         router.push('/company')
         : router.push('/')
-      : onSubmitSearch({search: searchText})
-  }, [])
+    : searchText === '' &&
+        router.push(`/service-schedules?company=${companyId}`)
+    : onSubmitSearch({search: searchText})
+  },[searchText])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
