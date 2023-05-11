@@ -26,14 +26,12 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations'
 import { useRouter } from 'next/router'
 import { TableApp } from '@/components/TableApp'
-import { CompanyContext } from '@/contexts/CompanyContext'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { useQuery } from 'react-query'
 import Skeleton from '@mui/material/Skeleton'
 import { AuthContext } from '@/contexts/AuthContext'
-import { GetServerSideProps } from 'next'
 
 type SearchFormProps = {
   search: string
@@ -70,18 +68,27 @@ export default function ServiceSchedulesList() {
 
   const router = useRouter()
 
+  const [searchText, setSearchText] = useState<string>(router.asPath.replace('/service-schedules?company=1', '').replace('&search=', ''))
+
+
   const {
     register,
     handleSubmit,
     // formState: { errors },
   } = useForm({
     defaultValues: {
-      search: '',
+      search: searchText,
     },
   })
 
   function onSubmitSearch(data: SearchFormProps) {
-    router.push(`/service-schedules?company=${companyId}&search=${data.search}`,)
+    setSearchText(data.search)
+    const route = searchText ?
+      `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,'') :
+      `/service-schedules?company=${companyId}&search=${data.search}`
+    console.log(route)
+    router.push(route)
+    
     setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
   }
 
@@ -236,6 +243,8 @@ export default function ServiceSchedulesList() {
   useEffect(() => {
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, "")
     user && !companyIdNumeric && router.push('/company')
+    console.log(router.asPath.replace('/service-schedules?company=1&search=', ''))
+    searchText && onSubmitSearch({search: searchText})
   }, [])
 
 
