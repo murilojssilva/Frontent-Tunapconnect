@@ -86,7 +86,6 @@ export default function ServiceSchedulesList() {
     const route = searchText ?
       `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,'') :
       `/service-schedules?company=${companyId}&search=${data.search}`
-    console.log(route)
     router.push(route)
     
     setFilteredRows(rows?.filter(row => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
@@ -243,10 +242,13 @@ export default function ServiceSchedulesList() {
   useEffect(() => {
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, "")
     user && !companyIdNumeric && router.push('/company')
-    console.log(router.asPath.replace('/service-schedules?company=1&search=', ''))
-    searchText && onSubmitSearch({search: searchText})
+    searchText &&
+      searchText === "/service-schedules?company=/" ? 
+        user ?
+        router.push('/company')
+        : router.push('/')
+      : onSubmitSearch({search: searchText})
   }, [])
-
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
