@@ -12,6 +12,8 @@ import { useRouter } from 'next/router'
 import { TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
+import { Loading } from '../Loading'
+import { display } from '@mui/system'
 
 interface TableAppProps {
   columns: GridColDef[]
@@ -51,7 +53,7 @@ export function TableApp({
 
   return (
     <>
-      <Paper
+      {rows ? <Paper
         sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
       >
         <Box
@@ -87,7 +89,7 @@ export function TableApp({
             }}
             loading={loading}
             onRowClick={(id) => {
-              router.push(`/${companyId}/service-schedules/${id.id}`)
+              router.push(`/service-schedules/${id.id}?company=${companyId}`)
             }}
             pageSizeOptions={[7]}
             // disableRowSelectionOnClick
@@ -97,7 +99,22 @@ export function TableApp({
             }
           />
         </Box>
+      </Paper> :
+      <Paper
+        sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            marginTop: '-105px',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          <Loading />
+        </Box>
       </Paper>
+      }
     </>
   )
 }

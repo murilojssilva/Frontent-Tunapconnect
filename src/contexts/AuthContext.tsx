@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { signIn as signInRequest, useSession } from 'next-auth/react'
 
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 
 type SignInData = {
   username: string
@@ -18,6 +18,19 @@ type AuthContextType = {
   isAuthenticated: boolean
   signIn: (data: SignInData) => void
   user: User | null
+
+  company: CompanyProps | null | undefined
+  companyId: string | undefined
+  createCompany: (company: CompanyProps) => Promise<void>
+
+  fetchCompany: () => void
+}
+
+type CompanyProps = {
+  id: string
+  name: string
+  cnpj: string | null
+  cpf: string | null
 }
 
 type AuthProviderProps = {
@@ -27,9 +40,25 @@ type AuthProviderProps = {
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const { status, data: session } = useSession()
+  const { data: session } = useSession()
   const [user, setUser] = useState<User | null>(null)
+  const [company, setCompany] = useState<CompanyProps | null>(null)
+  const [companyId, setCompanyId] = useState<string>("")
+
+  const isCompanyId = !!companyId
   const isAuthenticated = !!user
+
+  const router = useRouter()
+
+  async function createCompany(newCompany: CompanyProps) {
+    setCompany(newCompany)
+    setCompanyId(newCompany.id)
+    await Router.push(`/service-schedules?company=${newCompany.id}`)
+  }
+
+  function fetchCompany() {
+    return router.asPath.replace("/service-schedules?company=","")
+  }
 
   async function signIn(data: SignInData) {
     const resp = await signInRequest('credentials', {
@@ -48,20 +77,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+ 
   useEffect(() => {
+    const path = Router.asPath
+    
     if (session) {
-      setUser({
-        id: session?.user.id,
-        name: session?.user.name,
-        privilege: session?.user.privilege,
-      })
-      Router.push('/company')
+      if (!user){
+        setUser({
+          id: session?.user.id,
+          name: session?.user.name,
+          privilege: session?.user.privilege,
+        })
+        path === "/" ? Router.push("/company") : Router.push(path)
+      }
     }
   },[session])
 
+  useEffect(() => {
+    if (!isCompanyId) {
+      if (router?.query?.companyId) {
+        const regex = /[1-9]+/
+        regex.test(router?.query?.companyId as string)
+          ? setCompanyId(router?.query?.companyId as string)
+          : router.push('/company')
+      }
+      setCompanyId(fetchCompany())
+    }
+  }, [router?.query?.companyId])
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, signIn, user, companyId, company, createCompany, fetchCompany }}>
       {children}
     </AuthContext.Provider>
   )
 }
+    
+
+      
+

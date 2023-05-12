@@ -8,11 +8,11 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { CompanyContext } from '@/contexts/CompanyContext'
 import { PrintInspection } from '../PrintInspection'
 import ReactToPrint from 'react-to-print'
 import PrintIcon from '@mui/icons-material/Print'
 import { Button } from '@mui/material'
+import { AuthContext } from '@/contexts/AuthContext'
 
 interface PrintInspectionModalProps {
   isOpen: boolean
@@ -27,7 +27,7 @@ export function PrintInspectionModal({
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
 
   const printInspectionRef = useRef(null)
 

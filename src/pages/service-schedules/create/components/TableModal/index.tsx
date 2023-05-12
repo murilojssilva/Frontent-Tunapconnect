@@ -21,7 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
-import { CompanyContext } from '@/contexts/CompanyContext'
+import { AuthContext } from '@/contexts/AuthContext'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -61,7 +61,7 @@ export function TableModal({
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { company } = useContext(CompanyContext)
+  const { company } = useContext(AuthContext)
 
   const columns: GridColDef[] = [
     {

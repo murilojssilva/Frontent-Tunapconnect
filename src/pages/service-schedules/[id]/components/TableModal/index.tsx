@@ -21,9 +21,9 @@ import DialogTitle from '@mui/material/DialogTitle'
 // import useMediaQuery from '@mui/material/useMediaQuery'
 import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
-import { CompanyContext } from '@/contexts/CompanyContext'
 import { useQuery } from 'react-query'
 import { formatDateTime } from '@/ultis/formatDate'
+import { AuthContext } from '@/contexts/AuthContext'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -63,7 +63,7 @@ export function TableModal({
   // const theme = useTheme()
   // const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { companyId } = useContext(CompanyContext)
+  const { companyId } = useContext(AuthContext)
 
   const columns: GridColDef[] = useMemo(
     () => [

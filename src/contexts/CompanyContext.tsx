@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+
 // import { parseCookies, setCookie } from 'nookies'
 
 // import { ApiCore } from '@/lib/api'
@@ -17,7 +18,7 @@ type CompanyProps = {
 type CompanyContextType = {
   company: CompanyProps | null | undefined
   companyId: string | undefined
-  createCompany: (company: CompanyProps) => void
+  createCompany: (company: CompanyProps) => Promise<void>
 }
 
 type CompanyProviderProps = {
@@ -37,8 +38,9 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
     setCompanyId(newCompany.id)
-    await router.push(`/${newCompany.id}/service-schedules/list`)
+    await router.push(`/service-schedules?company=${newCompany.id}`)
   }
+
 
   useEffect(() => {
     if (!isCompanyId) {
