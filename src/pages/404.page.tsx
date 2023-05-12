@@ -1,13 +1,9 @@
-import Script from "next/script";
+import Script from 'next/script'
 
 export default function Custom404() {
-  return(
+  return (
     <>
-      <Script>
-          {
-            `document.location.href="/"`
-          }
-      </Script>
+      <Script id={'Custom404'}>{`document.location.href="/"`}</Script>
     </>
   )
 }

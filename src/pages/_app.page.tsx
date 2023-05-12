@@ -10,7 +10,6 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ReactNode } from 'react'
 import Router from 'next/router'
 import Layout from '@/Layout'
-import { CompanyProvider } from '@/contexts/CompanyContext'
 import { SessionProvider, useSession } from 'next-auth/react'
 // import { queryClient } from '@/lib/react-query'
 
@@ -52,19 +51,19 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-                {Component.auth ? (
-                  // @ts-ignore
-                  <Auth>
-                    <Layout>
-                      <Component {...props.pageProps} />
-                    </Layout>
-                  </Auth>
-                ) : (
-                    <Component {...pageProps} />
-                )}
+              {Component.auth ? (
+                // @ts-ignore
+                <Auth>
+                  <Layout>
+                    <Component {...props.pageProps} />
+                  </Layout>
+                </Auth>
+              ) : (
+                <Component {...pageProps} />
+              )}
 
-                {/* <Component {...pageProps} /> */}
-                <ReactQueryDevtools initialIsOpen={false} />
+              {/* <Component {...pageProps} /> */}
+              <ReactQueryDevtools initialIsOpen={false} />
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>

@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import { getSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next/types'
 import { useRouter } from 'next/router'
 import { parseCookies } from 'nookies'
@@ -22,18 +21,18 @@ export default function CompanuId() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {['next-auth.session-token']: token} = parseCookies(ctx)
+  const { 'next-auth.session-token': token } = parseCookies(ctx)
 
-  if(!token) {
+  if (!token) {
     return {
       redirect: {
         destination: '/',
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   }
 
   return {
-    props: {}
+    props: {},
   }
 }

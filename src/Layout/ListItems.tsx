@@ -11,7 +11,6 @@ import { useRouter } from 'next/router'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
-import Link from 'next/link'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { ListItemButton } from './styles'
 import { AuthContext } from '@/contexts/AuthContext'
@@ -48,6 +47,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
   const { companyId } = useContext(AuthContext)
+  const id = String(companyId)?.replace(/[^\d]/g, '')
   // console.log('aberto',opended)
 
   const menuListCompanyId = useMemo(
@@ -57,7 +57,12 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
           ? item
           : {
               ...item,
-              href: item.path === "/checklist" ? `/${item.href}/${companyId}` : `/${item.href}?company=${companyId}`,
+              href:
+                item.path === '/checklist'
+                  ? companyId
+                    ? `/${item.href}/${companyId}`
+                    : ''
+                  : `/${item.href}?company=${companyId}`,
             }
       }),
     [companyId],
@@ -71,7 +76,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     <React.Fragment>
       {menuListCompanyId.map((menu, index) => {
         return (
-          /*<Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
+          /* <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
               selected={routeActual.includes(menu.path)}
               sx={{
@@ -81,16 +86,23 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
               <ListItemIcon>{menu.component}</ListItemIcon>
               <ListItemText primary={menu.title} style={{ color: 'white' }} />
             </ListItemButton>
-            </Link>*/
+            </Link> */
           <ListItemButton
-            onClick={menu.path === '/service-schedules' ? 
-              () => router.push(menu.href).then(() => router.reload()) :
-              () => router.push(menu.href)
+            key={menu.path}
+            onClick={
+              menu.path === '/service-schedules'
+                ? () => router.push(menu.href).then(() => router.reload())
+                : menu.path === '/checklist'
+                ? id
+                  ? () => router.push(menu.href)
+                  : () => router.push('/company')
+                : () => router.push(menu.href)
             }
             selected={routeActual.includes(menu.path)}
             sx={{
               ...(opended && { margin: '10px 20px' }),
-          }}>
+            }}
+          >
             <ListItemIcon>{menu.component}</ListItemIcon>
             <ListItemText primary={menu.title} style={{ color: 'white' }} />
           </ListItemButton>

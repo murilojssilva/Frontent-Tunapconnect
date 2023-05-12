@@ -3,7 +3,6 @@ import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
 import Container from '@mui/material/Container'
-import { getSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next/types'
 
 import Grid from '@mui/material/Grid'
@@ -720,18 +719,18 @@ export default function ServiceSchedulesEdit() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {['next-auth.session-token']: token} = parseCookies(ctx)
+  const { 'next-auth.session-token': token } = parseCookies(ctx)
 
-  if(!token) {
+  if (!token) {
     return {
       redirect: {
         destination: '/',
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   }
 
   return {
-    props: {}
+    props: {},
   }
 }

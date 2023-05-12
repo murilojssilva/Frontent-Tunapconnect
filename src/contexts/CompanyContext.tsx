@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 // import { parseCookies, setCookie } from 'nookies'
 
@@ -40,7 +40,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
     setCompanyId(newCompany.id)
     await router.push(`/service-schedules?company=${newCompany.id}`)
   }
-
 
   useEffect(() => {
     if (!isCompanyId) {

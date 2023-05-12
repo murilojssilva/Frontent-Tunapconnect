@@ -21,6 +21,8 @@ import {
 } from '../../types'
 
 import { CompanyContext } from '@/contexts/CompanyContext'
+// import { AuthContext } from '@/contexts/AuthContext'
+
 import { useRouter } from 'next/router'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 

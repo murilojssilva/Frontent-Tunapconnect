@@ -135,7 +135,10 @@ export default function CompanyList() {
                     }}
                   >
                     <Title>{item.name || 'Não informado'}</Title>
-                    <Typography>{formatCNPJ(String(item.cnpj)) || formatCPF(String(item.cpf))}</Typography>
+                    <Typography>
+                      {formatCNPJ(String(item.cnpj)) ||
+                        formatCPF(String(item.cpf))}
+                    </Typography>
                   </ContainerItem>
                 </Grid>
               )
