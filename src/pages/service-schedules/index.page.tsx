@@ -75,6 +75,7 @@ import * as React from 'react'
       const {
         register,
         handleSubmit,
+        setValue,
         // formState: { errors },
       } = useForm({
         defaultValues: {
@@ -293,6 +294,14 @@ import * as React from 'react'
             }
           }
       }, [router.asPath])
+
+      useEffect(() => {
+        if (router.query.search) {
+          setValue('search', router.query.search as string)
+        } else {
+          setValue('search', '')
+        }
+      }, [router])
     
       return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
