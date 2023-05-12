@@ -103,7 +103,7 @@ import * as React from 'react'
         })
         .catch(() => [])
     
-        router.asPath.includes('search=') && setSearchText(data.search)
+        router.asPath.match('search') && setSearchText(data.search)
     
         searchText ===`${data.search}&search=${data.search}` && setSearchText(data.search)
         setFilteredRows(response?.filter((row: any) => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
@@ -282,9 +282,13 @@ import * as React from 'react'
       },[searchText])
     
       useEffect(() => {
+          const route = router.asPath.toLowerCase()
           if (router.asPath.includes('&'))
           {
-            if (!router.asPath.includes('&search=') || !router.asPath.includes('&limit=') || !router.asPath.includes('&current_page=')) {
+            if (route.match('search') || route.match('limit') || route.match('current_page')) {
+              console.log(route)
+            }
+            else {
               router.push(router.asPath.substr(0, router.asPath.indexOf("&"))).then(() => router.reload())
             }
           }
