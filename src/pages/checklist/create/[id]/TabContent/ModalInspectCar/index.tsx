@@ -75,13 +75,13 @@ const markupTypes: { [key: string]: string } = {
   faltando: 'F',
 }
 
-type MarkupListType = {
-  frente: MarkupType[]
-  lateralEsquerdo: MarkupType[]
-  lateralDireito: MarkupType[]
-  traseira: MarkupType[]
-  teto: MarkupType[]
-}
+// type MarkupListType = {
+//   frente: MarkupType[]
+//   lateralEsquerdo: MarkupType[]
+//   lateralDireito: MarkupType[]
+//   traseira: MarkupType[]
+//   teto: MarkupType[]
+// }
 
 type positionsTypes =
   | 'frente'
