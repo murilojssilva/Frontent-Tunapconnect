@@ -178,6 +178,10 @@ export default function ServiceSchedulesList() {
     } else {
       setCurrentPage(currentPage - 1)
       setValue('currentPage', currentPage - 1)
+      if (currentPage === 0) {
+        setCurrentPage(1)
+        setValue('currentPage', 1)
+      }
       setPages({ current: currentPage, next: false, previous: true })
     }
 
