@@ -71,7 +71,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     <React.Fragment>
       {menuListCompanyId.map((menu, index) => {
         return (
-          <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
+          /*<Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
               selected={routeActual.includes(menu.path)}
               sx={{
@@ -81,7 +81,19 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
               <ListItemIcon>{menu.component}</ListItemIcon>
               <ListItemText primary={menu.title} style={{ color: 'white' }} />
             </ListItemButton>
-          </Link>
+            </Link>*/
+          <ListItemButton
+            onClick={menu.path === '/service-schedules' ? 
+              () => router.push(menu.href).then(() => router.reload()) :
+              () => router.push(menu.href)
+            }
+            selected={routeActual.includes(menu.path)}
+            sx={{
+              ...(opended && { margin: '10px 20px' }),
+          }}>
+            <ListItemIcon>{menu.component}</ListItemIcon>
+            <ListItemText primary={menu.title} style={{ color: 'white' }} />
+          </ListItemButton>
         )
       })}
     </React.Fragment>

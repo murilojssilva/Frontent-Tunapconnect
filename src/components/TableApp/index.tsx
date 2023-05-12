@@ -13,6 +13,7 @@ import { TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
 import { Loading } from '../Loading'
+import { display } from '@mui/system'
 
 interface TableAppProps {
   columns: GridColDef[]
@@ -106,6 +107,8 @@ export function TableApp({
           sx={{
             width: '100%',
             marginTop: '-105px',
+            display: 'flex',
+            justifyContent: 'center'
           }}
         >
           <Loading />
