@@ -206,8 +206,7 @@ export default function ServiceSchedulesList() {
         headerName: 'Cliente',
         headerClassName: 'super-app-theme--header',
         flex: 1,
-        maxWidth: 230,
-        minWidth: 120,
+        width: 220,
         align: 'left',
         sortable: false,
       },
@@ -223,8 +222,7 @@ export default function ServiceSchedulesList() {
         headerName: 'Chassis',
         headerClassName: 'super-app-theme--header',
         flex: 1,
-        maxWidth: 200,
-        minWidth: 120,
+        width: 90,
         sortable: false,
       },
       {
@@ -232,24 +230,24 @@ export default function ServiceSchedulesList() {
         headerName: 'Responsavél',
         headerClassName: 'super-app-theme--header',
         flex: 1,
-        maxWidth: 120,
-        minWidth: 80,
+        width: 220,
         sortable: false,
       },
       {
         field: 'typeEstimate',
         headerName: 'Tipo Orçamento',
+        flex: 1,
         headerClassName: 'super-app-theme--header',
-        width: 120,
+        width: 150,
         sortable: false,
       },
       {
         field: 'totalDiscount',
         headerName: 'Tipo Desconto',
+        flex: 1,
         headerClassName: 'super-app-theme--header',
         // type: 'number',
-        width: 110,
-        align: 'center',
+        width: 180,
         sortable: false,
         valueGetter: (params: GridValueGetterParams) =>
           `${formatMoneyPtBR(params.row.totalDiscount) || ''}`,
@@ -259,8 +257,8 @@ export default function ServiceSchedulesList() {
         headerName: 'Total Geral',
         headerClassName: 'super-app-theme--header',
         // type: 'number',
+        flex: 1,
         width: 110,
-        align: 'center',
         sortable: false,
         valueGetter: (params: GridValueGetterParams) =>
           `${formatMoneyPtBR(params.row.total) || ''}`,
@@ -270,7 +268,8 @@ export default function ServiceSchedulesList() {
         headerName: 'Ação',
         headerClassName: 'super-app-theme--header',
         sortable: false,
-        width: 80,
+        flex: 1,
+        width: 180,
         align: 'left',
         renderCell: (params: GridRenderCellParams) => {
           const onClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -283,7 +282,7 @@ export default function ServiceSchedulesList() {
               aria-label="search"
               color="warning"
               onClick={onClick}
-              sx={{ marginLeft: 1, color: 'red' }}
+              sx={{ color: 'red' }}
             >
               <Delete />
             </IconButton>
