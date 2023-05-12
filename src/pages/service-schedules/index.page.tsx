@@ -36,6 +36,8 @@ import { AuthContext } from '@/contexts/AuthContext'
 
 type SearchFormProps = {
   search: string
+  current_page: number
+  limit: number
 }
 
 // type PagesProps = {
@@ -68,12 +70,15 @@ export default function ServiceSchedulesList() {
     [],
   )
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [limit, setLimit] = useState(2)
+
   const router = useRouter()
 
   const [searchText, setSearchText] = useState<string>(
     router.asPath
       .replace('/service-schedules?company=1', '')
-      .replace('&search=', ''),
+      .replace(`&limit=${limit}&current_page=${currentPage}&search=`, ''),
   )
 
   const {
@@ -84,28 +89,51 @@ export default function ServiceSchedulesList() {
   } = useForm({
     defaultValues: {
       search: searchText,
+      limit,
+      currentPage,
     },
   })
 
   async function onSubmitSearch(data: SearchFormProps) {
-    console.log(data)
-    const response = await api
-      .get(`/service-schedule?company_id=${companyId}&search=${data.search}`)
-      .then((response) => {
-        const resp = response.data.data.map((data: any) => ({
-          id: data?.id ?? 'Não informado',
-          client: data?.client?.name ?? 'Não informado',
-          plate: data?.client_vehicle?.plate ?? 'Não informado',
-          chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-          technical_consultant:
-            data?.technical_consultant?.name ?? 'Não informado',
-          typeEstimate: 'não definido',
-          totalDiscount: 0,
-          total: 0,
-        }))
-        return resp
-      })
-      .catch(() => [])
+    const response = data.search
+      ? await api
+          .get(
+            `/service-schedule?company_id=${companyId}&limit=${data.limit}&page=${data.current_page}&search=${data.search}`,
+          )
+          .then((response) => {
+            const resp = response.data.data.map((data: any) => ({
+              id: data?.id ?? 'Não informado',
+              client: data?.client?.name ?? 'Não informado',
+              plate: data?.client_vehicle?.plate ?? 'Não informado',
+              chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+              technical_consultant:
+                data?.technical_consultant?.name ?? 'Não informado',
+              typeEstimate: 'não definido',
+              totalDiscount: 0,
+              total: 0,
+            }))
+            return resp
+          })
+          .catch(() => [])
+      : await api
+          .get(
+            `/service-schedule?company_id=${companyId}&limit=${data.limit}&page=${data.current_page}`,
+          )
+          .then((response) => {
+            const resp = response.data.data.map((data: any) => ({
+              id: data?.id ?? 'Não informado',
+              client: data?.client?.name ?? 'Não informado',
+              plate: data?.client_vehicle?.plate ?? 'Não informado',
+              chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+              technical_consultant:
+                data?.technical_consultant?.name ?? 'Não informado',
+              typeEstimate: 'não definido',
+              totalDiscount: 0,
+              total: 0,
+            }))
+            return resp
+          })
+          .catch(() => [])
 
     router.asPath.match('search') && setSearchText(data.search)
     router.asPath.match('current_page') && setSearchText(data.search)
@@ -129,9 +157,9 @@ export default function ServiceSchedulesList() {
     router.push(
       searchText === ''
         ? data.search === ''
-          ? `/service-schedules?company=${companyId}`
-          : `/service-schedules?company=${companyId}&search=${data.search}`
-        : `/service-schedules?company=${companyId}&search=${data.search}`.replace(
+          ? `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`
+          : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`
+        : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`.replace(
             `&search=${searchText}`,
             '',
           ),
@@ -142,8 +170,20 @@ export default function ServiceSchedulesList() {
     // setRows(rows.filter((row) => row.id !== id))
   }
 
-  function handlePages(nextPage: any): void {
-    setPages(nextPage)
+  async function handlePages(nextPage: any) {
+    if (nextPage === 'next') {
+      setValue('currentPage', currentPage + 1)
+      setCurrentPage(currentPage + 1)
+      setPages({ current: currentPage, next: true, previous: false })
+    } else {
+      setCurrentPage(currentPage - 1)
+      setValue('currentPage', currentPage - 1)
+      setPages({ current: currentPage, next: false, previous: true })
+    }
+
+    router.push(
+      `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`,
+    )
   }
 
   const columns: GridColDef[] = useMemo(
@@ -261,7 +301,9 @@ export default function ServiceSchedulesList() {
     ['service-scheduler-list', companyId],
     () =>
       api
-        .get(`/service-schedule?company_id=${companyId}`)
+        .get(
+          `/service-schedule?company_id=${companyId}&limit=${limit}&page=${currentPage}`,
+        )
         .then((response) => {
           const resp = response.data.data.map((data: any) => ({
             id: data?.id ?? 'Não informado',
@@ -288,10 +330,15 @@ export default function ServiceSchedulesList() {
 
   useEffect(() => {
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, '')
-    user && !companyIdNumeric && router.push('/company')
+    user
+      ? !companyIdNumeric && router.push('/company')
+      : router.push(
+          `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`,
+        )
   }, [])
 
   useEffect(() => {
+    setLimit(2)
     searchText
       ? searchText === '/service-schedules?company=/'
         ? user
@@ -299,7 +346,11 @@ export default function ServiceSchedulesList() {
           : router.push('/')
         : searchText === '' &&
           router.push(`/service-schedules?company=${companyId}`)
-      : onSubmitSearch({ search: searchText })
+      : onSubmitSearch({
+          search: searchText,
+          current_page: currentPage,
+          limit,
+        })
   }, [searchText])
 
   useEffect(() => {
@@ -325,7 +376,26 @@ export default function ServiceSchedulesList() {
     } else {
       setValue('search', '')
     }
-  }, [router])
+    if (router.query.search) {
+      setValue('currentPage', Number(router.query.current_page))
+    } else {
+      setValue('currentPage', currentPage)
+    }
+    if (router.query.search) {
+      setValue('limit', Number(router.query.limit))
+    } else {
+      setValue('limit', limit)
+    }
+  }, [router.query])
+
+  useEffect(() => {
+    setLimit(2)
+    onSubmitSearch({
+      search: searchText,
+      current_page: currentPage,
+      limit,
+    })
+  }, [pages])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -343,7 +413,7 @@ export default function ServiceSchedulesList() {
                 >
                   <Box
                     component="form"
-                    onSubmit={handleSubmit(onSubmitSearch)}
+                    onSubmit={handleSubmit(() => onSubmitSearch)}
                     sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
                   >
                     <TextField
