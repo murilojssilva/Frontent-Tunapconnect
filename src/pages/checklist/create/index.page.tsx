@@ -33,7 +33,6 @@ export default function ChecklistCreate() {
         }
 
         if (modelChecklist.data.data.length > 0) {
-          console.log()
           const createdDefault = await api.create(
             '/checklist',
             dataCreateChecklist,

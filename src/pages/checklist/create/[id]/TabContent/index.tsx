@@ -1,4 +1,4 @@
-import { IconButton, Typography } from '@mui/material'
+import { IconButton, Stack, Typography } from '@mui/material'
 
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -20,6 +20,9 @@ import {
 } from '../styles'
 import { genereteInput } from './GenereteInputs'
 import ModalImages from './ModalImages'
+import ModalInspectCar from './ModalInspectCar'
+import ModalSigntures from './ModalSigntures'
+import { ButtonSignatures } from './styles'
 
 type TabContentProps = {
   stageData: StagesDataProps | undefined
@@ -44,6 +47,10 @@ type ImageListProps = Array<{
 }>
 
 type OpenModalImage = {
+  id: number | null
+  open: boolean
+}
+type openModalSignatureType = {
   id: number | null
   open: boolean
 }
@@ -72,10 +79,16 @@ export function TabContent({
   isClosed,
   checklistModel,
 }: TabContentProps) {
+  const [openModalInspectCar, setOpenModalInspectCar] = useState(false)
   const [openModalImage, setOpenModalImage] = useState<OpenModalImage>({
     id: null,
     open: false,
   })
+  const [openModalSignature, setOpenModalSignature] =
+    useState<openModalSignatureType>({
+      id: null,
+      open: false,
+    })
   const [listImage, setListImage] = useState<ImageListProps>([])
   // const [stageValues, setStageValues] = useState<FieldValues | []>([])
   // const [count, setCount] = useState()
@@ -118,8 +131,27 @@ export function TabContent({
   // console.log('dirtyFields', dirtyFields)
   // console.log(checklistModel)
 
+  function handleOpenModalInspectCar(value: boolean) {
+    setOpenModalInspectCar(value)
+  }
+  function closeModalInspectCar() {
+    setOpenModalInspectCar(false)
+  }
+
   function getIndexStageNameInListImage() {
     return listImage.findIndex((item) => Object.hasOwn(item, stageName))
+  }
+
+  function closeModalImage() {
+    setOpenModalImage({ id: null, open: false })
+  }
+
+  function getBagdeAmountImages(index: number) {
+    const IndexStageNameInListImage = getIndexStageNameInListImage()
+    const imgs = listImage[IndexStageNameInListImage]?.[stageName].filter(
+      (image) => image.id === index,
+    )[0]
+    return imgs?.images.length ?? 0
   }
 
   function handleAddImageInListImage(
@@ -190,6 +222,13 @@ export function TabContent({
     })
   }
 
+  function handleCloseModalSignature() {
+    setOpenModalSignature({
+      id: null,
+      open: false,
+    })
+  }
+
   function onSubmitData(data: OnSubmitData) {
     const dataFormatted = {
       ...stageData,
@@ -209,19 +248,7 @@ export function TabContent({
     }
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
-    console.log(dataFormatted)
-  }
-
-  function closeModalImage() {
-    setOpenModalImage({ id: null, open: false })
-  }
-
-  function getBagdeAmountImages(index: number) {
-    const IndexStageNameInListImage = getIndexStageNameInListImage()
-    const imgs = listImage[IndexStageNameInListImage]?.[stageName].filter(
-      (image) => image.id === index,
-    )[0]
-    return imgs?.images.length ?? 0
+    console.log('data formatted', dataFormatted)
   }
 
   useEffect(() => {
@@ -263,7 +290,6 @@ export function TabContent({
         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
       )
       const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-      // console.log(listImage)
       console.log(stageValuesWatch)
 
       if (data) {
@@ -299,7 +325,7 @@ export function TabContent({
     )
 
     const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-    console.log(listImage)
+    console.log(stageData)
     // console.log(data)
     if (indexStageName > -1) {
       if (data) {
@@ -351,6 +377,7 @@ export function TabContent({
                         index,
                         isClosed,
                         control,
+                        handleOpenModalInspectCar,
                       )}
                     </TableCell>
                     <TableCell>
@@ -395,6 +422,27 @@ export function TabContent({
                   </TableRow>
                 )
               })}
+            <TableRow>
+              <TableCell colSpan={5}>
+                <Stack direction="row" gap={2}>
+                  {stageData?.signatures &&
+                    stageData?.signatures.map((item, index) => (
+                      <ButtonSignatures
+                        key={item.name + index}
+                        color="primary"
+                        size="small"
+                        variant="contained"
+                        disabled={isClosed}
+                        onClick={() =>
+                          setOpenModalSignature({ id: index, open: true })
+                        }
+                      >
+                        {item.name}
+                      </ButtonSignatures>
+                    ))}
+                </Stack>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -405,6 +453,17 @@ export function TabContent({
         handleRemoveImageInListImage={handleRemoveImageInListImage}
         listImage={listImage}
         stageName={stageName}
+      />
+      <ModalInspectCar
+        isOpen={openModalInspectCar}
+        closeModalInspectCar={closeModalInspectCar}
+        stageName={stageName}
+      />
+      <ModalSigntures
+        isOpen={openModalSignature}
+        closeModalSigntures={handleCloseModalSignature}
+        stageName={stageName}
+        signaturesData={stageData?.signatures}
       />
     </>
   )
