@@ -535,7 +535,9 @@ export default function ServiceSchedulesEdit() {
                 <ListItemCard>
                   <InfoCardName>Placa:</InfoCardName>{' '}
                   {clientVehicle?.plate ? (
-                    <InfoCardText>{formatPlate(clientVehicle?.plate)}</InfoCardText>
+                    <InfoCardText>
+                      {formatPlate(clientVehicle?.plate)}
+                    </InfoCardText>
                   ) : (
                     <InfoCardText width="100%">
                       <Skeleton
@@ -573,9 +575,7 @@ export default function ServiceSchedulesEdit() {
               <ButtonRight
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={async () =>
-                  await router.push(
-                    `/checklist/create/${router?.query?.id}`,
-                  )
+                  await router.push(`/checklist/create/${router?.query?.id}`)
                 }
               >
                 Novo
@@ -807,7 +807,7 @@ export default function ServiceSchedulesEdit() {
       </Grid>
       <TableModal
         isOpen={openChecklistModal}
-        title="Lista de checklists" 
+        title="Lista de checklists"
         serviceScheduleId={router?.query?.id as string}
         closeChecklistModal={closeChecklistModal}
       />

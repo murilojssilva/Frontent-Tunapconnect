@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 // import MenuItem from '@mui/material/MenuItem'
@@ -23,10 +23,10 @@ export function MoreOptionsButtonSelect({
   const router = useRouter()
 
   console.log(router?.query)
-  
+
   const { companyId, id } = router.query
 
-  console.log({companyId, id})
+  console.log({ companyId, id })
 
   const handleClose = () => {
     setAnchorEl(null)

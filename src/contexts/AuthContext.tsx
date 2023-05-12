@@ -14,6 +14,13 @@ type User = {
   privilege: string | undefined
 }
 
+type CompanyProps = {
+  id: string
+  name: string
+  cnpj: string | null
+  cpf: string | null
+}
+
 type AuthContextType = {
   isAuthenticated: boolean
   signIn: (data: SignInData) => void
@@ -26,13 +33,6 @@ type AuthContextType = {
   fetchCompany: () => void
 }
 
-type CompanyProps = {
-  id: string
-  name: string
-  cnpj: string | null
-  cpf: string | null
-}
-
 type AuthProviderProps = {
   children: ReactNode
 }
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const { data: session } = useSession()
   const [user, setUser] = useState<User | null>(null)
   const [company, setCompany] = useState<CompanyProps | null>(null)
-  const [companyId, setCompanyId] = useState<string>("")
+  const [companyId, setCompanyId] = useState<string>('')
 
   const isCompanyId = !!companyId
   const isAuthenticated = !!user
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function fetchCompany() {
-    return router.asPath.replace("/service-schedules?company=","")
+    return router.asPath.replace('/service-schedules?company=', '')
   }
 
   async function signIn(data: SignInData) {
@@ -77,21 +77,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
- 
   useEffect(() => {
     const path = Router.asPath
-    
+
     if (session) {
-      if (!user){
+      if (!user) {
         setUser({
           id: session?.user.id,
           name: session?.user.name,
           privilege: session?.user.privilege,
         })
-        path === "/" ? Router.push("/company") : Router.push(path)
+        path === '/' ? Router.push('/company') : Router.push(path)
       }
     }
-  },[session])
+  }, [session])
 
   useEffect(() => {
     if (!isCompanyId) {
@@ -106,12 +105,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [router?.query?.companyId])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, user, companyId, company, createCompany, fetchCompany }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        signIn,
+        user,
+        companyId,
+        company,
+        createCompany,
+        fetchCompany,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
 }
-    
-
-      
-

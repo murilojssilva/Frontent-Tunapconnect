@@ -13,7 +13,6 @@ import { TableDataGrid } from './styles'
 import { CustomNoRowsOverlay } from './NoRows'
 import { CustomFooterStatusComponent } from './FooterPaginate'
 import { Loading } from '../Loading'
-import { display } from '@mui/system'
 
 interface TableAppProps {
   columns: GridColDef[]
@@ -53,68 +52,70 @@ export function TableApp({
 
   return (
     <>
-      {rows ? <Paper
-        sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
-      >
-        <Box
-          sx={{
-            width: '100%',
-            marginTop: '-105px',
-          }}
+      {rows ? (
+        <Paper
+          sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
         >
-          <TableDataGrid
-            rows={rows}
-            columns={columns}
-            autoHeight
-            columnHeaderHeight={70}
-            disableColumnMenu
-            slots={{
-              noRowsOverlay: CustomNoRowsOverlay,
-              footer: CustomFooterStatusComponent,
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: '-105px',
             }}
-            slotProps={{
-              footer: {
-                nextPage: pages?.next,
-                previousPage: pages?.previous,
-                handlePages,
-              },
-            }}
-            apiRef={apiRef}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 7,
+          >
+            <TableDataGrid
+              rows={rows}
+              columns={columns}
+              autoHeight
+              columnHeaderHeight={70}
+              disableColumnMenu
+              slots={{
+                noRowsOverlay: CustomNoRowsOverlay,
+                footer: CustomFooterStatusComponent,
+              }}
+              slotProps={{
+                footer: {
+                  nextPage: pages?.next,
+                  previousPage: pages?.previous,
+                  handlePages,
                 },
-              },
-            }}
-            loading={loading}
-            onRowClick={(id) => {
-              router.push(`/service-schedules/${id.id}?company=${companyId}`)
-            }}
-            pageSizeOptions={[7]}
-            // disableRowSelectionOnClick
-            disableColumnFilter
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
-          />
-        </Box>
-      </Paper> :
-      <Paper
-        sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
-      >
-        <Box
-          sx={{
-            width: '100%',
-            marginTop: '-105px',
-            display: 'flex',
-            justifyContent: 'center'
-          }}
+              }}
+              apiRef={apiRef}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 7,
+                  },
+                },
+              }}
+              loading={loading}
+              onRowClick={(id) => {
+                router.push(`/service-schedules/${id.id}?company=${companyId}`)
+              }}
+              pageSizeOptions={[7]}
+              // disableRowSelectionOnClick
+              disableColumnFilter
+              getRowClassName={(params) =>
+                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+              }
+            />
+          </Box>
+        </Paper>
+      ) : (
+        <Paper
+          sx={{ p: 2, display: 'flex', flexDirection: 'column', marginTop: 9 }}
         >
-          <Loading />
-        </Box>
-      </Paper>
-      }
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: '-105px',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Loading />
+          </Box>
+        </Paper>
+      )}
     </>
   )
 }
