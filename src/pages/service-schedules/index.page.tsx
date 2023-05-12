@@ -72,7 +72,6 @@ import * as React from 'react'
     
       const [searchText, setSearchText] = useState<string>(router.asPath.replace('/service-schedules?company=1', '').replace('&search=', ''))
     
-    
       const {
         register,
         handleSubmit,
@@ -84,7 +83,7 @@ import * as React from 'react'
       })
     
       async function onSubmitSearch(data: SearchFormProps) {
-        
+        console.log(data)
         const response = await api
         .get(`/service-schedule?company_id=${companyId}&search=${data.search}`)
         .then((response) => {
@@ -104,6 +103,8 @@ import * as React from 'react'
         .catch(() => [])
     
         router.asPath.match('search') && setSearchText(data.search)
+        router.asPath.match('current_page') && setSearchText(data.search)
+        router.asPath.match('limit') && setSearchText(data.search)
     
         searchText ===`${data.search}&search=${data.search}` && setSearchText(data.search)
         setFilteredRows(response?.filter((row: any) => row.chassis.includes(data.search) || row.client.includes(data.search) || row.plate.includes(data.search) || row.technical_consultant.includes(data.search) || row.total === Number(data.search) || row.totalDiscount === Number(data.search) || row.id === Number(data.search)) as ServiceSchedulesListProps[])
@@ -113,8 +114,6 @@ import * as React from 'react'
           `/service-schedules?company=${companyId}` :
           `/service-schedules?company=${companyId}&search=${data.search}`
         : `/service-schedules?company=${companyId}&search=${data.search}`.replace(`&search=${searchText}`,''))
-
-    
       }
     
       const handleDelete = (id: number) => {
@@ -271,6 +270,7 @@ import * as React from 'react'
       }, [])
     
       useEffect(() => {
+       
         searchText ?
           searchText === "/service-schedules?company=/" ? 
             user ?
