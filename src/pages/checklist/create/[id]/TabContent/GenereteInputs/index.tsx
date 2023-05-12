@@ -24,6 +24,7 @@ type InputButtonProps = {
   nameRegister: string
   indexRegister: number
   isClosed: boolean
+  onClick?: () => void
 }
 type InputSelectProps = {
   opts: string[] | []
@@ -34,13 +35,14 @@ type InputSelectProps = {
   control?: Control
 }
 
-function InputButton({ labelName, isClosed }: InputButtonProps) {
+function InputButton({ labelName, isClosed, onClick }: InputButtonProps) {
   return (
     <ButtonItemChecklist
       color="primary"
       size="small"
       variant="contained"
       disabled={isClosed}
+      onClick={onClick}
     >
       {labelName}
     </ButtonItemChecklist>
@@ -159,6 +161,7 @@ export function genereteInput(
   indexRegister: number,
   isClosed: boolean,
   control: Control,
+  handleOpenModalInspectCar: (value: boolean) => void,
 ) {
   const optionsSelect = itemValues ? itemValues?.options : []
 
@@ -210,18 +213,19 @@ export function genereteInput(
           register={register}
           nameRegister={nameRegister}
           isClosed={isClosed}
+          onClick={() => handleOpenModalInspectCar(true)}
         />
       )
-    case 'signature':
-      return (
-        <InputButton
-          labelName={'assinatura'}
-          indexRegister={indexRegister}
-          register={register}
-          nameRegister={nameRegister}
-          isClosed={isClosed}
-        />
-      )
+    // case 'signature':
+    //   return (
+    //     <InputButton
+    //       labelName={'assinatura'}
+    //       indexRegister={indexRegister}
+    //       register={register}
+    //       nameRegister={nameRegister}
+    //       isClosed={isClosed}
+    //     />
+    //   )
 
     default:
       return null

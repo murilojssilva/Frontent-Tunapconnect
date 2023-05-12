@@ -1,4 +1,10 @@
-import { ReactNode, SyntheticEvent, useContext, useState } from 'react'
+import {
+  ReactNode,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -14,9 +20,9 @@ import {
   StagesDataProps,
 } from '../../types'
 
+import { CompanyContext } from '@/contexts/CompanyContext'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { AuthContext } from '@/contexts/AuthContext'
 
 interface TabPanelProps {
   children?: ReactNode
@@ -55,7 +61,7 @@ export default function ChecklistCreateById() {
   // const [stageData, setStageData] = useState([])
   const queryClient = useQueryClient()
   const api = new ApiCore()
-  const { companyId } = useContext(AuthContext)
+  const { companyId } = useContext(CompanyContext)
   const router = useRouter()
 
   const updateChecklistmutations = useMutation(
@@ -71,7 +77,7 @@ export default function ChecklistCreateById() {
     {
       onSuccess: (data) => {
         // queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
-        queryClient.setQueryData(['checklist-createByID'], data)
+        // queryClient.setQueryData(['checklist-createByID'], data)
         queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
         return data
       },
@@ -112,6 +118,8 @@ export default function ChecklistCreateById() {
         return item.name === stageData.name ? stageData : item
       }),
     }
+
+    console.log(dataForPost)
     // const resp = await api.update('/checklist/21', dataForPost)
     // @ts-ignore
     updateChecklistmutations.mutate(dataForPost)
@@ -130,6 +138,10 @@ export default function ChecklistCreateById() {
   //   const isStage = stages.filter((stage) => stage.name === stageActual)
   //   return isStage[0]
   // }
+
+  useEffect(() => {
+    console.log('render')
+  }, [])
 
   if (isLoading) {
     return (
