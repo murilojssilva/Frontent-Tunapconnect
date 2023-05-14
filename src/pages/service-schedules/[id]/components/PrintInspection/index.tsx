@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
 import style from '@/sass/styles/printInspection.module.scss'
+import { ApiCore } from '@/lib/api'
 
 const SquareCheck = ({ type = 'success', checked = false }) => (
   <div className={classNames(style['square-check'], style[`bg-${type}`])}>
@@ -28,6 +29,7 @@ export function PrintInspection(props: {
   checklistId: number
   refPrint: any
 }) {
+  const api = new ApiCore()
   // export function PrintInspection(props) {
 
   // const history = useNavigate();
@@ -138,9 +140,13 @@ export function PrintInspection(props: {
 
   useEffect(() => {
     if (props?.checklistId) {
-      // getData()
+      api
+        .get('/checklist/list?company_id=1&service_schedule_id=7')
+        .then((response) => {
+          console.log(response.data.data[0])
+        })
     }
-  }, [props?.checklistId])
+  }, [])
 
   return (
     <div className={classNames(style.page)} ref={props.refPrint}>

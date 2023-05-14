@@ -94,8 +94,8 @@ export function TableModal({
         },
       },
       {
-        field: 'checklistModel',
-        headerName: 'Versão',
+        field: 'status',
+        headerName: 'Status',
         headerClassName: 'super-app-theme--header',
         width: 120,
         sortable: false,
@@ -136,12 +136,14 @@ export function TableModal({
         )
         .then((response) => {
           const { data } = response.data
-          // return response.data.data
+          console.log(data)
           return data.map((item: any) => {
             return {
               id: item?.id,
               createAt: item?.created_at,
-              checklistModel: item?.checklistmodels?.name,
+              status: `${item?.status[0].toUpperCase()}${item?.status.substring(
+                1,
+              )}`,
             }
           })
         })

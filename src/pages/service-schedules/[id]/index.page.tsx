@@ -259,6 +259,41 @@ export default function ServiceSchedulesEdit() {
   //   }
   // }, [router.query, companyId, wasEdited])
 
+  async function createCheckListBase() {
+    try {
+      const modelChecklist = await api.get('/checklist_model/list')
+      console.log(modelChecklist)
+      console.log(router.query)
+      const dataCreateChecklist = {
+        company_id: router.query.company,
+        brand_id: null,
+        vehicle_id: null, //  vehicle id
+        model_id: null,
+        vehicle_client_id: null,
+        km: null,
+        fuel: null,
+        client_id: null, // client id
+        service_schedule_id: router?.query?.service_scheduleId
+          ? parseInt(router?.query?.service_scheduleId as string)
+          : null,
+        checklist_model: 1,
+        status: 'rascunho', // salvo // finalizado // rascunho
+        stages: modelChecklist.data.data[0].stages,
+      }
+      console.log(dataCreateChecklist)
+
+      if (modelChecklist.data.data.length > 0) {
+        const createdDefault = await api.create(
+          '/checklist',
+          dataCreateChecklist,
+        )
+        router.replace(`/checklist/create/${createdDefault?.data?.data?.id}`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const {
     data: dataTechnicalConsultantList,
     status: dataTechnicalConsultantListStatus,
@@ -577,11 +612,7 @@ export default function ServiceSchedulesEdit() {
               </ButtonCenter>
               <ButtonRight
                 startIcon={<AddCircleOutlineIcon />}
-                onClick={async () =>
-                  await router.push(
-                    `/checklist/create?service_scheduleId=${router?.query?.id}&company_id=${dataServiceSchedule?.company_id}`,
-                  )
-                }
+                onClick={createCheckListBase}
               >
                 Novo
               </ButtonRight>
