@@ -1,11 +1,15 @@
 import styled from '@emotion/styled'
 import ButtonBase from '@mui/material/ButtonBase'
-import { Box, Button, Stack, Tabs, TextField, Typography } from '@mui/material'
+import { Button, Stack, Tabs, TextField, Typography } from '@mui/material'
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 interface LabelButtonMarkupTypeProps {
   selectedActual: boolean
+}
+
+interface ClickableAreaProps {
+  urlImg: string
 }
 
 export const TabsContainer = styled(Tabs)(({ theme }) => ({
@@ -164,21 +168,41 @@ export const TextAreaField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-export const ClickableArea = styled(Box)(({ theme }) => ({
-  width: '490px',
-  height: '350px',
-  // position: 'relative',
-  border: '1px solid #ACAAAA',
-  borderRadius: 9,
-  overflow: 'hidden',
-  // backgroundAttachment: 'fixed',
-  // backgroundImage: 'url("/images/background-logo-login.svg")',
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-  backgroundSize: '100% 100%',
-  // backgroundSize: '100% 380px',
-  backgroundImage: `url('/images/carros-inspect/carro-frente.svg')`,
+export const ClickableArea = styled('svg')<ClickableAreaProps>`
+  width: 490px;
+  height: 350px;
+  // background: 'red';
+  // position: 'relative';
+  border: 1px solid #acaaaa;
+  border-radius: 9px;
+  overflow: 'hidden';
+  // backgroundAttachment: 'fixed';
+  // backgroundImage: 'url("/images/background-logo-login.svg")';
+  background-repeat: 'no-repeat';
+  background-position: 'center';
+  background-size: '100% 100%';
+  // backgroundSize: '100% 380px';
+  background-image: url(${(props) => props.urlImg});
   '& *': {
-    pointerEvents: 'none',
-  },
-}))
+    pointerevents: 'none';
+  }
+`
+// export const ClickableArea = styled(Box)(({ theme }) => ({
+//   width: '490px',
+//   height: '350px',
+//   // background: 'red',
+//   // position: 'relative',
+//   border: '1px solid #ACAAAA',
+//   borderRadius: 9,
+//   overflow: 'hidden',
+//   // backgroundAttachment: 'fixed',
+//   // backgroundImage: 'url("/images/background-logo-login.svg")',
+//   backgroundRepeat: 'no-repeat',
+//   backgroundPosition: 'center',
+//   backgroundSize: '100% 100%',
+//   // backgroundSize: '100% 380px',
+//   backgroundImage: `url('/images/carros-inspect/carro-frente.svg')`,
+//   '& *': {
+//     pointerEvents: 'none',
+//   },
+// }))

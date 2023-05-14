@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { useEffect, useState } from 'react'
 
-import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { Itens, ReponseGetCheckList, StagesDataProps } from '../../../types'
 import {
   // ButtonItemChecklist,
@@ -114,7 +114,7 @@ export function TabContent({
     control,
     register,
     handleSubmit,
-    formState: { isDirty },
+    // formState: { isDirty },
   } = useForm({
     defaultValues,
   })
@@ -123,13 +123,7 @@ export function TabContent({
     name: stageName,
   })
 
-  const stageValuesWatch = useWatch({
-    name: stageName,
-    control,
-  })
-
-  // console.log('dirtyFields', dirtyFields)
-  // console.log(checklistModel)
+  // console.log('touchedFields', touchedFields)
 
   function handleOpenModalInspectCar(value: boolean) {
     setOpenModalInspectCar(value)
@@ -168,8 +162,6 @@ export function TabContent({
       const indexStageName = newListImage.findIndex((item) =>
         Object.hasOwn(item, stageName),
       )
-
-      console.log(indexStageName)
 
       if (indexStageName < 0) {
         return [
@@ -284,37 +276,37 @@ export function TabContent({
     }
   }, [stageName])
 
-  useEffect(() => {
-    if (isDirty) {
-      const sessionStorageData = sessionStorage.getItem(
-        `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
-      )
-      const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-      console.log(stageValuesWatch)
+  // useEffect(() => {
+  //   if (isDirty) {
+  //     const sessionStorageData = sessionStorage.getItem(
+  //       `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //     )
+  //     const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+  //     console.log(stageValuesWatch)
 
-      if (data) {
-        sessionStorage.setItem(
-          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
-          JSON.stringify({
-            ...data,
-            [stageName]: {
-              ...data[stageName],
-              formState: stageValuesWatch,
-            },
-          }),
-        )
-      } else {
-        sessionStorage.setItem(
-          `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
-          JSON.stringify({
-            [stageName]: {
-              formState: stageValuesWatch,
-            },
-          }),
-        )
-      }
-    }
-  }, [stageValuesWatch])
+  //     if (data) {
+  //       sessionStorage.setItem(
+  //         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //         JSON.stringify({
+  //           ...data,
+  //           [stageName]: {
+  //             ...data[stageName],
+  //             formState: stageValuesWatch,
+  //           },
+  //         }),
+  //       )
+  //     } else {
+  //       sessionStorage.setItem(
+  //         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //         JSON.stringify({
+  //           [stageName]: {
+  //             formState: stageValuesWatch,
+  //           },
+  //         }),
+  //       )
+  //     }
+  //   }
+  // }, [touchedFields])
 
   useEffect(() => {
     const indexStageName = listImage.findIndex((item) =>
@@ -351,6 +343,10 @@ export function TabContent({
       }
     }
   }, [listImage])
+
+  // useEffect(() => {
+  //   console.log('mudou')
+  // }, [isDirty])
 
   return (
     <>
@@ -457,7 +453,7 @@ export function TabContent({
       <ModalInspectCar
         isOpen={openModalInspectCar}
         closeModalInspectCar={closeModalInspectCar}
-        stageName={stageName}
+        stageData={stageData}
       />
       <ModalSigntures
         isOpen={openModalSignature}
