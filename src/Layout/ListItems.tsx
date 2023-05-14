@@ -3,7 +3,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 
-import AccessTimeFilledOutlinedIcon from '@mui/icons-material/AccessTimeFilledOutlined'
+// import AccessTimeFilledOutlinedIcon from '@mui/icons-material/AccessTimeFilledOutlined'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -35,12 +35,12 @@ const memuList: memuListProps = [
     component: <CalendarMonthIcon />,
     title: 'Agendamento',
   },
-  {
-    path: '/checklist',
-    href: '/checklist/create',
-    component: <AccessTimeFilledOutlinedIcon />,
-    title: 'Checklist',
-  },
+  // {
+  //   path: '/checklist',
+  //   href: '/checklist/create',
+  //   component: <AccessTimeFilledOutlinedIcon />,
+  //   title: 'Checklist',
+  // },
 ]
 
 export const MainListItems = ({ opended }: { opended: boolean }) => {
