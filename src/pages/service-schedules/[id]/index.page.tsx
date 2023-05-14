@@ -285,6 +285,7 @@ export default function ServiceSchedulesEdit() {
       queryFn: async () => {
         const { id } = router.query
         const resp = await api.get(`/service-schedule/${id}`)
+        console.log(resp.data.data)
         return resp.data.data
       },
       enabled: !!router?.query?.id && !!companyId && !wasEdited,
@@ -334,6 +335,8 @@ export default function ServiceSchedulesEdit() {
       })
     }
   }, [dataServiceScheduleStatus, dataServiceSchedule])
+
+  console.log(dataServiceSchedule?.company_id)
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -575,7 +578,9 @@ export default function ServiceSchedulesEdit() {
               <ButtonRight
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={async () =>
-                  await router.push(`/checklist/create/${router?.query?.id}`)
+                  await router.push(
+                    `/checklist/create?service_scheduleId=${router?.query?.id}&company_id=${dataServiceSchedule?.company_id}`,
+                  )
                 }
               >
                 Novo

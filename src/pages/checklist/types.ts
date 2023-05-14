@@ -18,7 +18,15 @@ export interface Values {
 export interface Value {
   value: string
   images?: Image[] | undefined | []
-  label?: string | undefined
+  labels?:
+    | {
+        name: string
+        url_image: string
+        values: any[]
+        comment: string | null
+        images: any[] | undefined
+      }[]
+    | []
   values?: Values | undefined
   options?: string[] | undefined
 }

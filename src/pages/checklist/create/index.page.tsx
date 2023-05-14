@@ -13,10 +13,9 @@ export default function ChecklistCreate() {
     async function createCheckListBase() {
       try {
         const modelChecklist = await api.get('/checklist_model/list')
+        console.log(modelChecklist)
         const dataCreateChecklist = {
-          company_id:
-            router?.query?.companyId &&
-            parseInt(router?.query?.companyId as string),
+          company_id: router.query.company_id,
           brand_id: null,
           vehicle_id: null, //  vehicle id
           model_id: null,
@@ -38,7 +37,7 @@ export default function ChecklistCreate() {
             dataCreateChecklist,
           )
           await router.replace(
-            `/${router?.query?.companyId}/checklist/create/${createdDefault?.data?.data?.id}`,
+            `/checklist/create/${createdDefault?.data?.data?.id}`,
           )
         }
       } catch (error) {

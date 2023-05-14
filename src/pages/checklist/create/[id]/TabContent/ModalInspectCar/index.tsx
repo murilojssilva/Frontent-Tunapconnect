@@ -1,4 +1,10 @@
-import { ReactNode, SyntheticEvent, useState } from 'react'
+import {
+  ChangeEvent,
+  ReactNode,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react'
 // import Image from 'next/image'
 import {
   AppBar,
@@ -27,13 +33,14 @@ import { InspectionDropzone } from './DropZone'
 // import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import dayjs from 'dayjs'
+import { StagesDataProps } from '@/pages/checklist/types'
 
 // import carroFrenteImg from '@/assets/images/inspection/carro-frente.svg'
 
 interface ModalInspectCarProps {
   isOpen: boolean
   closeModalInspectCar: () => void
-  stageName: string
+  stageData: StagesDataProps | undefined
 }
 type markupTypesEnum = 'amassado' | 'riscado' | 'quebrado' | 'faltando' | 'none'
 
@@ -68,20 +75,34 @@ type MarkupType = {
   }
 }
 
-const markupTypes: { [key: string]: string } = {
+const markupTagTypes: { [key: string]: string } = {
   amassado: 'A',
   riscado: 'R',
   quebrado: 'Q',
   faltando: 'F',
 }
 
-// type MarkupListType = {
-//   frente: MarkupType[]
-//   lateralEsquerdo: MarkupType[]
-//   lateralDireito: MarkupType[]
-//   traseira: MarkupType[]
-//   teto: MarkupType[]
-// }
+type MarkupListType = {
+  frente: MarkupType[]
+  lateralEsquerdo: MarkupType[]
+  lateralDireito: MarkupType[]
+  traseira: MarkupType[]
+  teto: MarkupType[]
+}
+type ObservationsType = {
+  frente: string
+  lateralEsquerdo: string
+  lateralDireito: string
+  traseira: string
+  teto: string
+}
+type ImgPositionCarUrlType = {
+  frente: string
+  lateralEsquerdo: string
+  lateralDireito: string
+  traseira: string
+  teto: string
+}
 
 type positionsTypes =
   | 'frente'
@@ -137,12 +158,18 @@ function a11yProps(index: number) {
 export default function ModalInspectCar({
   isOpen,
   closeModalInspectCar,
-  stageName,
+  stageData,
 }: ModalInspectCarProps) {
   const theme = useTheme()
   const [tabsValue, setTabsValue] = useState(0)
   const [markupValue, setMarkupValue] = useState<markupTypesEnum>('none')
-  const [markups, setMarkups] = useState<MarkupType[]>([])
+  const [markups, setMarkups] = useState<MarkupListType>({
+    frente: [],
+    lateralEsquerdo: [],
+    lateralDireito: [],
+    traseira: [],
+    teto: [],
+  })
   const [listImagesUpload, setListImagesUpload] = useState<imagemList>({
     frente: [],
     lateralEsquerdo: [],
@@ -150,7 +177,22 @@ export default function ModalInspectCar({
     traseira: [],
     teto: [],
   })
-  // const [markupActual, setMarkupActual] = useState<MarkupType | null>(null)
+  const [observations, setObservations] = useState<ObservationsType>({
+    frente: '',
+    lateralEsquerdo: '',
+    lateralDireito: '',
+    traseira: '',
+    teto: '',
+  })
+  const [imgPositionCarUrl, setImgPositionCarUrl] =
+    useState<ImgPositionCarUrlType>({
+      frente: '',
+      lateralEsquerdo: '',
+      lateralDireito: '',
+      traseira: '',
+      teto: '',
+    })
+
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setTabsValue(newValue)
   }
@@ -169,9 +211,14 @@ export default function ModalInspectCar({
 
   const removeMarkup = (id: number) => {
     setMarkups((prevState) => {
-      return prevState.filter((m) => {
-        return m.id !== id
-      })
+      return {
+        ...prevState,
+        [positionsCar[tabsValue]]: prevState[positionsCar[tabsValue]].filter(
+          (m) => {
+            return m.id !== id
+          },
+        ),
+      }
     })
   }
 
@@ -179,25 +226,27 @@ export default function ModalInspectCar({
     const [x, y] = getClickCoords(event)
     const positionTop = y - 22
     const positionLeft = x - 22
-    if (!Object.hasOwn(markupTypes, markupValue)) {
+    if (!Object.hasOwn(markupTagTypes, markupValue)) {
       return
     }
 
     const idByTimestamp = dayjs(new Date()).valueOf()
-
+    console.log(positionsCar[tabsValue])
     setMarkups((prevState) => {
-      console.log(prevState)
-      return [
+      return {
         ...prevState,
-        {
-          id: idByTimestamp,
-          type: markupValue,
-          positions: {
-            top: `${positionTop}px`,
-            left: `${positionLeft}px`,
+        [positionsCar[tabsValue]]: [
+          ...prevState[positionsCar[tabsValue]],
+          {
+            id: idByTimestamp,
+            type: markupValue,
+            positions: {
+              top: `${positionTop}px`,
+              left: `${positionLeft}px`,
+            },
           },
-        },
-      ]
+        ],
+      }
     })
   }
 
@@ -218,6 +267,85 @@ export default function ModalInspectCar({
       }
     })
   }
+
+  function handleObservation(event: ChangeEvent<HTMLInputElement>) {
+    setObservations((prevState) => {
+      return {
+        ...prevState,
+        [positionsCar[tabsValue]]: event.target.value,
+      }
+    })
+    console.log(event.target.value)
+  }
+
+  useEffect(() => {
+    setMarkupValue('none')
+  }, [tabsValue])
+
+  useEffect(() => {
+    const positonsCarData = stageData?.itens.filter(
+      (itens) => itens.rules.type === 'visual_inspect',
+    )
+
+    const newPositionsUrl = {
+      frente: '',
+      lateralEsquerdo: '',
+      lateralDireito: '',
+      traseira: '',
+      teto: '',
+    }
+
+    if (positonsCarData) {
+      positonsCarData[0]?.values?.labels?.forEach((item) => {
+        switch (item.name) {
+          case 'Frente':
+            newPositionsUrl.frente = item.url_image
+            break
+          case 'Lateral esquerda':
+            newPositionsUrl.lateralEsquerdo = item.url_image
+            break
+          case 'Lateral direita':
+            newPositionsUrl.lateralDireito = item.url_image
+            break
+          case 'Traseira':
+            newPositionsUrl.traseira = item.url_image
+            break
+          case 'Teto':
+            newPositionsUrl.teto = item.url_image
+            break
+          default:
+        }
+      })
+      setImgPositionCarUrl(newPositionsUrl)
+    }
+
+    // if (positonsCarData) {
+    //   switch (value) {
+    //     case 'Frente':
+    //       const position = positonsCarData[0]?.values?.labels.filter(
+    //         (item) => item.name === 'Frente',
+    //       )
+    //       return position ? position[0].url_image : ''
+    //     case 'Lateral esquerda':
+    //       const positionEsquerda = positonsCarData[0]?.values?.labels.filter(
+    //         (item) => item.name === 'Lateral esquerda',
+    //       )
+    //       return positionEsquerda ? positionEsquerda[0].url_image : ''
+    //     case 'Lateral direita':
+    //       const positionDireita = positonsCarData[0]?.values?.labels.filter(
+    //         (item) => item.name === 'Lateral direita',
+    //       )
+    //       return positionDireita ? positionDireita[0].url_image : ''
+    //     case 'Teto':
+    //       const positionTraseira = positonsCarData[0]?.values?.labels.filter(
+    //         (item) => item.name === 'Traseira',
+    //       )
+    //       return positionTraseira ? positionTraseira[0].url_image : ''
+    //     default:
+    //       return ''
+    //   }
+    // }
+  }, [])
 
   return (
     <Dialog
@@ -271,7 +399,7 @@ export default function ModalInspectCar({
             justifyContent="center"
           >
             <Stack gap={2}>
-              {Object.keys(markupTypes).map((item) => (
+              {Object.keys(markupTagTypes).map((item) => (
                 <LabelButtonMarkupType key={item}>
                   <ButtonMarkupType
                     selectedActual={markupValue === item}
@@ -279,7 +407,7 @@ export default function ModalInspectCar({
                       handleChangeMarkupValue(item as markupTypesEnum)
                     }}
                   >
-                    {markupTypes[item]}
+                    {markupTagTypes[item]}
                   </ButtonMarkupType>
                   <span>{item}</span>
                 </LabelButtonMarkupType>
@@ -288,21 +416,22 @@ export default function ModalInspectCar({
           </Grid>
           <Grid item xs={7}>
             <TabPanel value={tabsValue} index={0} dir={theme.direction}>
-              <ClickableArea onClick={addMarkup} />
-              {markups.map((m) => {
+              <ClickableArea
+                onClick={addMarkup}
+                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.frente}`}
+              />
+              {markups.frente.map((m) => {
                 return (
                   <ButtonMarkup
                     key={m.id}
                     sx={{
                       position: 'absolute',
-                      top: m.positions.top,
-                      left: m.positions.left,
-                      // transition: `left .5s cubic-bezier(.42,-0.3,.78,1.25),
-                      // top .5s cubic-bezier(.42,-0.3,.78,1.25)`,
+                      top: m?.positions?.top,
+                      left: m?.positions?.left,
                     }}
                     onClick={() => removeMarkup(m.id)}
                   >
-                    <span>{markupTypes[m.type]}</span>
+                    <span>{markupTagTypes[m.type]}</span>
                     <DeleteForeverRoundedIcon
                       sx={{ zIndex: 10, position: 'fixed' }}
                     />
@@ -312,21 +441,22 @@ export default function ModalInspectCar({
               {/* </ClickableSVG> */}
             </TabPanel>
             <TabPanel value={tabsValue} index={1} dir={theme.direction}>
-              <ClickableArea onClick={addMarkup} />
-              {markups.map((m) => {
+              <ClickableArea
+                onClick={addMarkup}
+                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralEsquerdo}`}
+              />
+              {markups.lateralEsquerdo.map((m) => {
                 return (
                   <ButtonMarkup
                     key={m.id}
                     sx={{
                       position: 'absolute',
-                      top: m.positions.top,
-                      left: m.positions.left,
-                      // transition: `left .5s cubic-bezier(.42,-0.3,.78,1.25),
-                      // top .5s cubic-bezier(.42,-0.3,.78,1.25)`,
+                      top: m?.positions?.top,
+                      left: m?.positions?.left,
                     }}
                     onClick={() => removeMarkup(m.id)}
                   >
-                    <span>{markupTypes[m.type]}</span>
+                    <span>{markupTagTypes[m.type]}</span>
                     <DeleteForeverRoundedIcon
                       sx={{ zIndex: 10, position: 'fixed' }}
                     />
@@ -335,13 +465,76 @@ export default function ModalInspectCar({
               })}
             </TabPanel>
             <TabPanel value={tabsValue} index={2} dir={theme.direction}>
-              Lateral direita
+              <ClickableArea
+                onClick={addMarkup}
+                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralDireito}`}
+              />
+              {markups.lateralDireito.map((m) => {
+                return (
+                  <ButtonMarkup
+                    key={m.id}
+                    sx={{
+                      position: 'absolute',
+                      top: m?.positions?.top,
+                      left: m?.positions?.left,
+                    }}
+                    onClick={() => removeMarkup(m.id)}
+                  >
+                    <span>{markupTagTypes[m.type]}</span>
+                    <DeleteForeverRoundedIcon
+                      sx={{ zIndex: 10, position: 'fixed' }}
+                    />
+                  </ButtonMarkup>
+                )
+              })}
             </TabPanel>
             <TabPanel value={tabsValue} index={3} dir={theme.direction}>
-              Lateral direita
+              <ClickableArea
+                onClick={addMarkup}
+                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.traseira}`}
+              />
+              {markups.traseira.map((m) => {
+                return (
+                  <ButtonMarkup
+                    key={m.id}
+                    sx={{
+                      position: 'absolute',
+                      top: m?.positions?.top,
+                      left: m?.positions?.left,
+                    }}
+                    onClick={() => removeMarkup(m.id)}
+                  >
+                    <span>{markupTagTypes[m.type]}</span>
+                    <DeleteForeverRoundedIcon
+                      sx={{ zIndex: 10, position: 'fixed' }}
+                    />
+                  </ButtonMarkup>
+                )
+              })}
             </TabPanel>
             <TabPanel value={tabsValue} index={4} dir={theme.direction}>
-              Teto
+              <ClickableArea
+                onClick={addMarkup}
+                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.teto}`}
+              />
+              {markups.teto.map((m) => {
+                return (
+                  <ButtonMarkup
+                    key={m.id}
+                    sx={{
+                      position: 'absolute',
+                      top: m?.positions?.top,
+                      left: m?.positions?.left,
+                    }}
+                    onClick={() => removeMarkup(m.id)}
+                  >
+                    <span>{markupTagTypes[m.type]}</span>
+                    <DeleteForeverRoundedIcon
+                      sx={{ zIndex: 10, position: 'fixed' }}
+                    />
+                  </ButtonMarkup>
+                )
+              })}
             </TabPanel>
           </Grid>
           <Grid item xs={3} justifyContent="center">
@@ -384,8 +577,9 @@ export default function ModalInspectCar({
                   multiline
                   rows={5}
                   fullWidth
-                  defaultValue="Default Value"
                   size="small"
+                  value={observations[positionsCar[tabsValue]]}
+                  onChange={handleObservation}
                 />
               </Box>
             </ContainerInformation>
