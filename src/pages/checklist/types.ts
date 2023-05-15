@@ -15,18 +15,31 @@ export interface Values {
   apointments: Apointment[]
   images: Image[]
 }
+
+type InpectionData = {
+  name: string
+  url_image: string
+  value: {
+    id: number
+    type: 'amassado' | 'riscado' | 'quebrado' | 'faltando' | 'none'
+    positions: {
+      top: string
+      left: string
+    }
+  }[]
+  comment: string
+  images: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }[]
+}[]
+
 export interface Value {
   value: string
   images?: Image[] | undefined | []
-  labels?:
-    | {
-        name: string
-        url_image: string
-        values: any[]
-        comment: string | null
-        images: any[] | undefined
-      }[]
-    | []
+  labels?: InpectionData
   values?: Values | undefined
   options?: string[] | undefined
 }

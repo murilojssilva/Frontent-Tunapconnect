@@ -37,11 +37,6 @@ import { StagesDataProps } from '@/pages/checklist/types'
 
 // import carroFrenteImg from '@/assets/images/inspection/carro-frente.svg'
 
-interface ModalInspectCarProps {
-  isOpen: boolean
-  closeModalInspectCar: () => void
-  stageData: StagesDataProps | undefined
-}
 type markupTypesEnum = 'amassado' | 'riscado' | 'quebrado' | 'faltando' | 'none'
 
 interface TabPanelProps {
@@ -111,6 +106,21 @@ type positionsTypes =
   | 'traseira'
   | 'teto'
 
+type formattedDataType = {
+  name: string
+  url_image: string
+  value: MarkupType[]
+  comment: string
+  images: imageData[]
+}[]
+
+interface ModalInspectCarProps {
+  isOpen: boolean
+  closeModalInspectCar: () => void
+  stageData: StagesDataProps | undefined
+  handleInspectionData: (data: formattedDataType) => void
+}
+
 const positionsCar: Array<positionsTypes> = [
   'frente',
   'lateralEsquerdo',
@@ -159,6 +169,7 @@ export default function ModalInspectCar({
   isOpen,
   closeModalInspectCar,
   stageData,
+  handleInspectionData,
 }: ModalInspectCarProps) {
   const theme = useTheme()
   const [tabsValue, setTabsValue] = useState(0)
@@ -278,6 +289,49 @@ export default function ModalInspectCar({
     console.log(event.target.value)
   }
 
+  function handleSave() {
+    console.log(imgPositionCarUrl)
+    const formattedData = [
+      {
+        name: 'Frente',
+        url_image: imgPositionCarUrl.frente,
+        value: markups.frente,
+        comment: observations.frente,
+        images: listImagesUpload.frente,
+      },
+      {
+        name: 'Lateral esquerda',
+        url_image: imgPositionCarUrl.lateralEsquerdo,
+        value: markups.lateralEsquerdo,
+        comment: observations.lateralEsquerdo,
+        images: listImagesUpload.lateralEsquerdo,
+      },
+      {
+        name: 'Lateral direita',
+        url_image: imgPositionCarUrl.lateralDireito,
+        value: markups.lateralDireito,
+        comment: observations.lateralDireito,
+        images: listImagesUpload.lateralDireito,
+      },
+      {
+        name: 'Traseira',
+        url_image: imgPositionCarUrl.traseira,
+        value: markups.traseira,
+        comment: observations.traseira,
+        images: listImagesUpload.traseira,
+      },
+      {
+        name: 'Teto',
+        url_image: imgPositionCarUrl.teto,
+        value: markups.teto,
+        comment: observations.teto,
+        images: listImagesUpload.teto,
+      },
+    ]
+    handleInspectionData(formattedData)
+    handleClose()
+  }
+
   useEffect(() => {
     setMarkupValue('none')
   }, [tabsValue])
@@ -294,12 +348,36 @@ export default function ModalInspectCar({
       traseira: '',
       teto: '',
     }
+    const newPositionsMarkups: MarkupListType = {
+      frente: [],
+      lateralEsquerdo: [],
+      lateralDireito: [],
+      traseira: [],
+      teto: [],
+    }
+    const newPositionsImageList: imagemList = {
+      frente: [],
+      lateralEsquerdo: [],
+      lateralDireito: [],
+      traseira: [],
+      teto: [],
+    }
+    const newPositionsObservations: ObservationsType = {
+      frente: '',
+      lateralEsquerdo: '',
+      lateralDireito: '',
+      traseira: '',
+      teto: '',
+    }
 
     if (positonsCarData) {
       positonsCarData[0]?.values?.labels?.forEach((item) => {
         switch (item.name) {
           case 'Frente':
-            newPositionsUrl.frente = item.url_image
+            newPositionsUrl.frente = item.url_image ?? []
+            newPositionsMarkups.frente = item.value ?? []
+            newPositionsObservations.frente = item.comment ?? ''
+            newPositionsImageList.frente = item.images ?? []
             break
           case 'Lateral esquerda':
             newPositionsUrl.lateralEsquerdo = item.url_image
@@ -317,34 +395,10 @@ export default function ModalInspectCar({
         }
       })
       setImgPositionCarUrl(newPositionsUrl)
+      setMarkups(newPositionsMarkups)
+      setListImagesUpload(newPositionsImageList)
+      setObservations(newPositionsObservations)
     }
-
-    // if (positonsCarData) {
-    //   switch (value) {
-    //     case 'Frente':
-    //       const position = positonsCarData[0]?.values?.labels.filter(
-    //         (item) => item.name === 'Frente',
-    //       )
-    //       return position ? position[0].url_image : ''
-    //     case 'Lateral esquerda':
-    //       const positionEsquerda = positonsCarData[0]?.values?.labels.filter(
-    //         (item) => item.name === 'Lateral esquerda',
-    //       )
-    //       return positionEsquerda ? positionEsquerda[0].url_image : ''
-    //     case 'Lateral direita':
-    //       const positionDireita = positonsCarData[0]?.values?.labels.filter(
-    //         (item) => item.name === 'Lateral direita',
-    //       )
-    //       return positionDireita ? positionDireita[0].url_image : ''
-    //     case 'Teto':
-    //       const positionTraseira = positonsCarData[0]?.values?.labels.filter(
-    //         (item) => item.name === 'Traseira',
-    //       )
-    //       return positionTraseira ? positionTraseira[0].url_image : ''
-    //     default:
-    //       return ''
-    //   }
-    // }
   }, [])
 
   return (
@@ -587,7 +641,7 @@ export default function ModalInspectCar({
               <ButtonLeft
                 variant="contained"
                 onClick={() => {
-                  handleClose()
+                  handleSave()
                 }}
               >
                 salvar

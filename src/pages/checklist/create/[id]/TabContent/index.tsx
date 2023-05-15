@@ -70,6 +70,26 @@ type OnSubmitData = {
     | undefined
 }
 
+type InpectionData = {
+  name: string
+  url_image: string
+  value: {
+    id: number
+    type: 'amassado' | 'riscado' | 'quebrado' | 'faltando' | 'none'
+    positions: {
+      top: string
+      left: string
+    }
+  }[]
+  comment: string
+  images: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }[]
+}[]
+
 export function TabContent({
   stageData,
   stageName,
@@ -90,6 +110,7 @@ export function TabContent({
       open: false,
     })
   const [listImage, setListImage] = useState<ImageListProps>([])
+  const [inspectionData, setInspectionData] = useState<InpectionData>([])
   // const [stageValues, setStageValues] = useState<FieldValues | []>([])
   // const [count, setCount] = useState()
 
@@ -221,12 +242,26 @@ export function TabContent({
     })
   }
 
+  function handleInspectionData(data: InpectionData) {
+    setInspectionData(data)
+  }
+
   function onSubmitData(data: OnSubmitData) {
     const dataFormatted = {
       ...stageData,
       status: 'closed',
       itens: stageItems.map((item, index) => {
-        console.log(!!listImage[index]?.id)
+        if (item.rules.type === 'visual_inspect') {
+          return {
+            ...item,
+            comment: data[stageName]?.[index]?.observation,
+            values: {
+              labels: {
+                ...inspectionData,
+              },
+            },
+          }
+        }
         return {
           ...item,
           comment: data[stageName]?.[index]?.observation,
@@ -454,6 +489,7 @@ export function TabContent({
         isOpen={openModalInspectCar}
         closeModalInspectCar={closeModalInspectCar}
         stageData={stageData}
+        handleInspectionData={handleInspectionData}
       />
       <ModalSigntures
         isOpen={openModalSignature}
