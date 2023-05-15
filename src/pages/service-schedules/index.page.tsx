@@ -64,6 +64,7 @@ export default function ServiceSchedulesList() {
     previous: boolean
   }>({ current: 1, next: false, previous: false })
 
+  // const { companyId } = useContext(CompanyContext)
   const { companyId, user } = useContext(AuthContext)
 
   const [filteredRows, setFilteredRows] = useState<ServiceSchedulesListProps[]>(
@@ -80,7 +81,7 @@ export default function ServiceSchedulesList() {
   const [searchText, setSearchText] = useState<string>(
     router.asPath
       .replace('/service-schedules?company=1', '')
-      .replace(`&limit=${limit}&current_page=${currentPage}&search=`, ''),
+      .replace('&search=', ''),
   )
 
   const {
@@ -92,7 +93,7 @@ export default function ServiceSchedulesList() {
     defaultValues: {
       search: searchText,
       limit,
-      currentPage,
+      current_page: currentPage,
     },
   })
 
@@ -101,46 +102,26 @@ export default function ServiceSchedulesList() {
       `/service-schedule?company_id=${companyId}`,
     )
 
-    setTotalPages(totalItems.data.data.length / limit)
-    const response = data.search
-      ? await api
-          .get(
-            `/service-schedule?company_id=${companyId}&limit=${data.limit}&page=${data.current_page}&search=${data.search}`,
-          )
-          .then((response) => {
-            const resp = response.data.data.map((data: any) => ({
-              id: data?.id ?? 'Não informado',
-              client: data?.client?.name ?? 'Não informado',
-              plate: data?.client_vehicle?.plate ?? 'Não informado',
-              chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-              technical_consultant:
-                data?.technical_consultant?.name ?? 'Não informado',
-              typeEstimate: 'não definido',
-              totalDiscount: 0,
-              total: 0,
-            }))
-            return resp
-          })
-          .catch(() => [])
-      : await api
-          .get(
-            `/service-schedule?company_id=${companyId}&limit=${data.limit}&page=${data.current_page}`,
-          )
-          .then((response) => {
-            const resp = response.data.data.map((data: any) => ({
-              id: data?.id ?? 'Não informado',
-              client: data?.client?.name ?? 'Não informado',
-              plate: data?.client_vehicle?.plate ?? 'Não informado',
-              chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-              technical_consultant:
-                data?.technical_consultant?.name ?? 'Não informado',
-              typeEstimate: 'não definido',
-              totalDiscount: 0,
-              total: 0,
-            }))
-            return resp
-          })
-          .catch(() => [])
+    setTotalPages(Math.ceil(totalItems.data.data.length / limit))
+    const response = await api
+      .get(
+        `/service-schedule?company_id=${companyId}&limit=${data.limit}&page=${data.current_page}&search=${data.search}`,
+      )
+      .then((response) => {
+        const resp = response.data.data.map((data: any) => ({
+          id: data?.id ?? 'Não informado',
+          client: data?.client?.name ?? 'Não informado',
+          plate: data?.client_vehicle?.plate ?? 'Não informado',
+          chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+          technical_consultant:
+            data?.technical_consultant?.name ?? 'Não informado',
+          typeEstimate: 'não definido',
+          totalDiscount: 0,
+          total: 0,
+        }))
+        return resp
+      })
+      .catch(() => [])
 
     router.asPath.match('search') && setSearchText(data.search)
     router.asPath.match('current_page') && setSearchText(data.search)
@@ -162,14 +143,15 @@ export default function ServiceSchedulesList() {
     )
 
     router.push(
-      searchText === ''
-        ? data.search === ''
-          ? `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`
-          : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`
-        : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`.replace(
-            `&search=${searchText}`,
-            '',
-          ),
+      searchText === '' && currentPage === 1 && limit === 2
+        ? `/service-schedules?company=${companyId}`
+        : currentPage === 1 && limit === 2
+        ? `/service-schedules?company=${companyId}&search=${data.search}`
+        : limit === 2 && searchText === ''
+        ? `/service-schedules?company=${companyId}&current_page=${currentPage}`
+        : limit === 2 && searchText !== ''
+        ? `/service-schedules?company=${companyId}&current_page=${currentPage}&search=${data.search}`
+        : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`,
     )
   }
 
@@ -180,14 +162,14 @@ export default function ServiceSchedulesList() {
   async function handlePages(nextPage: any) {
     if (nextPage === 'next') {
       if (currentPage < totalPages) {
-        setValue('currentPage', currentPage + 1)
+        setValue('current_page', currentPage + 1)
         setCurrentPage(currentPage + 1)
         setPages({ current: currentPage, next: true, previous: false })
       }
     } else {
       if (currentPage > 1) {
         setCurrentPage(currentPage - 1)
-        setValue('currentPage', currentPage - 1)
+        setValue('current_page', currentPage - 1)
         setPages({ current: currentPage, next: false, previous: true })
       }
     }
@@ -340,7 +322,7 @@ export default function ServiceSchedulesList() {
 
   useEffect(() => {
     if (currentPage > totalPages) {
-      setValue('currentPage', 1)
+      setValue('current_page', 1)
       setCurrentPage(1)
       router.push(`/company`).then(() => router.reload())
     }
@@ -353,7 +335,7 @@ export default function ServiceSchedulesList() {
   }, [])
 
   useEffect(() => {
-    setLimit(2)
+    setLimit(totalPages)
     searchText
       ? searchText === '/service-schedules?company=/'
         ? user
@@ -386,25 +368,26 @@ export default function ServiceSchedulesList() {
   }, [router.asPath])
 
   useEffect(() => {
-    if (Number(router.query.current_page) > totalPages) {
-      setValue('currentPage', 1)
-      setCurrentPage(1)
-      router.push('/company').then(() => router.reload())
-    }
     if (router.query.search) {
       setValue('search', router.query.search as string)
     } else {
       setValue('search', '')
     }
     if (router.query.search) {
-      setValue('currentPage', Number(router.query.current_page))
+      setValue('current_page', Number(router.query.current_page))
     } else {
-      setValue('currentPage', currentPage)
+      setValue('current_page', currentPage)
     }
     if (router.query.search) {
       setValue('limit', Number(router.query.limit))
     } else {
       setValue('limit', limit)
+    }
+    if (Number(router.query.current_page) > totalPages) {
+      setCurrentPage(1)
+      setValue('current_page', 1)
+      setPages({ current: 1, next: false, previous: false })
+      router.push('/company').then(() => router.reload())
     }
   }, [router.query])
 
@@ -433,7 +416,7 @@ export default function ServiceSchedulesList() {
                 >
                   <Box
                     component="form"
-                    onSubmit={handleSubmit(() => onSubmitSearch)}
+                    onSubmit={handleSubmit(onSubmitSearch)}
                     sx={{ flexWrap: 'nowrap', display: 'flex', flex: 1 }}
                   >
                     <TextField
