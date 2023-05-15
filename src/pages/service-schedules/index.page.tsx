@@ -389,7 +389,7 @@ export default function ServiceSchedulesList() {
     if (Number(router.query.current_page) > totalPages) {
       setValue('currentPage', 1)
       setCurrentPage(1)
-      router.push(router.pathname).then(() => router.reload())
+      router.push('/company').then(() => router.reload())
     }
     if (router.query.search) {
       setValue('search', router.query.search as string)
