@@ -174,12 +174,11 @@ export default function ServiceSchedulesList() {
   }
 
   const handleDelete = (id: number) => {
-    // setRows(rows.filter((row) => row.id !== id))
+    console.log(id)
   }
 
   async function handlePages(nextPage: any) {
     if (nextPage === 'next') {
-      console.log({ currentPage, totalPages })
       if (currentPage < totalPages) {
         setValue('currentPage', currentPage + 1)
         setCurrentPage(currentPage + 1)
@@ -340,6 +339,11 @@ export default function ServiceSchedulesList() {
   }, [rows])
 
   useEffect(() => {
+    if (currentPage > totalPages) {
+      setValue('currentPage', 1)
+      setCurrentPage(1)
+      router.push(`/company`).then(() => router.reload())
+    }
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, '')
     user
       ? !companyIdNumeric && router.push('/company')
@@ -382,6 +386,11 @@ export default function ServiceSchedulesList() {
   }, [router.asPath])
 
   useEffect(() => {
+    if (Number(router.query.current_page) > totalPages) {
+      setValue('currentPage', 1)
+      setCurrentPage(1)
+      router.push(router.pathname).then(() => router.reload())
+    }
     if (router.query.search) {
       setValue('search', router.query.search as string)
     } else {
