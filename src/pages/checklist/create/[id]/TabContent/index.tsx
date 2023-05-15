@@ -70,7 +70,7 @@ type OnSubmitData = {
     | undefined
 }
 
-type InpectionData = {
+type InspectionData = {
   name: string
   url_image: string
   value: {
@@ -110,7 +110,7 @@ export function TabContent({
       open: false,
     })
   const [listImage, setListImage] = useState<ImageListProps>([])
-  const [inspectionData, setInspectionData] = useState<InpectionData>([])
+  const [inspectionData, setInspectionData] = useState<InspectionData>([])
   // const [stageValues, setStageValues] = useState<FieldValues | []>([])
   // const [count, setCount] = useState()
 
@@ -139,6 +139,8 @@ export function TabContent({
   } = useForm({
     defaultValues,
   })
+
+  // eslint-disable-next-line no-unused-vars
   const { update } = useFieldArray({
     control,
     name: stageName,
@@ -242,7 +244,7 @@ export function TabContent({
     })
   }
 
-  function handleInspectionData(data: InpectionData) {
+  function handleInspectionData(data: InspectionData) {
     setInspectionData(data)
   }
 
@@ -278,38 +280,38 @@ export function TabContent({
     console.log('data formatted', dataFormatted)
   }
 
-  useEffect(() => {
-    const sessionStorageData = sessionStorage.getItem(
-      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
-    )
+  // useEffect(() => {
+  //   const sessionStorageData = sessionStorage.getItem(
+  //     `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //   )
 
-    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-    if (data && Object.hasOwn(data, stageName)) {
-      console.log('entrou', data)
-      data[stageName]?.formState?.forEach((item: any, index: number) => {
-        update(index, { inputs: item.inputs, observation: item.observation })
-      })
-      if (data[stageName]?.imagesList?.length > 0) {
-        setListImage((prevState) => {
-          const indexStageName = prevState.findIndex((item) =>
-            Object.hasOwn(item, stageName),
-          )
-          const newListImage = [...prevState]
-          if (indexStageName > -1) {
-            newListImage[indexStageName][stageName] = data[stageName].imagesList
-            return newListImage
-          } else {
-            return [
-              ...newListImage,
-              {
-                [stageName]: data[stageName].imagesList,
-              },
-            ]
-          }
-        })
-      }
-    }
-  }, [stageName])
+  //   const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+  //   if (data && Object.hasOwn(data, stageName)) {
+  //     console.log('entrou', data)
+  //     data[stageName]?.formState?.forEach((item: any, index: number) => {
+  //       update(index, { inputs: item.inputs, observation: item.observation })
+  //     })
+  //     if (data[stageName]?.imagesList?.length > 0) {
+  //       setListImage((prevState) => {
+  //         const indexStageName = prevState.findIndex((item) =>
+  //           Object.hasOwn(item, stageName),
+  //         )
+  //         const newListImage = [...prevState]
+  //         if (indexStageName > -1) {
+  //           newListImage[indexStageName][stageName] = data[stageName].imagesList
+  //           return newListImage
+  //         } else {
+  //           return [
+  //             ...newListImage,
+  //             {
+  //               [stageName]: data[stageName].imagesList,
+  //             },
+  //           ]
+  //         }
+  //       })
+  //     }
+  //   }
+  // }, [stageName])
 
   // useEffect(() => {
   //   if (isDirty) {
@@ -379,9 +381,15 @@ export function TabContent({
     }
   }, [listImage])
 
-  // useEffect(() => {
-  //   console.log('mudou')
-  // }, [isDirty])
+  useEffect(() => {
+    const isAlreadyInspections = stageData?.itens.filter(
+      (item) => item.rules.type === 'visual_inspect',
+    )
+
+    if (!!isAlreadyInspections && inspectionData.length === 0) {
+      setInspectionData(isAlreadyInspections[0].values.labels as InspectionData)
+    }
+  }, [])
 
   return (
     <>
