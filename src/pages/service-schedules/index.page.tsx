@@ -164,7 +164,7 @@ export default function ServiceSchedulesList() {
     router.push(
       searchText === ''
         ? data.search === ''
-          ? `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`
+          ? `/service-schedules?company=${companyId}`
           : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`
         : `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}&search=${data.search}`.replace(
             `&search=${searchText}`,
