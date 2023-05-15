@@ -336,6 +336,9 @@ export default function ServiceSchedulesList() {
 
   useEffect(() => {
     setLimit(totalPages)
+    setValue('current_page', 1)
+    setPages({ current: 1, next: false, previous: false })
+    setCurrentPage(1)
     searchText
       ? searchText === '/service-schedules?company=/'
         ? user
@@ -384,9 +387,9 @@ export default function ServiceSchedulesList() {
       setValue('limit', limit)
     }
     if (Number(router.query.current_page) > totalPages) {
-      setCurrentPage(1)
       setValue('current_page', 1)
       setPages({ current: 1, next: false, previous: false })
+      setCurrentPage(1)
       router.push('/company').then(() => router.reload())
     }
   }, [router.query])
