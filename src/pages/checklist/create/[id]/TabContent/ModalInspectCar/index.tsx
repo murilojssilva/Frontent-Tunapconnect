@@ -381,15 +381,27 @@ export default function ModalInspectCar({
             break
           case 'Lateral esquerda':
             newPositionsUrl.lateralEsquerdo = item.url_image
+            newPositionsMarkups.lateralEsquerdo = item.value ?? []
+            newPositionsObservations.lateralEsquerdo = item.comment ?? ''
+            newPositionsImageList.lateralEsquerdo = item.images ?? []
             break
           case 'Lateral direita':
             newPositionsUrl.lateralDireito = item.url_image
+            newPositionsMarkups.lateralDireito = item.value ?? []
+            newPositionsObservations.lateralDireito = item.comment ?? ''
+            newPositionsImageList.lateralDireito = item.images ?? []
             break
           case 'Traseira':
             newPositionsUrl.traseira = item.url_image
+            newPositionsMarkups.traseira = item.value ?? []
+            newPositionsObservations.traseira = item.comment ?? ''
+            newPositionsImageList.traseira = item.images ?? []
             break
           case 'Teto':
             newPositionsUrl.teto = item.url_image
+            newPositionsMarkups.teto = item.value ?? []
+            newPositionsObservations.teto = item.comment ?? ''
+            newPositionsImageList.teto = item.images ?? []
             break
           default:
         }
