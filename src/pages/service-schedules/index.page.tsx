@@ -342,7 +342,7 @@ export default function ServiceSchedulesList() {
     if (currentPage > totalPages) {
       setValue('currentPage', 1)
       setCurrentPage(1)
-      router.push(`/company`).then(() => router.reload())
+      router.push(`/service-schedules?company=${companyId}`)
     }
     const companyIdNumeric = String(companyId).replace(/[^\d]/g, '')
     user
@@ -387,9 +387,7 @@ export default function ServiceSchedulesList() {
 
   useEffect(() => {
     if (Number(router.query.current_page) > totalPages) {
-      setValue('currentPage', 1)
-      setCurrentPage(1)
-      router.push('/company').then(() => router.reload())
+      router.push(`/service-schedules?company=${companyId}`)
     }
     if (router.query.search) {
       setValue('search', router.query.search as string)
