@@ -70,6 +70,8 @@ export default function ServiceSchedulesList() {
     [],
   )
 
+  const [totalPages, setTotalPages] = useState(1)
+
   const [currentPage, setCurrentPage] = useState(1)
   const [limit, setLimit] = useState(2)
 
@@ -95,6 +97,11 @@ export default function ServiceSchedulesList() {
   })
 
   async function onSubmitSearch(data: SearchFormProps) {
+    const totalItems = await api.get(
+      `/service-schedule?company_id=${companyId}`,
+    )
+
+    setTotalPages(totalItems.data.data.length / limit)
     const response = data.search
       ? await api
           .get(
@@ -172,17 +179,18 @@ export default function ServiceSchedulesList() {
 
   async function handlePages(nextPage: any) {
     if (nextPage === 'next') {
-      setValue('currentPage', currentPage + 1)
-      setCurrentPage(currentPage + 1)
-      setPages({ current: currentPage, next: true, previous: false })
-    } else {
-      setCurrentPage(currentPage - 1)
-      setValue('currentPage', currentPage - 1)
-      if (currentPage === 0) {
-        setCurrentPage(1)
-        setValue('currentPage', 1)
+      console.log({ currentPage, totalPages })
+      if (currentPage < totalPages) {
+        setValue('currentPage', currentPage + 1)
+        setCurrentPage(currentPage + 1)
+        setPages({ current: currentPage, next: true, previous: false })
       }
-      setPages({ current: currentPage, next: false, previous: true })
+    } else {
+      if (currentPage > 1) {
+        setCurrentPage(currentPage - 1)
+        setValue('currentPage', currentPage - 1)
+        setPages({ current: currentPage, next: false, previous: true })
+      }
     }
 
     router.push(
