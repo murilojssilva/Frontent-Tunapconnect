@@ -71,12 +71,14 @@ export default function ServiceSchedulesList() {
     [],
   )
 
-  const [totalPages, setTotalPages] = useState(1)
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [limit, setLimit] = useState(2)
-
   const router = useRouter()
+
+  const [totalPages, setTotalPages] = useState<number>(100000)
+
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(router.query.current_page),
+  )
+  const [limit, setLimit] = useState<number>(2)
 
   const [searchText, setSearchText] = useState<string>(
     router.asPath
@@ -101,6 +103,7 @@ export default function ServiceSchedulesList() {
     const totalItems = await api.get(
       `/service-schedule?company_id=${companyId}`,
     )
+    setCurrentPage(data.current_page)
 
     setTotalPages(Math.ceil(totalItems.data.data.length / limit))
     const response = await api
@@ -175,6 +178,10 @@ export default function ServiceSchedulesList() {
     }
 
     router.push(
+      {
+        pathname: '/service-schedules',
+        query: { company: companyId, limit, current_page: currentPage },
+      },
       `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`,
     )
   }
@@ -330,6 +337,10 @@ export default function ServiceSchedulesList() {
     user
       ? !companyIdNumeric && router.push('/company')
       : router.push(
+          {
+            pathname: '/service-schedules',
+            query: { company: companyId, limit, current_page: currentPage },
+          },
           `/service-schedules?company=${companyId}&limit=${limit}&current_page=${currentPage}`,
         )
   }, [])
@@ -345,7 +356,13 @@ export default function ServiceSchedulesList() {
           ? router.push('/company')
           : router.push('/')
         : searchText === '' &&
-          router.push(`/service-schedules?company=${companyId}`)
+          router.push(
+            {
+              pathname: '/service-schedules',
+              query: { company: companyId, limit, current_page: currentPage },
+            },
+            `/service-schedules?company=${companyId}`,
+          )
       : onSubmitSearch({
           search: searchText,
           current_page: currentPage,
@@ -364,13 +381,68 @@ export default function ServiceSchedulesList() {
         console.log(route)
       } else {
         router
-          .push(router.asPath.substr(0, router.asPath.indexOf('&')))
+          .push(
+            {
+              pathname: '/service-schedules',
+              query: { company: companyId, limit, current_page: currentPage },
+            },
+            router.asPath.substr(0, router.asPath.indexOf('&')),
+          )
           .then(() => router.reload())
       }
     }
   }, [router.asPath])
 
   useEffect(() => {
+    const route = router.asPath
+
+    if ((route.match(/&current_page=/g) || []).length > 1) {
+      console.log({ rows, filteredRows })
+
+      setFilteredRows(rows as ServiceSchedulesListProps[])
+
+      console.log({ rows, filteredRows })
+
+      setCurrentPage(Number(router.query.current_page![1]))
+
+      setValue('current_page', Number(router.query.current_page![1]))
+      setFilteredRows(rows as ServiceSchedulesListProps[])
+      console.log({ rows, filteredRows })
+
+      router.replace(
+        {
+          pathname: `/service-schedules`,
+          query: {
+            company: companyId,
+            current_page: Number(router.query.current_page![1]),
+            limit,
+          },
+        },
+        `/service-schedules?company=${companyId}`,
+      )
+    }
+
+    if ((route.match(/&limit=/) || []).length > 1) {
+      router.push(
+        {
+          pathname: `/service-schedules`,
+          query: {
+            company: companyId,
+            limit,
+          },
+        },
+        `/service-schedules`,
+      )
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (Number(router.query.current_page) > totalPages) {
+      setValue('current_page', 1)
+      setPages({ current: 1, next: false, previous: false })
+      setCurrentPage(1)
+      router.push('/company').then(() => router.reload())
+    }
     if (router.query.search) {
       setValue('search', router.query.search as string)
     } else {
@@ -385,12 +457,6 @@ export default function ServiceSchedulesList() {
       setValue('limit', Number(router.query.limit))
     } else {
       setValue('limit', limit)
-    }
-    if (Number(router.query.current_page) > totalPages) {
-      setValue('current_page', 1)
-      setPages({ current: 1, next: false, previous: false })
-      setCurrentPage(1)
-      router.push('/company').then(() => router.reload())
     }
   }, [router.query])
 
