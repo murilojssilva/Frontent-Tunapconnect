@@ -70,6 +70,26 @@ type OnSubmitData = {
     | undefined
 }
 
+type InspectionData = {
+  name: string
+  url_image: string
+  value: {
+    id: number
+    type: 'amassado' | 'riscado' | 'quebrado' | 'faltando' | 'none'
+    positions: {
+      top: string
+      left: string
+    }
+  }[]
+  comment: string
+  images: {
+    id: number
+    name: string
+    url: string
+    size: string
+  }[]
+}[]
+
 export function TabContent({
   stageData,
   stageName,
@@ -90,6 +110,7 @@ export function TabContent({
       open: false,
     })
   const [listImage, setListImage] = useState<ImageListProps>([])
+  const [inspectionData, setInspectionData] = useState<InspectionData>([])
   // const [stageValues, setStageValues] = useState<FieldValues | []>([])
   // const [count, setCount] = useState()
 
@@ -118,6 +139,8 @@ export function TabContent({
   } = useForm({
     defaultValues,
   })
+
+  // eslint-disable-next-line no-unused-vars
   const { update } = useFieldArray({
     control,
     name: stageName,
@@ -221,12 +244,26 @@ export function TabContent({
     })
   }
 
+  function handleInspectionData(data: InspectionData) {
+    setInspectionData(data)
+  }
+
   function onSubmitData(data: OnSubmitData) {
     const dataFormatted = {
       ...stageData,
       status: 'closed',
       itens: stageItems.map((item, index) => {
-        console.log(!!listImage[index]?.id)
+        if (item.rules.type === 'visual_inspect') {
+          return {
+            ...item,
+            comment: data[stageName]?.[index]?.observation,
+            values: {
+              labels: {
+                ...inspectionData,
+              },
+            },
+          }
+        }
         return {
           ...item,
           comment: data[stageName]?.[index]?.observation,
@@ -243,38 +280,38 @@ export function TabContent({
     console.log('data formatted', dataFormatted)
   }
 
-  useEffect(() => {
-    const sessionStorageData = sessionStorage.getItem(
-      `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
-    )
+  // useEffect(() => {
+  //   const sessionStorageData = sessionStorage.getItem(
+  //     `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //   )
 
-    const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
-    if (data && Object.hasOwn(data, stageName)) {
-      console.log('entrou', data)
-      data[stageName]?.formState?.forEach((item: any, index: number) => {
-        update(index, { inputs: item.inputs, observation: item.observation })
-      })
-      if (data[stageName]?.imagesList?.length > 0) {
-        setListImage((prevState) => {
-          const indexStageName = prevState.findIndex((item) =>
-            Object.hasOwn(item, stageName),
-          )
-          const newListImage = [...prevState]
-          if (indexStageName > -1) {
-            newListImage[indexStageName][stageName] = data[stageName].imagesList
-            return newListImage
-          } else {
-            return [
-              ...newListImage,
-              {
-                [stageName]: data[stageName].imagesList,
-              },
-            ]
-          }
-        })
-      }
-    }
-  }, [stageName])
+  //   const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+  //   if (data && Object.hasOwn(data, stageName)) {
+  //     console.log('entrou', data)
+  //     data[stageName]?.formState?.forEach((item: any, index: number) => {
+  //       update(index, { inputs: item.inputs, observation: item.observation })
+  //     })
+  //     if (data[stageName]?.imagesList?.length > 0) {
+  //       setListImage((prevState) => {
+  //         const indexStageName = prevState.findIndex((item) =>
+  //           Object.hasOwn(item, stageName),
+  //         )
+  //         const newListImage = [...prevState]
+  //         if (indexStageName > -1) {
+  //           newListImage[indexStageName][stageName] = data[stageName].imagesList
+  //           return newListImage
+  //         } else {
+  //           return [
+  //             ...newListImage,
+  //             {
+  //               [stageName]: data[stageName].imagesList,
+  //             },
+  //           ]
+  //         }
+  //       })
+  //     }
+  //   }
+  // }, [stageName])
 
   // useEffect(() => {
   //   if (isDirty) {
@@ -344,9 +381,15 @@ export function TabContent({
     }
   }, [listImage])
 
-  // useEffect(() => {
-  //   console.log('mudou')
-  // }, [isDirty])
+  useEffect(() => {
+    const isAlreadyInspections = stageData?.itens.filter(
+      (item) => item.rules.type === 'visual_inspect',
+    )
+
+    if (!!isAlreadyInspections && inspectionData.length === 0) {
+      setInspectionData(isAlreadyInspections[0].values.labels as InspectionData)
+    }
+  }, [])
 
   return (
     <>
@@ -454,6 +497,7 @@ export function TabContent({
         isOpen={openModalInspectCar}
         closeModalInspectCar={closeModalInspectCar}
         stageData={stageData}
+        handleInspectionData={handleInspectionData}
       />
       <ModalSigntures
         isOpen={openModalSignature}
