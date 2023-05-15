@@ -7,5 +7,5 @@ export type MoreOptionsButtonSelectProps = {
     icon?: ReactNode
     action?: (value?: any) => void
   }[]
-  checklistId?: number
+  checklistId?: number | undefined
 }
