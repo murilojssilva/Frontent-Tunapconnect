@@ -112,7 +112,7 @@ export function TableModal({
           //   e.stopPropagation();
           //   const id = params.id;
           // }
-          return <MoreOptionsButtonSelect />
+          return <MoreOptionsButtonSelect checklistId={params.id} />
         },
       },
     ],
