@@ -273,14 +273,13 @@ export default function ServiceSchedulesEdit() {
         km: null,
         fuel: null,
         client_id: null, // client id
-        service_schedule_id: router?.query?.service_scheduleId
-          ? parseInt(router?.query?.service_scheduleId as string)
+        service_schedule_id: router?.query?.id
+          ? parseInt(router?.query?.id as string)
           : null,
         checklist_model: 1,
         status: 'rascunho', // salvo // finalizado // rascunho
         stages: modelChecklist.data.data[0].stages,
       }
-      console.log(dataCreateChecklist)
 
       if (modelChecklist.data.data.length > 0) {
         const createdDefault = await api.create(
@@ -320,7 +319,6 @@ export default function ServiceSchedulesEdit() {
       queryFn: async () => {
         const { id } = router.query
         const resp = await api.get(`/service-schedule/${id}`)
-        console.log(resp.data.data)
         return resp.data.data
       },
       enabled: !!router?.query?.id && !!companyId && !wasEdited,
@@ -370,8 +368,6 @@ export default function ServiceSchedulesEdit() {
       })
     }
   }, [dataServiceScheduleStatus, dataServiceSchedule])
-
-  console.log(dataServiceSchedule?.company_id)
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

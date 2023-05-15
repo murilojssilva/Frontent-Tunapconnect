@@ -13,6 +13,7 @@ import { useRouter } from 'next/router'
 
 export function MoreOptionsButtonSelect({
   disabledButton,
+  checklistId,
 }: MoreOptionsButtonSelectProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -32,7 +33,7 @@ export function MoreOptionsButtonSelect({
     setAnchorEl(null)
   }
   const handleClickEdit = () => {
-    router.push(`/checklist/create/${id}`)
+    router.push(`/checklist/create/${checklistId}`)
   }
   return (
     <div>

@@ -112,7 +112,8 @@ export function TableModal({
           //   e.stopPropagation();
           //   const id = params.id;
           // }
-          return <MoreOptionsButtonSelect />
+          const idCell = params.id
+          return <MoreOptionsButtonSelect checklistId={idCell as number} />
         },
       },
     ],
