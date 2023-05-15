@@ -368,9 +368,6 @@ export default function ServiceSchedulesList() {
   }, [router.asPath])
 
   useEffect(() => {
-    if (Number(router.query.current_page) > totalPages) {
-      router.replace(`/company`).then(() => router.reload())
-    }
     if (router.query.search) {
       setValue('search', router.query.search as string)
     } else {
@@ -385,6 +382,12 @@ export default function ServiceSchedulesList() {
       setValue('limit', Number(router.query.limit))
     } else {
       setValue('limit', limit)
+    }
+    if (Number(router.query.current_page) > totalPages) {
+      setCurrentPage(1)
+      setValue('current_page', 1)
+      setPages({ current: 1, next: false, previous: false })
+      router.push('/company').then(() => router.reload())
     }
   }, [router.query])
 
