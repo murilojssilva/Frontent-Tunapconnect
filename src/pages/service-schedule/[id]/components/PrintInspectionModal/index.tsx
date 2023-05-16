@@ -62,7 +62,7 @@ export function PrintInspectionModal({
             <PrintInspection
               refPrint={printInspectionRef}
               checklistId={1}
-              type="service-schedules"
+              type="service-schedule"
               company={companyId}
               id={1}
             />

@@ -80,13 +80,6 @@ export function TableApp({
                 },
               }}
               apiRef={apiRef}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 7,
-                  },
-                },
-              }}
               loading={loading}
               onRowClick={(id) => {
                 router.push(`/service-schedules/${id.id}?company=${companyId}`)

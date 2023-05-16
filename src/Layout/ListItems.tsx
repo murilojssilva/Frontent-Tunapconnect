@@ -30,8 +30,8 @@ const memuList: memuListProps = [
     title: 'Empresas',
   },
   {
-    path: '/service-schedules',
-    href: '/service-schedules',
+    path: '/service-schedule',
+    href: '/service-schedule',
     component: <CalendarMonthIcon />,
     title: 'Agendamento',
   },
@@ -90,7 +90,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
           <ListItemButton
             key={menu.path}
             onClick={
-              menu.path === '/service-schedules'
+              menu.path === '/service-schedule'
                 ? () => router.push(menu.href).then(() => router.reload())
                 : menu.path === '/checklist'
                 ? id

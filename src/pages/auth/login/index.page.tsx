@@ -14,6 +14,8 @@ import { AuthContext } from '@/contexts/AuthContext'
 import tunapLogoImg from '@/assets/images/tunap-login.svg'
 import { alpha, Link, Paper, Stack } from '@mui/material'
 import styled from '@emotion/styled'
+import { GetServerSideProps } from 'next'
+import { parseCookies } from 'nookies'
 
 type SignInDataProps = {
   username: string
@@ -138,4 +140,21 @@ export default function SignIn() {
       </Box>
     </Container>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const { 'next-auth.session-token': token } = parseCookies(ctx)
+
+  if (token) {
+    return {
+      redirect: {
+        destination: '/company',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }

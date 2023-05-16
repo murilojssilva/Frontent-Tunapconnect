@@ -1,20 +1,24 @@
 import * as React from 'react'
+import { useQuery } from 'react-query'
+
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
-import { useContext } from 'react'
+import Router from 'next/router'
+
 import { ApiCore } from '@/lib/api'
-import { Skeleton, Typography } from '@mui/material'
+import { Box, Skeleton, Typography, CircularProgress } from '@mui/material'
 import Title from '@/components/Title'
 import { ContainerItem } from './styles'
 
 // import { useRouter } from 'next/router'
-
 import { useSession } from 'next-auth/react'
-import { useQuery } from 'react-query'
+
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
-import { AuthContext } from '@/contexts/AuthContext'
+import { GetServerSideProps } from 'next'
+import { parseCookies } from 'nookies'
+import Link from 'next/link'
 
 interface companyProps {
   id: string
@@ -23,17 +27,46 @@ interface companyProps {
   cpf: string | null
 }
 export default function CompanyList() {
+  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
+    ['company-page-list-company'],
+    () =>
+      api.get(`/user/companies`).then((response) => {
+        console.log(response.data.data)
+
+        return response.data.data
+      }),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  )
   // eslint-disable-next-line no-unused-vars
-  const { data: session } = useSession()
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      Router.replace('/auth/login')
+    },
+  })
+
+  if (status === 'loading') {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress size={150} />
+      </Box>
+    )
+  }
 
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
   // const router = useRouter()
-  const { createCompany } = useContext(AuthContext)
-
-  function handleSelectCompany(newCompany: companyProps) {
-    createCompany(newCompany)
-  }
 
   // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
   //   companyProps[] | null
@@ -55,19 +88,6 @@ export default function CompanyList() {
   // refetchOnWindowFocus: false,
   // retry: false,
   // })
-  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
-    ['company-page-list-company'],
-    () =>
-      api.get(`/user/companies`).then((response) => {
-        console.log(response.data.data)
-
-        return response.data.data
-      }),
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  )
 
   // useEffect(() => {
   //   api
@@ -115,31 +135,34 @@ export default function CompanyList() {
               </Grid>
             </>
           )}
+
           {isSuccess &&
             data?.map((item, index) => {
               return (
-                <Grid
-                  item
-                  xs={12}
-                  md={4}
-                  lg={4}
-                  key={`${item.id}-${index}`}
-                  onClick={() => handleSelectCompany(item)}
-                >
-                  <ContainerItem
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: 180,
+                <Grid key={`${item.id}-${index}`} item xs={12} md={4} lg={4}>
+                  <Link
+                    href={`/service-schedule?company_id=${item.id}`}
+                    style={{
+                      textDecoration: 'none',
+                      padding: '16px',
                     }}
                   >
-                    <Title>{item.name || 'Não informado'}</Title>
-                    <Typography>
-                      {formatCNPJ(String(item.cnpj)) ||
-                        formatCPF(String(item.cpf))}
-                    </Typography>
-                  </ContainerItem>
+                    <ContainerItem
+                      sx={{
+                        p: 2,
+
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: 180,
+                      }}
+                    >
+                      <Title>{item.name || 'Não informado'}</Title>
+                      <Typography>
+                        {formatCNPJ(String(item.cnpj)) ||
+                          formatCPF(String(item.cpf))}
+                      </Typography>
+                    </ContainerItem>
+                  </Link>
                 </Grid>
               )
             })}
@@ -150,6 +173,23 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
+
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const { 'next-auth.session-token': token } = parseCookies(ctx)
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
+}
 
 // function useQuery<T>(arg0: {
 //   queryKey: string[]
