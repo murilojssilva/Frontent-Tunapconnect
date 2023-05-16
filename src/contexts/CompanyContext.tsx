@@ -38,7 +38,7 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
   async function createCompany(newCompany: CompanyProps) {
     setCompany(newCompany)
     setCompanyId(newCompany.id)
-    await router.push(`/service-schedules?company=${newCompany.id}`)
+    await router.push(`/service-schedule?company=${newCompany.id}`)
   }
 
   useEffect(() => {

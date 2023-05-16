@@ -10,7 +10,7 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid'
 import React, { useEffect, useState, useMemo } from 'react'
-// import { PrintInspection } from '../[companyId]/service-schedules/create/components/PrintInspection'
+// import { PrintInspection } from '../[companyId]/service-schedule/create/components/PrintInspection'
 
 export default function Testes() {
   const [value, setValue] = useState([])

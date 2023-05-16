@@ -187,7 +187,7 @@ export function TableModal({
               }}
               loading={false}
               onRowClick={(id) => {
-                router.push(`/service-schedules/${id.id}`)
+                router.push(`/service-schedule/${id.id}`)
               }}
               pageSizeOptions={[7]}
               disableRowSelectionOnClick
