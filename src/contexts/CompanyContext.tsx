@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { createContext, ReactNode, useEffect, useState } from 'react'
 // import { useRouter } from 'next/router'
-=======
-import { createContext, ReactNode, useEffect } from 'react'
-import { useRouter } from 'next/router'
->>>>>>> 8962bc6 (Remove unused vars)
 
 import { parseCookies, setCookie } from 'nookies'
 
@@ -28,18 +23,11 @@ type GeralProviderProps = {
 
 export const geralContext = createContext({} as GeralContextType)
 
-<<<<<<< HEAD
 export function GeralProvider({ children }: GeralProviderProps) {
   const [dataGeral, setDataGeral] = useState<DataGeralProps | null>(null)
-=======
-export function CompanyProvider({ children }: CompanyProviderProps) {
-  // const [company, setCompany] = useState<CompanyProps | null>(null)
-  // const [companyId, setCompanyId] = useState<string>()
->>>>>>> 8962bc6 (Remove unused vars)
 
   // const router = useRouter()
 
-<<<<<<< HEAD
   async function createDataGeral({ companyId }: DataGeralProps) {
     // setCompany(newCompany)
     const newDataGeral: DataGeralProps = {
@@ -58,9 +46,6 @@ export function CompanyProvider({ children }: CompanyProviderProps) {
 
     // await router.push(`/service-schedule?company=${companyId}`)
   }
-=======
-  // const isCompanyId = !!companyId
->>>>>>> 8962bc6 (Remove unused vars)
 
   useEffect(() => {
     const cookies = parseCookies()
