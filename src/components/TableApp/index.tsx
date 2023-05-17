@@ -82,7 +82,7 @@ export function TableApp({
               apiRef={apiRef}
               loading={loading}
               onRowClick={(id) => {
-                router.push(`/service-schedules/${id.id}?company=${companyId}`)
+                router.push(`/service-schedule/${id.id}?company=${companyId}`)
               }}
               pageSizeOptions={[7]}
               // disableRowSelectionOnClick

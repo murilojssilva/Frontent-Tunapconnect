@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import HeaderBreadcrumb from '@/components/HeaderBreadcrumb'
 import { GetServerSideProps } from 'next'
-import { parseCookies } from 'nookies'
+import { parseCookies, setCookie } from 'nookies'
 import { Box } from '@mui/system'
 import {
   CircularProgress,
@@ -53,6 +53,26 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 ]
 
 export default function ServiceSchedulesList() {
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+    console.log('entrou')
+  }
+
+  delete contexto.empresaSelecionada
+
+  console.log('context', contexto)
+
+  const cookiesResult = parseCookies()
+  console.log(cookiesResult)
+
   const router = useRouter()
   const [currentPage, setCurrentPage] = React.useState<number>(1)
 
@@ -360,6 +380,28 @@ export default function ServiceSchedulesList() {
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={async () => {
                       await router.push(`/checklist/create/${company_id}`)
+
+                      const newContext = JSON.parse(
+                        cookies[
+                          process.env
+                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
+                        ],
+                      )
+                      console.log(newContext)
+                      contexto = {
+                        ...newContext,
+                        empresaSelecionada: company_id,
+                      }
+                      setCookie(
+                        null,
+                        process.env
+                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+                        JSON.stringify(contexto),
+                        {
+                          maxAge: 30 * 24 * 60 * 60,
+                          path: '/',
+                        },
+                      )
                     }}
                   >
                     Adicionar novo
