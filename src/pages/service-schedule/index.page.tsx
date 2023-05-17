@@ -385,6 +385,7 @@ export default function ServiceSchedulesList() {
             <TableApp
               columns={columns}
               rowsData={rows || []}
+              // @ts-ignore
               handlePages={handlePages}
               loading={!rows}
               pages={pages}

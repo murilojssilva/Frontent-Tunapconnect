@@ -404,6 +404,7 @@ export default function ModalInspectCar({
             newPositionsImageList.teto = item.images ?? []
             break
           default:
+            break
         }
       })
       setImgPositionCarUrl(newPositionsUrl)
