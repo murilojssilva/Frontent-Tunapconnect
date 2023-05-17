@@ -16,8 +16,8 @@ import { useSession } from 'next-auth/react'
 
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
-import { GetServerSideProps } from 'next'
-import { parseCookies } from 'nookies'
+// import { GetServerSideProps } from 'next'
+// import { parseCookies } from 'nookies'
 import Link from 'next/link'
 import { geralContext } from '@/contexts/GeralContext'
 
@@ -223,22 +223,22 @@ export default function CompanyList() {
 
 CompanyList.auth = true
 
-export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
-  const { 'next-auth.session-token': token } = parseCookies(ctx)
+// export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+//   const { 'next-auth.session-token': token } = parseCookies(ctx)
 
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      },
-    }
-  }
+//   if (!token) {
+//     return {
+//       redirect: {
+//         destination: '/auth/login',
+//         permanent: false,
+//       },
+//     }
+//   }
 
-  return {
-    props: {},
-  }
-}
+//   return {
+//     props: {},
+//   }
+// }
 
 // function useQuery<T>(arg0: {
 //   queryKey: string[]
