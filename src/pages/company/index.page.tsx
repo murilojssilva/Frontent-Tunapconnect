@@ -38,16 +38,7 @@ export default function CompanyList() {
     () =>
       api.get(`/user/companies`).then((response) => {
         contexto.empresas = response.data.data
-
         saveCookies(contexto)
-
-        return response.data.data
-      }),
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  )
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
     required: true,
@@ -115,6 +106,7 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
+
                       contexto.empresaSelecionada = {
                         id: item.id,
                         corporate_name: item.name,
@@ -148,19 +140,7 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
-
-export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
-  const { 'next-auth.session-token': token } = parseCookies(ctx)
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      },
-    }
-  }
-
+                                      
   return {
     props: {},
   }

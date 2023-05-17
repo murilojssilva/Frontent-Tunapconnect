@@ -11,16 +11,13 @@ import { ReactNode } from 'react'
 import Router from 'next/router'
 import Layout from '@/Layout'
 import { SessionProvider, useSession } from 'next-auth/react'
-// import { queryClient } from '@/lib/react-query'
-
 import { NextComponentType } from 'next/types'
 import { Box, CircularProgress, GlobalStyles } from '@mui/material'
 import { globals } from '@/styles/globals'
-
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { GeralProvider } from '@/contexts/GeralContext'
 
-// Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
 export interface MyAppProps extends AppProps {
@@ -51,19 +48,21 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              {Component.auth ? (
-                // @ts-ignore
-                <Auth>
-                  <Layout>
-                    <Component {...props.pageProps} />
-                  </Layout>
-                </Auth>
-              ) : (
-                <Component {...pageProps} />
-              )}
+              <GeralProvider>
+                {Component.auth ? (
+                  // @ts-ignore
+                  <Auth>
+                    <Layout>
+                      <Component {...props.pageProps} />
+                    </Layout>
+                  </Auth>
+                ) : (
+                  <Component {...pageProps} />
+                )}
 
-              {/* <Component {...pageProps} /> */}
-              <ReactQueryDevtools initialIsOpen={false} />
+                {/* <Component {...pageProps} /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
+              </GeralProvider>
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>
@@ -80,6 +79,7 @@ function Auth({ children }: { children: ReactNode }) {
     required: true,
     onUnauthenticated() {
       Router.replace('/auth/login')
+
     },
   })
 
