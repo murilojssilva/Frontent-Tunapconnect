@@ -11,9 +11,9 @@ import { useRouter } from 'next/router'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ListItemButton } from './styles'
-import { AuthContext } from '@/contexts/AuthContext'
+import { parseCookies } from 'nookies'
 
 type memuListProps = Array<{
   path: string
@@ -25,8 +25,22 @@ type memuListProps = Array<{
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
-  const { companyId } = useContext(AuthContext)
-  const id = String(companyId)?.replace(/[^\d]/g, '')
+
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+    console.log('entrou')
+  }
+
+  console.log(contexto)
+  console.log(contexto.empresaSelecionada)
 
   const memuList: memuListProps = [
     {
@@ -37,7 +51,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     },
     {
       path: '/service-schedule',
-      href: '/service-schedule',
+      href: `/service-schedule?company_id=${contexto.empresaSelecionada}`,
       component: <CalendarMonthIcon />,
       title: 'Agendamento',
     },
@@ -90,7 +104,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
               menu.path === '/service-schedule'
                 ? () => router.push(menu.href).then(() => router.reload())
                 : menu.path === '/checklist'
-                ? id
+                ? cookies
                   ? () => router.push(menu.href)
                   : () => router.push('/company')
                 : () => router.push(menu.href)

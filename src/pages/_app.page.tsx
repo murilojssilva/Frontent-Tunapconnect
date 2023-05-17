@@ -10,19 +10,14 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ReactNode } from 'react'
 import Router from 'next/router'
 import Layout from '@/Layout'
-
 import { SessionProvider, useSession } from 'next-auth/react'
-// import { queryClient } from '@/lib/react-query'
-
 import { NextComponentType } from 'next/types'
 import { Box, CircularProgress, GlobalStyles } from '@mui/material'
 import { globals } from '@/styles/globals'
-
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { GeralProvider } from '@/contexts/GeralContext'
 
-// Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
 export interface MyAppProps extends AppProps {
@@ -83,7 +78,8 @@ function Auth({ children }: { children: ReactNode }) {
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
-      Router.replace('/')
+      Router.replace('/auth/login')
+
     },
   })
 
