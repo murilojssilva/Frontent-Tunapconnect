@@ -1,4 +1,4 @@
-import { ReactNode, SyntheticEvent, useContext, useState } from 'react'
+import { ReactNode, SyntheticEvent, useState } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -14,7 +14,6 @@ import {
   StagesDataProps,
 } from '../../types'
 
-import { CompanyContext } from '@/contexts/CompanyContext'
 // import { AuthContext } from '@/contexts/AuthContext'
 
 import { useRouter } from 'next/router'
@@ -54,7 +53,6 @@ export default function ChecklistCreateById() {
 
   const queryClient = useQueryClient()
   const api = new ApiCore()
-  const { companyId } = useContext(CompanyContext)
   const router = useRouter()
 
   const updateChecklistmutations = useMutation(
@@ -84,7 +82,7 @@ export default function ChecklistCreateById() {
     ['checklist-createByID'],
     () =>
       api
-        .get(`/checklist/${router?.query?.id}?company_id=${companyId}`)
+        .get(`/checklist/${router?.query?.id}?company_id=`)
         .then((response) => {
           return response.data.data
         }),

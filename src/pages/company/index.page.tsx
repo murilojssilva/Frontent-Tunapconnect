@@ -19,7 +19,6 @@ import { formatCNPJ } from '@/ultis/formatCNPJ'
 import { GetServerSideProps } from 'next'
 import { parseCookies, setCookie } from 'nookies'
 import Link from 'next/link'
-// import { geralContext } from '@/contexts/CompanyContext'
 
 interface companyProps {
   id: string

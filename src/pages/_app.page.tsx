@@ -18,7 +18,6 @@ import { globals } from '@/styles/globals'
 
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
-// import { GeralProvider } from '@/contexts/CompanyContext'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
