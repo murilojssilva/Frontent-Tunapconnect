@@ -87,7 +87,7 @@ export default function ServiceSchedulesList() {
     fetchCompany()
   }
 
-  async function handlePages(nextPage: 'next' | 'previous') {
+  async function handlePages(nextPage: any) {
     if (nextPage === 'next') {
       if (currentPage < totalPages) {
         setCurrentPage(currentPage + 1)
