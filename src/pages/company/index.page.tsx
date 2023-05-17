@@ -72,8 +72,12 @@ export default function CompanyList() {
     },
   )
 
+<<<<<<< HEAD
   const cookiesResult = parseCookies()
   console.log(cookiesResult)
+=======
+  // const [currentCompany, setCurrentCompany] = React.useState('')
+>>>>>>> 8962bc6 (Remove unused vars)
 
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
