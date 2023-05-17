@@ -39,7 +39,6 @@ export function GeralProvider({ children }: GeralProviderProps) {
   const router = useRouter()
 
   async function createDataGeral(data: DataGeralProps) {
-    console.log(data)
     if (data) {
       const newDataGeral = {
         company: data.company,
