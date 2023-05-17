@@ -115,7 +115,10 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
-                      contexto.empresaSelecionada = item.id
+                      contexto.empresaSelecionada = {
+                        id: item.id,
+                        corporate_name: item.name,
+                      }
                       saveCookies(contexto)
                     }}
                   >
