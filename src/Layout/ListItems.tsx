@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ListItemButton } from './styles'
 import { AuthContext } from '@/contexts/AuthContext'
 
@@ -22,51 +22,48 @@ type memuListProps = Array<{
   title: string
 }>
 
-const memuList: memuListProps = [
-  {
-    path: '/company',
-    href: '/company',
-    component: <AccountBalanceIcon />,
-    title: 'Empresas',
-  },
-  {
-    path: '/service-schedule',
-    href: '/service-schedule',
-    component: <CalendarMonthIcon />,
-    title: 'Agendamento',
-  },
-  // {
-  //   path: '/checklist',
-  //   href: '/checklist/create',
-  //   component: <AccessTimeFilledOutlinedIcon />,
-  //   title: 'Checklist',
-  // },
-]
-
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
   const { companyId } = useContext(AuthContext)
   const id = String(companyId)?.replace(/[^\d]/g, '')
+
+  const memuList: memuListProps = [
+    {
+      path: '/company',
+      href: '/company',
+      component: <AccountBalanceIcon />,
+      title: 'Empresas',
+    },
+    {
+      path: '/service-schedule',
+      href: '/service-schedule',
+      component: <CalendarMonthIcon />,
+      title: 'Agendamento',
+    },
+    // {
+    //   path: '/checklist',
+    //   href: '/checklist/create',
+    //   component: <AccessTimeFilledOutlinedIcon />,
+    //   title: 'Checklist',
+    // },
+  ]
   // console.log('aberto',opended)
 
-  const menuListCompanyId = useMemo(
-    () =>
-      memuList.map((item) => {
-        return item.path === '/company'
-          ? item
-          : {
-              ...item,
-              href:
-                item.path === '/checklist'
-                  ? companyId
-                    ? `/${item.href}/${companyId}`
-                    : ''
-                  : `/${item.href}?company=${companyId}`,
-            }
-      }),
-    [companyId],
-  )
+  /* const menuListCompanyId = () =>
+    memuList.map((item) => {
+      return item.path === '/company'
+        ? item
+        : {
+            ...item,
+            href:
+              item.path === '/checklist'
+                ? companyId
+                  ? `/${item.href}/${companyId}`
+                  : ''
+                : `/${item.href}?company=${companyId}`,
+          }
+    }) */
 
   useEffect(() => {
     setRouteActual(router.pathname)
@@ -74,7 +71,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
 
   return (
     <React.Fragment>
-      {menuListCompanyId.map((menu, index) => {
+      {memuList.map((menu: any) => {
         return (
           /* <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
