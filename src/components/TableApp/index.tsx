@@ -26,7 +26,7 @@ interface TableAppProps {
 declare module '@mui/x-data-grid' {
   // eslint-disable-next-line no-unused-vars
   interface FooterPropsOverrides {
-    handlePages: (nextPage: any) => void
+    handlePages: (nextPage: string) => void
     nextPage: boolean
     previousPage: boolean
   }
