@@ -17,8 +17,9 @@ import { useSession } from 'next-auth/react'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
 import { GetServerSideProps } from 'next'
-import { parseCookies, setCookie } from 'nookies'
+import { parseCookies } from 'nookies'
 import Link from 'next/link'
+import { geralContext } from '@/contexts/GeralContext'
 
 interface companyProps {
   id: string
@@ -27,43 +28,31 @@ interface companyProps {
   cpf: string | null
 }
 export default function CompanyList() {
-  // const { dataGeral, createDataGeral } = React.useContext(geralContext)
+  const { dataGeral, createDataGeral } = React.useContext(geralContext)
+  const empresaSelecionada = dataGeral?.empresaSelecionada
+  console.log(empresaSelecionada)
+  const api = new ApiCore()
 
-  let contexto: any = {}
-  const cookies = parseCookies()
+  // let contexto: any = {}
+  // const cookies = parseCookies()
   //   JSON.parse(
   //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
   // ),
 
-  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
-    contexto = JSON.parse(
-      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-    )
-    console.log('entrou')
-  }
+  // if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+  //   contexto = JSON.parse(
+  //     cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  //   )
+  // }
 
-  delete contexto.empresaSelecionada
+  // delete contexto.empresaSelecionada
 
-  console.log('context', contexto)
+  // console.log('context', contexto)
 
   const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
     ['company-page-list-company'],
     () =>
       api.get(`/user/companies`).then((response) => {
-        console.log(response.data.data)
-
-        contexto.empresas = response.data.data
-
-        setCookie(
-          null,
-          process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-          JSON.stringify(contexto),
-          {
-            maxAge: 30 * 24 * 60 * 60,
-            path: '/',
-          },
-        )
-
         return response.data.data
       }),
     {
@@ -72,8 +61,8 @@ export default function CompanyList() {
     },
   )
 
-  const cookiesResult = parseCookies()
-  console.log(cookiesResult)
+  // const cookiesResult = parseCookies()
+  // console.log(cookiesResult)
 
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
@@ -99,7 +88,6 @@ export default function CompanyList() {
   }
 
   // eslint-disable-next-line new-cap
-  const api = new ApiCore()
   // const router = useRouter()
 
   // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
@@ -181,27 +169,31 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
-                      const newContext = JSON.parse(
-                        cookies[
-                          process.env
-                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
-                        ],
-                      )
-                      console.log(newContext)
-                      contexto = {
-                        ...newContext,
+                      createDataGeral({
+                        company: item,
                         empresaSelecionada: item.id,
-                      }
-                      setCookie(
-                        null,
-                        process.env
-                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-                        JSON.stringify(contexto),
-                        {
-                          maxAge: 30 * 24 * 60 * 60,
-                          path: '/',
-                        },
-                      )
+                      })
+                      // const newContext = JSON.parse(
+                      //   cookies[
+                      //     process.env
+                      //       .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
+                      //   ],
+                      // )
+                      // console.log(newContext)
+                      // contexto = {
+                      //   ...newContext,
+                      //   empresaSelecionada: item.id,
+                      // }
+                      // setCookie(
+                      //   null,
+                      //   process.env
+                      //     .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+                      //   JSON.stringify(contexto),
+                      //   {
+                      //     maxAge: 30 * 24 * 60 * 60,
+                      //     path: '/',
+                      //   },
+                      // )
                     }}
                   >
                     <ContainerItem

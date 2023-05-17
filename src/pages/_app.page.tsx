@@ -18,6 +18,7 @@ import { globals } from '@/styles/globals'
 
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { GeralProvider } from '@/contexts/GeralContext'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -50,19 +51,19 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              {/* <GeralProvider> */}
-              {Component.auth ? (
-                // @ts-ignore
-                <Layout>
-                  <Component {...props.pageProps} />
-                </Layout>
-              ) : (
-                <Component {...pageProps} />
-              )}
+              <GeralProvider>
+                {Component.auth ? (
+                  // @ts-ignore
+                  <Layout>
+                    <Component {...props.pageProps} />
+                  </Layout>
+                ) : (
+                  <Component {...pageProps} />
+                )}
 
-              {/* <Component {...pageProps} /> */}
-              <ReactQueryDevtools initialIsOpen={false} />
-              {/* </GeralProvider> */}
+                {/* <Component {...pageProps} /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
+              </GeralProvider>
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>
