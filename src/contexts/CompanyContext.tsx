@@ -1,60 +1,79 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 
-// import { parseCookies, setCookie } from 'nookies'
+import { parseCookies, setCookie } from 'nookies'
 
 // import { ApiCore } from '@/lib/api'
 // import { useQuery } from '@tanstack/react-query'
 // import { useSession } from 'next-auth/react'
 // import { useQuery } from '@tanstack/react-query'
 
-type CompanyProps = {
-  id: string
-  name: string
-  cnpj: string | null
-  cpf: string | null
+type DataGeralProps = {
+  companyId: string
 }
 
-type CompanyContextType = {
-  company: CompanyProps | null | undefined
-  companyId: string | undefined
-  createCompany: (company: CompanyProps) => Promise<void>
+type GeralContextType = {
+  dataGeral: DataGeralProps | null | undefined
+  createDataGeral: (value: DataGeralProps) => Promise<void>
 }
 
-type CompanyProviderProps = {
+type GeralProviderProps = {
   children: ReactNode
 }
 
-export const CompanyContext = createContext({} as CompanyContextType)
+export const geralContext = createContext({} as GeralContextType)
 
-export function CompanyProvider({ children }: CompanyProviderProps) {
-  const [company, setCompany] = useState<CompanyProps | null>(null)
-  const [companyId, setCompanyId] = useState<string>()
+export function GeralProvider({ children }: GeralProviderProps) {
+  const [dataGeral, setDataGeral] = useState<DataGeralProps | null>(null)
 
-  const router = useRouter()
+  // const router = useRouter()
 
-  const isCompanyId = !!companyId
+  async function createDataGeral({ companyId }: DataGeralProps) {
+    // setCompany(newCompany)
+    const newDataGeral: DataGeralProps = {
+      companyId,
+    }
+    setDataGeral(newDataGeral)
+    setCookie(
+      null,
+      process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+      JSON.stringify(newDataGeral),
+      {
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      },
+    )
 
-  async function createCompany(newCompany: CompanyProps) {
-    setCompany(newCompany)
-    setCompanyId(newCompany.id)
-    await router.push(`/service-schedule?company=${newCompany.id}`)
+    // await router.push(`/service-schedule?company=${companyId}`)
   }
 
   useEffect(() => {
-    if (!isCompanyId) {
-      if (router?.query?.companyId) {
-        const regex = /[1-9]+/
-        regex.test(router?.query?.companyId as string)
-          ? setCompanyId(router?.query?.companyId as string)
-          : router.push('/company')
-      }
-    }
-  }, [router?.query?.companyId])
+    const cookies = parseCookies()
+    console.log(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+    // console.log(Object.hasOwn(cookies, 'companyId'))
+    // console.log(
+    // JSON.parse(
+    //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    // ),
+    // )
+  }, [])
+
+  // useEffect(() => {
+  // if (!isCompanyId) {
+  //   if (router?.query?.companyId) {
+  //     const regex = /[1-9]+/
+  //     regex.test(router?.query?.companyId as string)
+  //       ? setCompanyId(router?.query?.companyId as string)
+  //       : router.push('/company')
+  //   }
+  // }
+  // }, [router?.query?.companyId])
 
   return (
-    <CompanyContext.Provider value={{ companyId, company, createCompany }}>
+    <geralContext.Provider value={{ dataGeral, createDataGeral }}>
       {children}
-    </CompanyContext.Provider>
+    </geralContext.Provider>
   )
 }

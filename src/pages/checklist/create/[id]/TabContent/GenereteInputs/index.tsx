@@ -164,7 +164,6 @@ export function genereteInput(
   handleOpenModalInspectCar: (value: boolean) => void,
 ) {
   const optionsSelect = itemValues ? itemValues?.options : []
-
   switch (type) {
     case 'number':
       return (

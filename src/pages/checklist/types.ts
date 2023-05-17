@@ -69,7 +69,7 @@ export interface Signature {
 export interface StagesDataProps {
   name: string
   itens: Itens[]
-  status: 'open' | 'closed'
+  status: 'finalizado' | 'rascunho' | 'salvo'
   signatures?: Signature[] | undefined
 }
 

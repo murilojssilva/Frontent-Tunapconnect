@@ -31,6 +31,7 @@ type TabContentProps = {
   stageItems: Itens[]
   formIDSubmit: string
   isClosed: boolean
+  stageSaved?: boolean
   handleAddListCheckList: (data: StagesDataProps) => void
 }
 
@@ -90,7 +91,7 @@ type InspectionData = {
   }[]
 }[]
 
-export function TabContent({
+function TabContent({
   stageData,
   stageName,
   stageItems,
@@ -98,6 +99,7 @@ export function TabContent({
   handleAddListCheckList,
   isClosed,
   checklistModel,
+  stageSaved,
 }: TabContentProps) {
   const [openModalInspectCar, setOpenModalInspectCar] = useState(false)
   const [openModalImage, setOpenModalImage] = useState<OpenModalImage>({
@@ -135,6 +137,7 @@ export function TabContent({
     control,
     register,
     handleSubmit,
+    getValues,
     // formState: { isDirty },
   } = useForm({
     defaultValues,
@@ -278,6 +281,7 @@ export function TabContent({
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
     console.log('data formatted', dataFormatted)
+    console.log('data inspectionData', inspectionData)
   }
 
   // useEffect(() => {
@@ -345,6 +349,9 @@ export function TabContent({
   //   }
   // }, [touchedFields])
 
+  useEffect(() => {
+    console.log(getValues(stageName))
+  }, [])
   useEffect(() => {
     const indexStageName = listImage.findIndex((item) =>
       Object.hasOwn(item, stageName),
@@ -508,3 +515,5 @@ export function TabContent({
     </>
   )
 }
+
+export default TabContent

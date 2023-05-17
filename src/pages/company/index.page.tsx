@@ -17,8 +17,9 @@ import { useSession } from 'next-auth/react'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
 import { GetServerSideProps } from 'next'
-import { parseCookies } from 'nookies'
+import { parseCookies, setCookie } from 'nookies'
 import Link from 'next/link'
+// import { geralContext } from '@/contexts/CompanyContext'
 
 interface companyProps {
   id: string
@@ -27,11 +28,42 @@ interface companyProps {
   cpf: string | null
 }
 export default function CompanyList() {
+  // const { dataGeral, createDataGeral } = React.useContext(geralContext)
+
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+    console.log('entrou')
+  }
+
+  delete contexto.empresaSelecionada
+
+  console.log('context', contexto)
+
   const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
     ['company-page-list-company'],
     () =>
       api.get(`/user/companies`).then((response) => {
         console.log(response.data.data)
+
+        contexto.empresas = response.data.data
+
+        setCookie(
+          null,
+          process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+          JSON.stringify(contexto),
+          {
+            maxAge: 30 * 24 * 60 * 60,
+            path: '/',
+          },
+        )
 
         return response.data.data
       }),
@@ -40,6 +72,10 @@ export default function CompanyList() {
       retry: false,
     },
   )
+
+  const cookiesResult = parseCookies()
+  console.log(cookiesResult)
+
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
     required: true,
@@ -47,7 +83,6 @@ export default function CompanyList() {
       Router.replace('/auth/login')
     },
   })
-
   if (status === 'loading') {
     return (
       <Box
@@ -145,6 +180,29 @@ export default function CompanyList() {
                     style={{
                       textDecoration: 'none',
                       padding: '16px',
+                    }}
+                    onClick={() => {
+                      const newContext = JSON.parse(
+                        cookies[
+                          process.env
+                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
+                        ],
+                      )
+                      console.log(newContext)
+                      contexto = {
+                        ...newContext,
+                        empresaSelecionada: item.id,
+                      }
+                      setCookie(
+                        null,
+                        process.env
+                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+                        JSON.stringify(contexto),
+                        {
+                          maxAge: 30 * 24 * 60 * 60,
+                          path: '/',
+                        },
+                      )
                     }}
                   >
                     <ContainerItem
