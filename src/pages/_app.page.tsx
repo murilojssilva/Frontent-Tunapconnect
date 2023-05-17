@@ -7,13 +7,14 @@ import { CacheProvider, EmotionCache } from '@emotion/react'
 import createEmotionCache from '@/styles/config/createEmotionCache'
 import theme from '@/styles/config/theme'
 import { AuthProvider } from '@/contexts/AuthContext'
-
+import { ReactNode } from 'react'
+import Router from 'next/router'
 import Layout from '@/Layout'
-import { SessionProvider } from 'next-auth/react'
+import { SessionProvider, useSession } from 'next-auth/react'
 // import { queryClient } from '@/lib/react-query'
 
 import { NextComponentType } from 'next/types'
-import { GlobalStyles } from '@mui/material'
+import { Box, CircularProgress, GlobalStyles } from '@mui/material'
 import { globals } from '@/styles/globals'
 
 import { ReactQueryDevtools } from 'react-query/devtools'
@@ -50,19 +51,19 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              {/* <GeralProvider> */}
               {Component.auth ? (
                 // @ts-ignore
-                <Layout>
-                  <Component {...props.pageProps} />
-                </Layout>
+                <Auth>
+                  <Layout>
+                    <Component {...props.pageProps} />
+                  </Layout>
+                </Auth>
               ) : (
                 <Component {...pageProps} />
               )}
 
               {/* <Component {...pageProps} /> */}
               <ReactQueryDevtools initialIsOpen={false} />
-              {/* </GeralProvider> */}
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>
@@ -72,3 +73,31 @@ const MyApp = (props: CustomAppProps) => {
 }
 
 export default MyApp
+
+function Auth({ children }: { children: ReactNode }) {
+  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      Router.replace('/')
+    },
+  })
+
+  if (status === 'loading') {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress size={150} />
+      </Box>
+    )
+  }
+
+  return children
+}
