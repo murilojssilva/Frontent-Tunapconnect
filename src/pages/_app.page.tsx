@@ -79,7 +79,7 @@ function Auth({ children }: { children: ReactNode }) {
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
-      Router.replace('/')
+      Router.replace('/auth/login')
     },
   })
 
