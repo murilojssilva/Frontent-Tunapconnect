@@ -11,14 +11,14 @@ import { Box, Skeleton, Typography, CircularProgress } from '@mui/material'
 import Title from '@/components/Title'
 import { ContainerItem } from './styles'
 
-// import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
 import { GetServerSideProps } from 'next'
-import { parseCookies, setCookie } from 'nookies'
+import { parseCookies } from 'nookies'
 import Link from 'next/link'
+import { saveCookies } from '@/contexts/SaveCookie'
 
 interface companyProps {
   id: string
@@ -27,42 +27,19 @@ interface companyProps {
   cpf: string | null
 }
 export default function CompanyList() {
-  // const { dataGeral, createDataGeral } = React.useContext(geralContext)
+  const contexto = saveCookies()
 
-  let contexto: any = {}
-  const cookies = parseCookies()
-  //   JSON.parse(
-  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-  // ),
+  contexto.empresaSelecionada && delete contexto.empresaSelecionada
 
-  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
-    contexto = JSON.parse(
-      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-    )
-    console.log('entrou')
-  }
-
-  delete contexto.empresaSelecionada
-
-  console.log('context', contexto)
+  saveCookies(contexto)
 
   const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
     ['company-page-list-company'],
     () =>
       api.get(`/user/companies`).then((response) => {
-        console.log(response.data.data)
-
         contexto.empresas = response.data.data
 
-        setCookie(
-          null,
-          process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-          JSON.stringify(contexto),
-          {
-            maxAge: 30 * 24 * 60 * 60,
-            path: '/',
-          },
-        )
+        saveCookies(contexto)
 
         return response.data.data
       }),
@@ -71,10 +48,6 @@ export default function CompanyList() {
       retry: false,
     },
   )
-
-  const cookiesResult = parseCookies()
-  console.log(cookiesResult)
-
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
     required: true,
@@ -100,45 +73,6 @@ export default function CompanyList() {
 
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
-  // const router = useRouter()
-
-  // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
-  //   companyProps[] | null
-  // >(['company-page-list-company'],
-  //   queryFn: async () => {
-  //     let resp
-  //     console.log('entrou')
-  //     try {
-  //       resp = await api.get(`/user/companies`)
-  //       console.log(resp.data.data)
-
-  //       return resp.data.data
-  //     } catch (error) {
-  //       console.log(error)
-  //       return error
-  //     }
-  //   },
-  //   // initialData: [],
-  // refetchOnWindowFocus: false,
-  // retry: false,
-  // })
-
-  // useEffect(() => {
-  //   api
-  //     .get(`/user/companies`)
-  //     .then((response) => {
-  //       console.log(response.data.data)
-
-  //       return response.data.data
-  //     })
-  //     .catch((error) => console.error(error))
-  // }, [])
-
-  // console.log(data)
-  // console.log(isSuccess)
-  // console.log(isLoading)
-
-  // if (error) return <p>erro</p>
 
   return (
     <>
@@ -181,27 +115,8 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
-                      const newContext = JSON.parse(
-                        cookies[
-                          process.env
-                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
-                        ],
-                      )
-                      console.log(newContext)
-                      contexto = {
-                        ...newContext,
-                        empresaSelecionada: item.id,
-                      }
-                      setCookie(
-                        null,
-                        process.env
-                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-                        JSON.stringify(contexto),
-                        {
-                          maxAge: 30 * 24 * 60 * 60,
-                          path: '/',
-                        },
-                      )
+                      contexto.empresaSelecionada = item.id
+                      saveCookies(contexto)
                     }}
                   >
                     <ContainerItem
@@ -247,19 +162,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
     props: {},
   }
 }
-
-// function useQuery<T>(arg0: {
-//   queryKey: string[]
-//   queryFn: () => Promise<any>
-//   // initialData: [],
-//   refetchOnWindowFocus: boolean
-//   retry: boolean
-// }): {
-//   data: any
-//   isSuccess: any
-//   isLoading: any
-//   isFetching: any
-//   isFetched: any
-// } {
-//   throw new Error('Function not implemented.')
-// }
