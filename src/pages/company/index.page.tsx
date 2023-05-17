@@ -15,8 +15,6 @@ import { useSession } from 'next-auth/react'
 
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
-import { GetServerSideProps } from 'next'
-import { parseCookies } from 'nookies'
 import Link from 'next/link'
 import { saveCookies } from '@/contexts/SaveCookie'
 
@@ -38,7 +36,16 @@ export default function CompanyList() {
     () =>
       api.get(`/user/companies`).then((response) => {
         contexto.empresas = response.data.data
+
         saveCookies(contexto)
+
+        return response.data.data
+      }),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  )
   // eslint-disable-next-line no-unused-vars
   const { status } = useSession({
     required: true,
@@ -106,7 +113,6 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
-
                       contexto.empresaSelecionada = {
                         id: item.id,
                         corporate_name: item.name,
@@ -140,8 +146,3 @@ export default function CompanyList() {
 }
 
 CompanyList.auth = true
-                                      
-  return {
-    props: {},
-  }
-}
