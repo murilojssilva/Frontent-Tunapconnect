@@ -18,12 +18,12 @@ interface companyProps {
 
 type DataGeralProps = {
   company: companyProps
-  empresaSelecionada: number
-  outras: any[]
+  empresaSelecionada: string
+  outras?: any[]
 } | null
 
 type GeralContextType = {
-  dataGeral: DataGeralProps | null | undefined
+  dataGeral: DataGeralProps | null
   createDataGeral: (value: DataGeralProps) => Promise<void>
 }
 
@@ -38,25 +38,25 @@ export function GeralProvider({ children }: GeralProviderProps) {
 
   const router = useRouter()
 
-  async function createDataGeral({ company }: DataGeralProps) {
-    const newDataGeral = {
-      company: {
-        id: company.id,
-      },
-      empresaSelecionada: company.id,
+  async function createDataGeral(data: DataGeralProps) {
+    console.log(data)
+    if (data) {
+      const newDataGeral = {
+        company: data.company,
+        empresaSelecionada: data.empresaSelecionada,
+      }
+      // @ts-ignore
+      setDataGeral(newDataGeral)
+      setCookie(
+        null,
+        process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+        JSON.stringify(newDataGeral),
+        {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/',
+        },
+      )
     }
-    console.log(company)
-    setDataGeral(newDataGeral)
-    setCookie(
-      null,
-      process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-      JSON.stringify(newDataGeral),
-      {
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-      },
-    )
-
     // await router.push(`/service-schedule?company=${companyId}`)
   }
 

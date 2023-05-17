@@ -17,7 +17,7 @@ import { useSession } from 'next-auth/react'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
 import { GetServerSideProps } from 'next'
-import { parseCookies, setCookie } from 'nookies'
+import { parseCookies } from 'nookies'
 import Link from 'next/link'
 import { geralContext } from '@/contexts/GeralContext'
 
@@ -29,9 +29,10 @@ interface companyProps {
 }
 export default function CompanyList() {
   const { dataGeral, createDataGeral } = React.useContext(geralContext)
-  const empresaSelecionada = dataGeral?.company
+  const empresaSelecionada = dataGeral?.empresaSelecionada
+  console.log(empresaSelecionada)
+  const api = new ApiCore()
 
-  console.log('empresaSelecionada', empresaSelecionada)
   // let contexto: any = {}
   // const cookies = parseCookies()
   //   JSON.parse(
@@ -52,20 +53,6 @@ export default function CompanyList() {
     ['company-page-list-company'],
     () =>
       api.get(`/user/companies`).then((response) => {
-        console.log(response.data.data)
-
-        // contexto.empresas = response.data.data
-
-        // setCookie(
-        //   null,
-        //   process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-        //   JSON.stringify(contexto),
-        //   {
-        //     maxAge: 30 * 24 * 60 * 60,
-        //     path: '/',
-        //   },
-        // )
-
         return response.data.data
       }),
     {
@@ -101,7 +88,6 @@ export default function CompanyList() {
   }
 
   // eslint-disable-next-line new-cap
-  const api = new ApiCore()
   // const router = useRouter()
 
   // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
@@ -183,7 +169,10 @@ export default function CompanyList() {
                       padding: '16px',
                     }}
                     onClick={() => {
-                      createDataGeral({ company: item })
+                      createDataGeral({
+                        company: item,
+                        empresaSelecionada: item.id,
+                      })
                       // const newContext = JSON.parse(
                       //   cookies[
                       //     process.env

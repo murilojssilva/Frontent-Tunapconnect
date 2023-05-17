@@ -34,7 +34,7 @@ import { formatMoneyPtBR } from '@/ultis/formatMoneyPtBR'
 import { ActionDeleteConfirmations } from '@/helpers/ActionConfirmations'
 import { ServiceSchedulesListProps } from '@/types/service-schedule'
 import { TableApp } from '@/components/TableApp'
-import { geralContext } from '@/contexts/GeralContext'
+// import { geralContext } from '@/contexts/GeralContext'
 
 type SearchFormProps = {
   search: string
@@ -57,8 +57,7 @@ export default function ServiceSchedulesList() {
   const router = useRouter()
   const [currentPage, setCurrentPage] = React.useState<number>(1)
 
-  const { dataGeral } = React.useContext(geralContext)
-  console.log(dataGeral)
+  // const { dataGeral } = React.useContext(geralContext)
 
   const [pages, setPages] = React.useState<{
     current: number
