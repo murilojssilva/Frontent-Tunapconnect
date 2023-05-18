@@ -50,7 +50,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
   },
   {
     label: 'Lista de agendamentos',
-    href: '/service-schedules/list',
+    href: '/service-schedule/list',
   },
 ]
 
@@ -336,7 +336,7 @@ export default function ServiceSchedulesList() {
                   sx={{ alignSelf: 'flex-end' }}
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={async () => {
-                    router.push(`/service-schedules/create`)
+                    router.push(`/service-schedule/create`)
                   }}
                 >
                   Adicionar novo
