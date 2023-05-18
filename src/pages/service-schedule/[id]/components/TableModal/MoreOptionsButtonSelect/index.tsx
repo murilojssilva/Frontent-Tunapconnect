@@ -23,8 +23,6 @@ export function MoreOptionsButtonSelect({
   }
   const router = useRouter()
 
-  console.log(router?.query)
-
   const { companyId, id } = router.query
 
   console.log({ companyId, id })
