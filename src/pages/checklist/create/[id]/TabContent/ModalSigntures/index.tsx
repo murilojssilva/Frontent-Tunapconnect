@@ -36,6 +36,9 @@ export default function ModalSigntures({
 
   function handleSaveSignature() {
     if (signatureRef.current) {
+      console.log(
+        signatureRef.current.getTrimmedCanvas().toDataURL('image/png'),
+      )
     }
   }
 
@@ -63,6 +66,9 @@ export default function ModalSigntures({
           <SignaturePad
             canvasProps={{ width: 400, height: 200, className: 'sigCanvas' }}
             ref={signatureRef}
+            // ref={(ref) => {
+            //   console.log(ref && ref.getTrimmedCanvas().toDataURL('image/png'))
+            // }}
           />
         </Box>
       </DialogContent>

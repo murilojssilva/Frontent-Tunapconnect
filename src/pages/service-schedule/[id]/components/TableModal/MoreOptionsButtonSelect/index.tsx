@@ -25,6 +25,8 @@ export function MoreOptionsButtonSelect({
 
   const { companyId, id } = router.query
 
+  console.log({ companyId, id })
+
   const handleClose = () => {
     setAnchorEl(null)
   }
