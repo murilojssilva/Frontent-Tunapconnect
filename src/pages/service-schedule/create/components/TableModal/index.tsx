@@ -141,19 +141,15 @@ export function TableModal({
     if (isOpen) {
       setOpen(true)
       api
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         .get('/checklist/list/?company_id=' + companySelected)
         .then((response) => console.log(response.data))
         .catch((error) => console.log(error))
-=======
         .get('/checklist/list/?company_id=' + company?.id)
->>>>>>> 580c85f (Fix Context)
-=======
+
         .get('/checklist/list/?company_id=' + companySelected)
         .then((response) => console.log(response.data))
         .catch((error) => console.log(error))
->>>>>>> 355a774 (Fix)
     }
   }, [isOpen, companySelected])
 
