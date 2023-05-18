@@ -55,7 +55,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 ]
 
 export default function ServiceSchedulesList() {
-  const [totalPages, setTotalPages] = useState(1000000)
+  const [totalPages, setTotalPages] = useState(100000)
   const [currentPage, setCurrentPage] = useState(1)
   const [pages, setPages] = useState<{
     current: number
@@ -109,6 +109,7 @@ export default function ServiceSchedulesList() {
         router.push(url)
       }
     }
+    console.log(nextPage, currentPage, pages)
   }
 
   let url = `/service-schedule?company_id=${companySelected}`
@@ -117,8 +118,8 @@ export default function ServiceSchedulesList() {
     url += `&limit=${router.query.limit}`
   }
 
-  if (router.query.current_page) {
-    url += `&current_page=${router.query.current_page}`
+  if (currentPage > 1) {
+    url += `&current_page=${currentPage}`
   }
 
   if (router.query.search) {
@@ -243,6 +244,7 @@ export default function ServiceSchedulesList() {
       api
         .get(url)
         .then((response) => {
+          // console.log(response)
           setTotalPages(response.data.total_pages)
           const resp = response.data.data.map((data: any) => ({
             id: data?.id ?? 'Não informado',
