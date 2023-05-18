@@ -16,7 +16,7 @@ import { Box, CircularProgress, GlobalStyles } from '@mui/material'
 import { globals } from '@/styles/globals'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { GeralProvider } from '@/contexts/GeralContext'
+import { CompanyProvider } from '@/contexts/CompanyContext'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -48,7 +48,7 @@ const MyApp = (props: CustomAppProps) => {
         <SessionProvider session={session} refetchInterval={60 * 5}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              <GeralProvider>
+              <CompanyProvider>
                 {Component.auth ? (
                   // @ts-ignore
                   <Auth>
@@ -62,7 +62,7 @@ const MyApp = (props: CustomAppProps) => {
 
                 {/* <Component {...pageProps} /> */}
                 <ReactQueryDevtools initialIsOpen={false} />
-              </GeralProvider>
+              </CompanyProvider>
             </AuthProvider>
           </QueryClientProvider>
         </SessionProvider>
@@ -79,7 +79,6 @@ function Auth({ children }: { children: ReactNode }) {
     required: true,
     onUnauthenticated() {
       Router.replace('/auth/login')
-
     },
   })
 
