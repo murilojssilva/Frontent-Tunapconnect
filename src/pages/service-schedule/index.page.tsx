@@ -55,45 +55,11 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 ]
 
 export default function ServiceSchedulesList() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1000)
->>>>>>> e9b7652 (Remove line)
   const [pages, setPages] = useState<{
-=======
-  let contexto: any = {}
-  const cookies = parseCookies()
-  //   JSON.parse(
-  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-  // ),
-
-  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
-    contexto = JSON.parse(
-      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-    )
-  }
-
-  delete contexto.empresaSelecionada
-
-  const cookiesResult = parseCookies()
-
-  const router = useRouter()
-  const [currentPage, setCurrentPage] = React.useState<number>(1)
-
-  // const { dataGeral } = React.useContext(geralContext)
-
-  const [pages, setPages] = React.useState<{
->>>>>>> 580c85f (Fix Context)
-=======
-  const [pages, setPages] = useState<{
->>>>>>> 355a774 (Fix)
     current: number
     next: boolean
     previous: boolean
-  }>({ current: currentPage, next: false, previous: false })
+  }>({ current: 1, next: false, previous: false })
 
   const { companySelected } = useContext(CompanyContext)
 
@@ -127,20 +93,8 @@ export default function ServiceSchedulesList() {
     // setRows(rows.filter((row) => row.id !== id))
   }
 
-  async function handlePages(nextPage: any) {
-    if (nextPage === 'next') {
-      if (currentPage < totalPages) {
-        setCurrentPage(currentPage + 1)
-        setPages({ current: currentPage, next: true, previous: false })
-        router.push(url)
-      }
-    } else {
-      if (currentPage > 1) {
-        setCurrentPage(currentPage - 1)
-        setPages({ current: currentPage, next: false, previous: true })
-        router.push(url)
-      }
-    }
+  function handlePages(nextPage: any): void {
+    setPages(nextPage)
   }
 
   let url = `/service-schedule?company_id=${companySelected}`
@@ -149,8 +103,8 @@ export default function ServiceSchedulesList() {
     url += `&limit=${router.query.limit}`
   }
 
-  if (currentPage > 1) {
-    url += `&current_page=${currentPage}`
+  if (router.query.current_page) {
+    url += `&current_page=${router.query.current_page}`
   }
 
   if (router.query.search) {
@@ -261,10 +215,6 @@ export default function ServiceSchedulesList() {
     [],
   )
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 355a774 (Fix)
   const {
     data: rows,
     isSuccess,
@@ -279,7 +229,7 @@ export default function ServiceSchedulesList() {
       api
         .get(url)
         .then((response) => {
-          setTotalPages(response.data.total_pages)
+          console.log(response)
           const resp = response.data.data.map((data: any) => ({
             id: data?.id ?? 'Não informado',
             client: data?.client?.name ?? 'Não informado',
@@ -299,12 +249,6 @@ export default function ServiceSchedulesList() {
         }),
     { enabled: !!companySelected, refetchOnWindowFocus: false },
   )
-<<<<<<< HEAD
-=======
-  // !company_id// && router.reload()
->>>>>>> 580c85f (Fix Context)
-=======
->>>>>>> 355a774 (Fix)
 
   useEffect(() => {
     async function refetchUrl() {
@@ -379,49 +323,8 @@ export default function ServiceSchedulesList() {
                     router.push(`/service-schedules/create`)
                   }}
                 >
-<<<<<<< HEAD
-<<<<<<< HEAD
                   Adicionar novo
                 </ButtonAdd>
-=======
-                  <ButtonAdd
-                    size="large"
-                    variant="contained"
-                    sx={{ alignSelf: 'flex-end' }}
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={async () => {
-                      await router.push(`/checklist/create/${company_id}`)
-
-                      const newContext = JSON.parse(
-                        cookies[
-                          process.env
-                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
-                        ],
-                      )
-                      contexto = {
-                        ...newContext,
-                        empresaSelecionada: company_id,
-                      }
-                      setCookie(
-                        null,
-                        process.env
-                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
-                        JSON.stringify(contexto),
-                        {
-                          maxAge: 30 * 24 * 60 * 60,
-                          path: '/',
-                        },
-                      )
-                    }}
-                  >
-                    Adicionar novo
-                  </ButtonAdd>
-                </Grid>
->>>>>>> 580c85f (Fix Context)
-=======
-                  Adicionar novo
-                </ButtonAdd>
->>>>>>> 355a774 (Fix)
               </Grid>
             </Grid>
           </Paper>
