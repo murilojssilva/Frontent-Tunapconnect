@@ -604,14 +604,7 @@ export default function ModalInspectCar({
               })}
             </TabPanel>
           </Grid>
-          <Grid
-            item
-            marginTop={2}
-            xl={3}
-            md={15}
-            xs={12}
-            justifyContent="center"
-          >
+          <Grid item xs={3} justifyContent="center">
             <ContainerInformation direction="column">
               <Stack
                 direction="row"

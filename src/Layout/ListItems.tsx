@@ -11,9 +11,10 @@ import { useRouter } from 'next/router'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { ListItemButton } from './styles'
-import { parseCookies } from 'nookies'
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 type memuListProps = Array<{
   path: string
@@ -22,38 +23,45 @@ type memuListProps = Array<{
   title: string
 }>
 
+const memuList: memuListProps = [
+  {
+    path: '/company',
+    href: '/company',
+    component: <AccountBalanceIcon />,
+    title: 'Empresas',
+  },
+  {
+    path: '/service-schedule',
+    href: '/service-schedule',
+    component: <CalendarMonthIcon />,
+    title: 'Agendamento',
+  },
+  // {
+  //   path: '/checklist',
+  //   href: '/checklist',
+  //   component: <AccessTimeFilledOutlinedIcon />,
+  //   title: 'Checklist',
+  // },
+]
+
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
+  const { companySelected } = useContext(CompanyContext)
+  // console.log('aberto',opended)
 
-  let contexto: any = {}
-  const cookies = parseCookies()
-  //   JSON.parse(
-  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-  // ),
-
-  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
-    contexto = JSON.parse(
-      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
-    )
-  }
-
-  const memuList: memuListProps = [
-    {
-      path: '/company',
-      href: '/company',
-      component: <AccountBalanceIcon />,
-      title: 'Empresas',
-    },
-    {
-      path: '/service-schedule',
-      href: `/service-schedule?company_id=${contexto.companySelected}`,
-      component: <CalendarMonthIcon />,
-      title: 'Agendamento',
-    },
-  ]
-
-  console.log(contexto)
+  const menuListCompanyId = useMemo(
+    () =>
+      memuList.map((item) => {
+        return item.path === '/company'
+          ? item
+          : {
+              ...item,
+              href: `${item.href}`,
+            }
+      }),
+    [companySelected],
+  )
 
   useEffect(() => {
     setRouteActual(router.pathname)
@@ -61,27 +69,19 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
 
   return (
     <React.Fragment>
-      {memuList.map((menu: any) => {
+      {menuListCompanyId.map((menu, index) => {
         return (
-          <ListItemButton
-            key={menu.path}
-            onClick={
-              menu.path === '/service-schedule'
-                ? () => router.push(menu.href).then(() => router.reload())
-                : menu.path === '/checklist'
-                ? cookies
-                  ? () => router.push(menu.href)
-                  : () => router.push('/company')
-                : () => router.push(menu.href)
-            }
-            selected={routeActual.includes(menu.path)}
-            sx={{
-              ...(opended && { margin: '10px 20px' }),
-            }}
-          >
-            <ListItemIcon>{menu.component}</ListItemIcon>
-            <ListItemText primary={menu.title} style={{ color: 'white' }} />
-          </ListItemButton>
+          <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
+            <ListItemButton
+              selected={routeActual.includes(menu.path)}
+              sx={{
+                ...(opended && { margin: '10px 20px' }),
+              }}
+            >
+              <ListItemIcon>{menu.component}</ListItemIcon>
+              <ListItemText primary={menu.title} style={{ color: 'white' }} />
+            </ListItemButton>
+          </Link>
         )
       })}
     </React.Fragment>
