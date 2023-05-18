@@ -63,6 +63,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id
         session.user.accessToken = token.accessToken
         session.user.privilege = token.privilege
+        session.user.email = 'não informado'
+        session.user.image = 'não informado'
       }
       return session
     },
