@@ -1,18 +1,13 @@
 import * as React from 'react'
 import { useQuery } from 'react-query'
-
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-
 import Router from 'next/router'
-
 import { ApiCore } from '@/lib/api'
 import { Box, Skeleton, Typography, CircularProgress } from '@mui/material'
 import Title from '@/components/Title'
 import { ContainerItem } from './styles'
-
 import { useSession } from 'next-auth/react'
-
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatCNPJ } from '@/ultis/formatCNPJ'
 import Link from 'next/link'
@@ -26,8 +21,8 @@ interface companyProps {
 }
 export default function CompanyList() {
   const contexto = saveCookies()
-
-  contexto.empresaSelecionada && delete contexto.empresaSelecionada
+  
+  contexto?.empresaSelecionada && delete contexto?.empresaSelecionada
 
   saveCookies(contexto)
 
