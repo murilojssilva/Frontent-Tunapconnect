@@ -1,18 +1,20 @@
 import * as React from 'react'
+
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
 import { useContext } from 'react'
+
 import { ApiCore } from '@/lib/api'
 import { Skeleton, Typography } from '@mui/material'
 import Title from '@/components/Title'
 import { ContainerItem } from './styles'
-
-// import { useRouter } from 'next/router'
-
 import { useSession } from 'next-auth/react'
-import { useQuery } from 'react-query'
-import { CompanyContext } from '@/contexts/CompanyContext'
+import { formatCPF } from '@/ultis/formatCPF'
+import { formatCNPJ } from '@/ultis/formatCNPJ'
+import Link from 'next/link'
+import { saveCookies } from '@/contexts/SaveCookie'
+
 
 interface companyProps {
   id: string
@@ -28,6 +30,7 @@ export default function CompanyList() {
   const api = new ApiCore()
   // const router = useRouter()
   const { createCompany } = useContext(CompanyContext)
+
 
   function handleSelectCompany(newCompany: companyProps) {
     createCompany(newCompany)

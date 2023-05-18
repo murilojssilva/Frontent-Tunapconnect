@@ -55,7 +55,29 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 ]
 
 export default function ServiceSchedulesList() {
-  const [pages, setPages] = useState<{
+
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+  }
+
+  delete contexto.empresaSelecionada
+
+  const cookiesResult = parseCookies()
+
+  const router = useRouter()
+  const [currentPage, setCurrentPage] = React.useState<number>(1)
+
+  // const { dataGeral } = React.useContext(geralContext)
+
+  const [pages, setPages] = React.useState<{
     current: number
     next: boolean
     previous: boolean
@@ -215,40 +237,72 @@ export default function ServiceSchedulesList() {
     [],
   )
 
-  const {
-    data: rows,
-    isSuccess,
-    // isInitialLoading,
-    // isLoading,
-    // isFetched,
-    refetch,
-    isFetching,
-  } = useQuery<ServiceSchedulesListProps[] | []>(
-    ['service-scheduler-list', companySelected],
-    () =>
-      api
-        .get(url)
-        .then((response) => {
-          console.log(response)
-          const resp = response.data.data.map((data: any) => ({
-            id: data?.id ?? 'Não informado',
-            client: data?.client?.name ?? 'Não informado',
-            plate: data?.client_vehicle?.plate ?? 'Não informado',
-            chassis: data?.client_vehicle?.chasis ?? 'Não informado',
-            technical_consultant:
-              data?.technical_consultant?.name ?? 'Não informado',
-            typeEstimate: 'não definido',
-            totalDiscount: 0,
-            total: 0,
-          }))
-          return resp
-        })
-        .catch((err) => {
-          console.log(err)
-          return []
-        }),
-    { enabled: !!companySelected, refetchOnWindowFocus: false },
-  )
+  // !company_id// && router.reload()
+
+  let url = `/service-schedule?company_id=${company_id}`
+
+  if (limit) {
+    url += `&limit=${limit}`
+  }
+
+  if (current_page) {
+    url += `&current_page=${current_page}`
+  }
+
+  if (search) {
+    url += `&search=${search}`
+  }
+
+  async function fetchCompany() {
+    const response = await api
+      .get(url)
+      .then((response) => {
+        setTotalPages(response.data.total_pages)
+        const resp = response.data.data.map((data: any) => ({
+          id: data?.id ?? 'Não informado',
+          client: data?.client?.name ?? 'Não informado',
+          plate: data?.client_vehicle?.plate ?? 'Não informado',
+          chassis: data?.client_vehicle?.chasis ?? 'Não informado',
+          technical_consultant:
+            data?.technical_consultant?.name ?? 'Não informado',
+          typeEstimate: 'não definido',
+          totalDiscount: 0,
+          total: 0,
+        }))
+        return resp
+      })
+      .catch(() => [])
+
+    setRows(response)
+  }
+
+  async function onSubmitSearch(data: SearchFormProps) {
+    const newUrl = createNewUrl(data.search)
+
+    router.push(newUrl)
+
+    fetchCompany()
+  }
+
+  function createNewUrl(
+    search?: string | null,
+    current_page?: number | null,
+    limit?: string | null,
+  ) {
+    const newUrl = `/service-schedule?company_id=${company_id}${
+      search ? '&search=' + search : ''
+    }${current_page ? '&current_page=' + current_page : ''}${
+      limit ? '&limit=' + limit : ''
+    }`
+
+    return newUrl
+  }
+
+  React.useEffect(() => {
+    fetchCompany()
+    setValue('search', router.query.search as string)
+  }, [router, currentPage])
+
 
   useEffect(() => {
     async function refetchUrl() {
@@ -323,8 +377,40 @@ export default function ServiceSchedulesList() {
                     router.push(`/service-schedules/create`)
                   }}
                 >
-                  Adicionar novo
-                </ButtonAdd>
+
+                  <ButtonAdd
+                    size="large"
+                    variant="contained"
+                    sx={{ alignSelf: 'flex-end' }}
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={async () => {
+                      await router.push(`/checklist/create/${company_id}`)
+
+                      const newContext = JSON.parse(
+                        cookies[
+                          process.env
+                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
+                        ],
+                      )
+                      contexto = {
+                        ...newContext,
+                        empresaSelecionada: company_id,
+                      }
+                      setCookie(
+                        null,
+                        process.env
+                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+                        JSON.stringify(contexto),
+                        {
+                          maxAge: 30 * 24 * 60 * 60,
+                          path: '/',
+                        },
+                      )
+                    }}
+                  >
+                    Adicionar novo
+                  </ButtonAdd>
+                </Grid>
               </Grid>
             </Grid>
           </Paper>

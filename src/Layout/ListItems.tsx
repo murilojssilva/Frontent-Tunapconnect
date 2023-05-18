@@ -63,6 +63,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     [companySelected],
   )
 
+
   useEffect(() => {
     setRouteActual(router.pathname)
   }, [router])
@@ -71,17 +72,26 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     <React.Fragment>
       {menuListCompanyId.map((menu, index) => {
         return (
-          <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
-            <ListItemButton
-              selected={routeActual.includes(menu.path)}
-              sx={{
-                ...(opended && { margin: '10px 20px' }),
-              }}
-            >
-              <ListItemIcon>{menu.component}</ListItemIcon>
-              <ListItemText primary={menu.title} style={{ color: 'white' }} />
-            </ListItemButton>
-          </Link>
+      
+          <ListItemButton
+            key={menu.path}
+            onClick={
+              menu.path === '/service-schedule'
+                ? () => router.push(menu.href).then(() => router.reload())
+                : menu.path === '/checklist'
+                ? cookies
+                  ? () => router.push(menu.href)
+                  : () => router.push('/company')
+                : () => router.push(menu.href)
+            }
+            selected={routeActual.includes(menu.path)}
+            sx={{
+              ...(opended && { margin: '10px 20px' }),
+            }}
+          >
+            <ListItemIcon>{menu.component}</ListItemIcon>
+            <ListItemText primary={menu.title} style={{ color: 'white' }} />
+          </ListItemButton>
         )
       })}
     </React.Fragment>
