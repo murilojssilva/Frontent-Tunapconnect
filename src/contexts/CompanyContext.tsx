@@ -65,7 +65,7 @@ export function CompanyProvider({ children }: GeralProviderProps) {
         path: '/',
       },
     )
-    await router.push(`/service-schedule?company=${companySelected}`)
+    await router.push(`/service-schedule?company_id=${companySelected}`)
   }
 
   useEffect(() => {
