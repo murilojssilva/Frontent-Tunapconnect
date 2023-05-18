@@ -53,7 +53,8 @@ export function CompanyProvider({ children }: GeralProviderProps) {
     }
     // @ts-ignore
     setCompanyData(newCompany)
-    setCompanySelected(company.id)
+    console.log(newCompany)
+    setCompanySelected(newCompany.id)
     setCookie(
       null,
       process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
@@ -66,6 +67,7 @@ export function CompanyProvider({ children }: GeralProviderProps) {
       },
     )
     console.log(companySelected)
+    console.log(newCompany)
     await router.push(`/service-schedule?company_id=${companySelected}`)
   }
 
