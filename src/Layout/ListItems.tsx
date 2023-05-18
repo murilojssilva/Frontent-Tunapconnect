@@ -36,11 +36,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     contexto = JSON.parse(
       cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
     )
-    console.log('entrou')
   }
-
-  console.log(contexto)
-  console.log(contexto.empresaSelecionada)
 
   const memuList: memuListProps = [
     {
@@ -55,29 +51,8 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
       component: <CalendarMonthIcon />,
       title: 'Agendamento',
     },
-    // {
-    //   path: '/checklist',
-    //   href: '/checklist/create',
-    //   component: <AccessTimeFilledOutlinedIcon />,
-    //   title: 'Checklist',
-    // },
   ]
-  // console.log('aberto',opended)
-
-  /* const menuListCompanyId = () =>
-    memuList.map((item) => {
-      return item.path === '/company'
-        ? item
-        : {
-            ...item,
-            href:
-              item.path === '/checklist'
-                ? companyId
-                  ? `/${item.href}/${companyId}`
-                  : ''
-                : `/${item.href}?company=${companyId}`,
-          }
-    }) */
+  
 
   useEffect(() => {
     setRouteActual(router.pathname)
@@ -87,17 +62,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     <React.Fragment>
       {memuList.map((menu: any) => {
         return (
-          /* <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
-            <ListItemButton
-              selected={routeActual.includes(menu.path)}
-              sx={{
-                ...(opended && { margin: '10px 20px' }),
-              }}
-            >
-              <ListItemIcon>{menu.component}</ListItemIcon>
-              <ListItemText primary={menu.title} style={{ color: 'white' }} />
-            </ListItemButton>
-            </Link> */
+      
           <ListItemButton
             key={menu.path}
             onClick={

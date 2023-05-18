@@ -142,8 +142,6 @@ export function TableModal({
       setOpen(true)
       api
         .get('/checklist/list/?company_id=' + company?.id)
-        .then((response) => console.log(response.data))
-        .catch((error) => console.log(error))
     }
   }, [isOpen, company?.id])
 

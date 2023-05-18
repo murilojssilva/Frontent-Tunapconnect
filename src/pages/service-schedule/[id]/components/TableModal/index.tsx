@@ -138,7 +138,6 @@ export function TableModal({
         )
         .then((response) => {
           const { data } = response.data
-          console.log(data)
           return data.map((item: any) => {
             return {
               id: item?.id,

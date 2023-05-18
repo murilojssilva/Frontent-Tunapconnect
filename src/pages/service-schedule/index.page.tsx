@@ -64,15 +64,11 @@ export default function ServiceSchedulesList() {
     contexto = JSON.parse(
       cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
     )
-    console.log('entrou')
   }
 
   delete contexto.empresaSelecionada
 
-  console.log('context', contexto)
-
   const cookiesResult = parseCookies()
-  console.log(cookiesResult)
 
   const router = useRouter()
   const [currentPage, setCurrentPage] = React.useState<number>(1)
@@ -238,7 +234,7 @@ export default function ServiceSchedulesList() {
     [],
   )
 
-  !company_id && router.reload()
+  // !company_id// && router.reload()
 
   let url = `/service-schedule?company_id=${company_id}`
 
@@ -390,7 +386,6 @@ export default function ServiceSchedulesList() {
                             .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
                         ],
                       )
-                      console.log(newContext)
                       contexto = {
                         ...newContext,
                         empresaSelecionada: company_id,

@@ -187,83 +187,9 @@ export default function ServiceSchedulesEdit() {
     }
   }
 
-  // useEffect(() => {
-  //   if (!wasEdited) {
-  //     const { id } = router.query
-  //     api
-  //       .get(`/service-schedule/${id}`)
-  //       .then((response) => {
-  //         const {
-  //           client,
-  //           client_vehicle,
-  //           technical_consultant,
-  //           promised_date,
-  //         } = response.data.data
-  //         setClient({
-  //           id: client.id,
-  //           name: client.name ?? 'Não informado',
-  //           cpf: client.document ?? 'Não informado',
-  //           email: client.email ?? 'Não informado',
-  //           telefone: client.phone ?? 'Não informado',
-  //           address: client.address ?? 'Não informado',
-  //         })
-
-  //         setClientVehicle({
-  //           id: client_vehicle.id,
-  //           brand:
-  //             client_vehicle?.vehicle?.model?.brand?.name ?? 'Não informado',
-  //           chassis: client_vehicle?.chasis ?? 'Não informado',
-  //           vehicle: client_vehicle?.vehicle?.name ?? 'Não informado',
-  //           model:
-  //             `${client_vehicle?.vehicle?.model?.name} - ${client_vehicle.vehicle.model_year}` ??
-  //             'Não informado',
-  //           color: client_vehicle?.color ?? 'Não informado',
-  //           plate: client_vehicle?.plate ?? 'Não informado',
-  //         })
-  //         const promisedDate = dayjs(new Date(promised_date))
-  //         setVisitDate(promisedDate)
-
-  //         setTechnicalConsultant({
-  //           id: technical_consultant?.id ?? 'Não informado',
-  //           name: technical_consultant?.name ?? 'Não informado',
-  //         })
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //         setClient(null)
-  //         setClientVehicle(null)
-  //         setTechnicalConsultant(null)
-  //         setActionAlerts({
-  //           isOpen: true,
-  //           title: `${err.response?.data?.msg ?? 'Error inesperado'}!`,
-  //           type: 'error',
-  //           redirectTo: '/service-schedules/list',
-  //         })
-  //       })
-
-  //     if (companyId) {
-  //       api
-  //         .get(`/technical-consultant?company_id=${router.query?.companyId}`)
-  //         .then((resp) => {
-  //           setTechnicalConsultantsList(
-  //             resp.data.data.map((item: TechnicalConsultant) => ({
-  //               id: item.id,
-  //               name: item.name,
-  //             })),
-  //           )
-  //         })
-  //         .catch((err) => {
-  //           console.log(err)
-  //         })
-  //     }
-  //   }
-  // }, [router.query, companyId, wasEdited])
-
   async function createCheckListBase() {
     try {
       const modelChecklist = await api.get('/checklist_model/list')
-      console.log(modelChecklist)
-      console.log(router.query)
       const dataCreateChecklist = {
         company_id: router.query.company,
         brand_id: null,
@@ -289,7 +215,6 @@ export default function ServiceSchedulesEdit() {
         router.replace(`/checklist/create/${createdDefault?.data?.data?.id}`)
       }
     } catch (error) {
-      console.log(error)
     }
   }
 
@@ -600,7 +525,6 @@ export default function ServiceSchedulesEdit() {
               </ButtonLeft>
               <ButtonCenter
                 onClick={() => {
-                  console.log('print Checklists')
                   setOpenPrintInspectionModal(true)
                 }}
               >
