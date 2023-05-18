@@ -30,12 +30,120 @@ export function PrintInspection(props: {
   refPrint: any
 }) {
   const api = new ApiCore()
+  // export function PrintInspection(props) {
+
+  // const history = useNavigate();
+  /* const { id, type, checklistId } = useParams(); */
+  // const [data, setData] = useState(null)
+  // const [vehicleService, setVehicleService] = useState(null)
+  // const [stages, setStages] = useState([])
+  // const [evidences, setEvidences] = useState([])
+  // const [checklistData, setChecklistData] = useState({})
+
+  // const api = new ApiCore()
+  // const steps = {
+  //   '1': 'Frente',
+  //   '2': 'Lateral esquerda',
+  //   '3': 'Lateral direita',
+  //   '4': 'Traseira',
+  //   '5': 'Teto',
+  // }
+
+  // const getData = () => {
+  //   if (props?.id) {
+  //     let ajaxCall
+
+  //     switch (props?.type) {
+  //       case 'service-schedules':
+  //         ajaxCall = api.get('/vehicle-service/' + props?.checklistId)
+  //         break
+  //     }
+  //     ajaxCall.then(
+  //       (response) => {
+  //         console.log(response)
+  //         switch (props?.type) {
+  //           case 'service-schedules':
+  //             let data
+  //             const checklistData = {}
+  //             const {
+  //               brand,
+  //               client,
+  //               vehicle,
+  //               technical_consultant: technicalConsultant,
+  //               checklist_version: checklistVersion,
+  //               service_schedule: {
+  //                 client_vehicle: clientVehicle,
+  //                 ...serviceSchedule
+  //               },
+  //               ...vehicleService
+  //             } = response.data.data
+  //             data = {
+  //               brand,
+  //               client,
+  //               technicalConsultant,
+  //               vehicle,
+  //               serviceSchedule,
+  //               checklistVersion,
+  //               clientVehicle,
+  //             }
+
+  //             vehicleService.items.forEach((checklistItem) => {
+  //               if (checklistItem.code !== null) {
+  //                 checklistData[checklistItem.code] = {
+  //                   id: checklistItem.id,
+  //                   value: checklistItem.pivot.value,
+  //                   evidence: checklistItem.pivot.evidence,
+  //                   observations: checklistItem.pivot.observations,
+  //                   type: checklistItem.validation.type,
+  //                 }
+  //               }
+  //             })
+
+  //             const stages = vehicleService.stages.filter(
+  //               (stage) => stage.pivot.processed,
+  //             )
+  //             stages.forEach((stage, index) => {
+  //               stages[index].evidences = [].concat(
+  //                 ...stage.items.map((checklistItem) =>
+  //                   (checklistData[checklistItem.code]?.evidence || []).map(
+  //                     (evidence) => {
+  //                       return {
+  //                         evidence,
+  //                         name: checklistItem.name,
+  //                         observations:
+  //                           checklistData[checklistItem.code].observations,
+  //                       }
+  //                     },
+  //                   ),
+  //                 ),
+  //               )
+  //             })
+
+  //             setVehicleService(vehicleService)
+  //             setStages(stages)
+  //             setChecklistData(checklistData)
+  //             setData(data)
+  //             break
+  //           default:
+  //             setData(response.data.data)
+  //             break
+  //         }
+  //       },
+  //       (error) => {
+  //         setData(null)
+  //       },
+  //     )
+  //   } else {
+  //     setData(null)
+  //   }
+  // }
 
   useEffect(() => {
     if (props?.checklistId) {
       api
         .get('/checklist/list?company_id=1&service_schedule_id=7')
         .then((response) => {
+          console.log(response.data.data[0])
         })
     }
   }, [])

@@ -65,6 +65,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
   )
 =======
 
+<<<<<<< HEAD
   let contexto: any = {}
   const cookies = parseCookies()
   //   JSON.parse(
@@ -94,6 +95,8 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
   
 >>>>>>> 580c85f (Fix Context)
 
+=======
+>>>>>>> 355a774 (Fix)
   useEffect(() => {
     setRouteActual(router.pathname)
   }, [router])
@@ -103,6 +106,9 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
       {menuListCompanyId.map((menu, index) => {
         return (
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 355a774 (Fix)
           <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
               selected={routeActual.includes(menu.path)}
@@ -114,6 +120,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
               <ListItemText primary={menu.title} style={{ color: 'white' }} />
             </ListItemButton>
           </Link>
+<<<<<<< HEAD
 =======
       
           <ListItemButton
@@ -136,6 +143,8 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
             <ListItemText primary={menu.title} style={{ color: 'white' }} />
           </ListItemButton>
 >>>>>>> 580c85f (Fix Context)
+=======
+>>>>>>> 355a774 (Fix)
         )
       })}
     </React.Fragment>

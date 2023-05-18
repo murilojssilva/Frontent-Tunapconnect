@@ -242,6 +242,7 @@ export default function ModalInspectCar({
     }
 
     const idByTimestamp = dayjs(new Date()).valueOf()
+    console.log(positionsCar[tabsValue])
     setMarkups((prevState) => {
       return {
         ...prevState,
@@ -268,6 +269,8 @@ export default function ModalInspectCar({
     images: imageData[],
     position: positionsTypes,
   ) {
+    console.log(images)
+    console.log(position)
     setListImagesUpload((prevState) => {
       return {
         ...prevState,
@@ -283,9 +286,11 @@ export default function ModalInspectCar({
         [positionsCar[tabsValue]]: event.target.value,
       }
     })
+    console.log(event.target.value)
   }
 
   function handleSave() {
+    console.log(imgPositionCarUrl)
     const formattedData = [
       {
         name: 'Frente',

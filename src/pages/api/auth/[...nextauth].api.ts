@@ -35,9 +35,11 @@ export const authOptions: NextAuthOptions = {
             headers: { 'Content-Type': 'application/json;charset=UTF-8' },
           })
         } catch (error) {
+          console.log(error)
         }
 
         const user = await res?.json()
+        console.log(user)
         if (res?.ok && user) {
           return user
         }

@@ -246,6 +246,7 @@ export default function ServiceSchedulesEdit() {
             )
           })
           .catch((err) => {
+            console.log(err)
           })
       }
     }

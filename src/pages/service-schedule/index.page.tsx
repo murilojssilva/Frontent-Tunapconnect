@@ -56,6 +56,7 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 
 export default function ServiceSchedulesList() {
 <<<<<<< HEAD
+<<<<<<< HEAD
   const [pages, setPages] = useState<{
 =======
   let contexto: any = {}
@@ -81,6 +82,9 @@ export default function ServiceSchedulesList() {
 
   const [pages, setPages] = React.useState<{
 >>>>>>> 580c85f (Fix Context)
+=======
+  const [pages, setPages] = useState<{
+>>>>>>> 355a774 (Fix)
     current: number
     next: boolean
     previous: boolean
@@ -241,6 +245,9 @@ export default function ServiceSchedulesList() {
   )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 355a774 (Fix)
   const {
     data: rows,
     isSuccess,
@@ -275,9 +282,12 @@ export default function ServiceSchedulesList() {
         }),
     { enabled: !!companySelected, refetchOnWindowFocus: false },
   )
+<<<<<<< HEAD
 =======
   // !company_id// && router.reload()
 >>>>>>> 580c85f (Fix Context)
+=======
+>>>>>>> 355a774 (Fix)
 
   useEffect(() => {
     async function refetchUrl() {
@@ -353,6 +363,7 @@ export default function ServiceSchedulesList() {
                   }}
                 >
 <<<<<<< HEAD
+<<<<<<< HEAD
                   Adicionar novo
                 </ButtonAdd>
 =======
@@ -390,6 +401,10 @@ export default function ServiceSchedulesList() {
                   </ButtonAdd>
                 </Grid>
 >>>>>>> 580c85f (Fix Context)
+=======
+                  Adicionar novo
+                </ButtonAdd>
+>>>>>>> 355a774 (Fix)
               </Grid>
             </Grid>
           </Paper>

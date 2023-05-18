@@ -149,6 +149,8 @@ function TabContent({
     name: stageName,
   })
 
+  // console.log('touchedFields', touchedFields)
+
   function handleOpenModalInspectCar(value: boolean) {
     setOpenModalInspectCar(value)
   }
@@ -203,6 +205,7 @@ function TabContent({
       const indexImage = prevState[indexStageName][stageName].findIndex(
         (item) => item.id === index,
       )
+      console.log(indexImage)
       if (indexImage >= 0) {
         newListImage[indexStageName][stageName][indexStageName].images.push(
           image,
@@ -225,6 +228,7 @@ function TabContent({
     const findIndexListImage = listImage[indexStageName][stageName].findIndex(
       (item) => item.id === index,
     )
+    console.log(listImage[indexStageName][stageName][findIndexListImage])
     setListImage((prevState) => {
       const newListImage = [...prevState]
       newListImage[indexStageName][stageName][findIndexListImage].images =
@@ -276,9 +280,77 @@ function TabContent({
     }
 
     handleAddListCheckList(dataFormatted as StagesDataProps)
+    console.log('data formatted', dataFormatted)
+    console.log('data inspectionData', inspectionData)
   }
 
+  // useEffect(() => {
+  //   const sessionStorageData = sessionStorage.getItem(
+  //     `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //   )
+
+  //   const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+  //   if (data && Object.hasOwn(data, stageName)) {
+  //     console.log('entrou', data)
+  //     data[stageName]?.formState?.forEach((item: any, index: number) => {
+  //       update(index, { inputs: item.inputs, observation: item.observation })
+  //     })
+  //     if (data[stageName]?.imagesList?.length > 0) {
+  //       setListImage((prevState) => {
+  //         const indexStageName = prevState.findIndex((item) =>
+  //           Object.hasOwn(item, stageName),
+  //         )
+  //         const newListImage = [...prevState]
+  //         if (indexStageName > -1) {
+  //           newListImage[indexStageName][stageName] = data[stageName].imagesList
+  //           return newListImage
+  //         } else {
+  //           return [
+  //             ...newListImage,
+  //             {
+  //               [stageName]: data[stageName].imagesList,
+  //             },
+  //           ]
+  //         }
+  //       })
+  //     }
+  //   }
+  // }, [stageName])
+
+  // useEffect(() => {
+  //   if (isDirty) {
+  //     const sessionStorageData = sessionStorage.getItem(
+  //       `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //     )
+  //     const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+  //     console.log(stageValuesWatch)
+
+  //     if (data) {
+  //       sessionStorage.setItem(
+  //         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //         JSON.stringify({
+  //           ...data,
+  //           [stageName]: {
+  //             ...data[stageName],
+  //             formState: stageValuesWatch,
+  //           },
+  //         }),
+  //       )
+  //     } else {
+  //       sessionStorage.setItem(
+  //         `${process.env.NEXT_PUBLIC_APP_SESSION_STORAGE_NAME}-${checklistModel?.id}`,
+  //         JSON.stringify({
+  //           [stageName]: {
+  //             formState: stageValuesWatch,
+  //           },
+  //         }),
+  //       )
+  //     }
+  //   }
+  // }, [touchedFields])
+
   useEffect(() => {
+    console.log(getValues(stageName))
   }, [])
   useEffect(() => {
     const indexStageName = listImage.findIndex((item) =>
@@ -289,6 +361,8 @@ function TabContent({
     )
 
     const data = sessionStorageData ? JSON.parse(sessionStorageData) : null
+    console.log(stageData)
+    // console.log(data)
     if (indexStageName > -1) {
       if (data) {
         sessionStorage.setItem(

@@ -141,6 +141,25 @@ export function InspectionDropzone({
     [positionsCar],
   )
 
+  // async function postUploadFile(data: any) {
+  //   const session = await getSession()
+  //   const token = session?.user.token
+  //   console.log(token)
+  //   try {
+  //     const response = await axios({
+  //       method: 'post',
+  //       url: '/file-upload/image',
+  //       data,
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Authorization: 'Bearer ' + token,
+  //       },
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
   useEffect(() => {
     setList(listImagesUpload[positionsCar])
   }, [positionsCar])

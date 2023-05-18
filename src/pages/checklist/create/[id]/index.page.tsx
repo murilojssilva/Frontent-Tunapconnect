@@ -60,16 +60,20 @@ export default function ChecklistCreateById() {
       return api
         .update(`/checklist/${router?.query?.id}`, newDataChecklist)
         .then((resp) => {
+          console.log(resp.data.data)
           return resp.data.data[0]
         })
     },
 
     {
       onSuccess: (data) => {
+        // queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
+        // queryClient.setQueryData(['checklist-createByID'], data)
         queryClient.invalidateQueries({ queryKey: ['checklist-createByID'] })
         return data
       },
       onError: (err: any) => {
+        console.log(err)
       },
     },
   )
@@ -82,6 +86,8 @@ export default function ChecklistCreateById() {
         .then((response) => {
           return response.data.data
         }),
+    // refetchOnMount: 'always',
+    // enabled: !!router?.query?.id,
     {
       refetchOnWindowFocus: false,
     },
@@ -103,11 +109,14 @@ export default function ChecklistCreateById() {
         return item.name === stageData.name ? stageData : item
       }),
     }
+
+    console.log(dataForPost)
     // @ts-ignore
     updateChecklistmutations.mutate(dataForPost)
   }
 
   const handleChange = async (event: SyntheticEvent, newValue: number) => {
+    console.log(newValue)
     // if (data?.stages[value].status !== 'finalizado') setValue(newValue)
     setValue(newValue)
   }
@@ -154,6 +163,7 @@ export default function ChecklistCreateById() {
                   >
                     {data?.stages?.length > 0 &&
                       data.stages.map((stage, index) => {
+                        console.log(stage)
                         // const isDisabled = stage.status === 'finalizado'
                         return (
                           <TabItem
