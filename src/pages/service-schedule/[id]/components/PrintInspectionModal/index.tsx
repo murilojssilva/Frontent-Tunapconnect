@@ -12,7 +12,8 @@ import { PrintInspection } from '../PrintInspection'
 import ReactToPrint from 'react-to-print'
 import PrintIcon from '@mui/icons-material/Print'
 import { Button } from '@mui/material'
-import { AuthContext } from '@/contexts/AuthContext'
+
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 interface PrintInspectionModalProps {
   isOpen: boolean
@@ -27,7 +28,7 @@ export function PrintInspectionModal({
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { companyId } = useContext(AuthContext)
+  const { companySelected } = useContext(CompanyContext)
 
   const printInspectionRef = useRef(null)
 
@@ -40,7 +41,7 @@ export function PrintInspectionModal({
     if (isOpen) {
       setOpen(true)
     }
-  }, [isOpen, companyId])
+  }, [isOpen, companySelected])
 
   return (
     <>
@@ -63,7 +64,7 @@ export function PrintInspectionModal({
               refPrint={printInspectionRef}
               checklistId={1}
               type="service-schedule"
-              company={companyId}
+              company={companySelected}
               id={1}
             />
           </BoxContainer>

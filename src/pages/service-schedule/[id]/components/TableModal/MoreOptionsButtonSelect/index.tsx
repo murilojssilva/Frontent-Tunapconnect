@@ -23,7 +23,6 @@ export function MoreOptionsButtonSelect({
   }
   const router = useRouter()
 
-
   const { companyId, id } = router.query
 
   const handleClose = () => {

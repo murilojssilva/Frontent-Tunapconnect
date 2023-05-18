@@ -23,7 +23,7 @@ import { MoreOptionsButtonSelect } from './MoreOptionsButtonSelect'
 import { ApiCore } from '@/lib/api'
 import { useQuery } from 'react-query'
 import { formatDateTime } from '@/ultis/formatDate'
-import { AuthContext } from '@/contexts/AuthContext'
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 interface TableAppProps {
   // columns: GridColDef[]
@@ -64,7 +64,7 @@ export function TableModal({
   // const theme = useTheme()
   // const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { companyId } = useContext(AuthContext)
+  const { companySelected } = useContext(CompanyContext)
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -134,7 +134,7 @@ export function TableModal({
     () => {
       return api
         .get(
-          `/checklist/list?company_id=${companyId}&service_schedule_id=${serviceScheduleId}`,
+          `/checklist/list?company_id=${companySelected}&service_schedule_id=${serviceScheduleId}`,
         )
         .then((response) => {
           const { data } = response.data
@@ -149,7 +149,7 @@ export function TableModal({
           })
         })
     },
-    { enabled: isOpen && !!companyId },
+    { enabled: isOpen && !!companySelected },
   )
 
   return (

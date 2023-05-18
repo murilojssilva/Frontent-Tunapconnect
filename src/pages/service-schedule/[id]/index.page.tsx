@@ -57,7 +57,8 @@ import { TableModal } from './components/TableModal'
 import { useQuery } from 'react-query'
 import { formatCPF } from '@/ultis/formatCPF'
 import { formatPlate } from '@/ultis/formatPlate'
-import { AuthContext } from '@/contexts/AuthContext'
+
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 const api = new ApiCore()
 
@@ -114,7 +115,7 @@ export default function ServiceSchedulesEdit() {
 
   const router = useRouter()
 
-  const { companyId } = useContext(AuthContext)
+  const { companySelected } = useContext(CompanyContext)
 
   // const handleDelete = (id: number) => {
   //   setRows(rows.filter((row) => row.id !== id))
@@ -162,7 +163,7 @@ export default function ServiceSchedulesEdit() {
       technical_consultant_id: technicalConsultant?.id,
       client_id: client?.id,
       client_vehicle_id: clientVehicle?.id,
-      company_id: companyId,
+      company_id: companySelected as string,
       chasis: clientVehicle?.chassis,
       plate: clientVehicle?.plate,
       claims_service: [],
@@ -191,7 +192,7 @@ export default function ServiceSchedulesEdit() {
     try {
       const modelChecklist = await api.get('/checklist_model/list')
       const dataCreateChecklist = {
-        company_id: router.query.company,
+        company_id: companySelected,
         brand_id: null,
         vehicle_id: null, //  vehicle id
         model_id: null,
@@ -231,11 +232,11 @@ export default function ServiceSchedulesEdit() {
     ],
     async () => {
       const resp = await api.get(
-        `/technical-consultant?company_id=${companyId}`,
+        `/technical-consultant?company_id=${companySelected}`,
       )
       return resp.data.data
     },
-    { enabled: !!companyId && wasEdited },
+    { enabled: !!companySelected && wasEdited },
   )
 
   const { data: dataServiceSchedule, status: dataServiceScheduleStatus } =
@@ -246,7 +247,7 @@ export default function ServiceSchedulesEdit() {
         const resp = await api.get(`/service-schedule/${id}`)
         return resp.data.data
       },
-      enabled: !!router?.query?.id && !!companyId && !wasEdited,
+      enabled: !!router?.query?.id && !!companySelected && !wasEdited,
     })
 
   useEffect(() => {
