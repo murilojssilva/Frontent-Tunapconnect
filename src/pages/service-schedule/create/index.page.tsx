@@ -55,7 +55,8 @@ import { listBreadcrumb } from '@/components/HeaderBreadcrumb/types'
 import { TableModal } from './components/TableModal'
 import { parseCookies } from 'nookies'
 import { formatCPF } from '@/ultis/formatCPF'
-import { AuthContext } from '@/contexts/AuthContext'
+
+import { CompanyContext } from '@/contexts/CompanyContext'
 
 const api = new ApiCore()
 
@@ -110,7 +111,7 @@ export default function ServiceSchedulesEdit() {
 
   const router = useRouter()
 
-  const { company } = useContext(AuthContext)
+  const { companySelected } = useContext(CompanyContext)
 
   // const handleDelete = (id: number) => {
   //   setRows(rows.filter((row) => row.id !== id))
@@ -155,7 +156,7 @@ export default function ServiceSchedulesEdit() {
       technical_consultant_id: technicalConsultant?.id,
       client_id: client?.id,
       client_vehicle_id: clientVehicle?.id,
-      company_id: company?.id,
+      company_id: companySelected as string,
       chasis: clientVehicle?.chassis,
       plate: clientVehicle?.plate,
       claims_service: [],
@@ -233,9 +234,9 @@ export default function ServiceSchedulesEdit() {
           })
         })
 
-      if (company?.id) {
+      if (companySelected) {
         api
-          .get(`/technical-consultant?company_id=${company?.id}`)
+          .get(`/technical-consultant?company_id=${companySelected}`)
           .then((resp) => {
             setTechnicalConsultantsList(
               resp.data.data.map((item: TechnicalConsultant) => ({
@@ -249,7 +250,7 @@ export default function ServiceSchedulesEdit() {
           })
       }
     }
-  }, [router.query, company?.id, wasEdited])
+  }, [router.query, companySelected, wasEdited])
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
