@@ -65,6 +65,7 @@ export function CompanyProvider({ children }: GeralProviderProps) {
         path: '/',
       },
     )
+    console.log(companySelected)
     await router.push(`/service-schedule?company_id=${companySelected}`)
   }
 
