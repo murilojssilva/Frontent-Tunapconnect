@@ -55,7 +55,32 @@ const HeaderBreadcrumbData: listBreadcrumb[] = [
 ]
 
 export default function ServiceSchedulesList() {
+<<<<<<< HEAD
   const [pages, setPages] = useState<{
+=======
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+  }
+
+  delete contexto.empresaSelecionada
+
+  const cookiesResult = parseCookies()
+
+  const router = useRouter()
+  const [currentPage, setCurrentPage] = React.useState<number>(1)
+
+  // const { dataGeral } = React.useContext(geralContext)
+
+  const [pages, setPages] = React.useState<{
+>>>>>>> 580c85f (Fix Context)
     current: number
     next: boolean
     previous: boolean
@@ -215,6 +240,7 @@ export default function ServiceSchedulesList() {
     [],
   )
 
+<<<<<<< HEAD
   const {
     data: rows,
     isSuccess,
@@ -249,6 +275,9 @@ export default function ServiceSchedulesList() {
         }),
     { enabled: !!companySelected, refetchOnWindowFocus: false },
   )
+=======
+  // !company_id// && router.reload()
+>>>>>>> 580c85f (Fix Context)
 
   useEffect(() => {
     async function refetchUrl() {
@@ -323,8 +352,44 @@ export default function ServiceSchedulesList() {
                     router.push(`/service-schedules/create`)
                   }}
                 >
+<<<<<<< HEAD
                   Adicionar novo
                 </ButtonAdd>
+=======
+                  <ButtonAdd
+                    size="large"
+                    variant="contained"
+                    sx={{ alignSelf: 'flex-end' }}
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={async () => {
+                      await router.push(`/checklist/create/${company_id}`)
+
+                      const newContext = JSON.parse(
+                        cookies[
+                          process.env
+                            .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string
+                        ],
+                      )
+                      contexto = {
+                        ...newContext,
+                        empresaSelecionada: company_id,
+                      }
+                      setCookie(
+                        null,
+                        process.env
+                          .NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
+                        JSON.stringify(contexto),
+                        {
+                          maxAge: 30 * 24 * 60 * 60,
+                          path: '/',
+                        },
+                      )
+                    }}
+                  >
+                    Adicionar novo
+                  </ButtonAdd>
+                </Grid>
+>>>>>>> 580c85f (Fix Context)
               </Grid>
             </Grid>
           </Paper>

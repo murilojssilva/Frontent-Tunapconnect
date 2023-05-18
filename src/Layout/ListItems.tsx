@@ -47,6 +47,7 @@ const memuList: memuListProps = [
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
+<<<<<<< HEAD
   const { companySelected } = useContext(CompanyContext)
   // console.log('aberto',opended)
 
@@ -62,6 +63,36 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
       }),
     [companySelected],
   )
+=======
+
+  let contexto: any = {}
+  const cookies = parseCookies()
+  //   JSON.parse(
+  //   cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+  // ),
+
+  if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
+    contexto = JSON.parse(
+      cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+    )
+  }
+
+  const memuList: memuListProps = [
+    {
+      path: '/company',
+      href: '/company',
+      component: <AccountBalanceIcon />,
+      title: 'Empresas',
+    },
+    {
+      path: '/service-schedule',
+      href: `/service-schedule?company_id=${contexto.empresaSelecionada}`,
+      component: <CalendarMonthIcon />,
+      title: 'Agendamento',
+    },
+  ]
+  
+>>>>>>> 580c85f (Fix Context)
 
   useEffect(() => {
     setRouteActual(router.pathname)
@@ -71,6 +102,7 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     <React.Fragment>
       {menuListCompanyId.map((menu, index) => {
         return (
+<<<<<<< HEAD
           <Link href={menu.href} key={index} style={{ textDecoration: 'none' }}>
             <ListItemButton
               selected={routeActual.includes(menu.path)}
@@ -82,6 +114,28 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
               <ListItemText primary={menu.title} style={{ color: 'white' }} />
             </ListItemButton>
           </Link>
+=======
+      
+          <ListItemButton
+            key={menu.path}
+            onClick={
+              menu.path === '/service-schedule'
+                ? () => router.push(menu.href).then(() => router.reload())
+                : menu.path === '/checklist'
+                ? cookies
+                  ? () => router.push(menu.href)
+                  : () => router.push('/company')
+                : () => router.push(menu.href)
+            }
+            selected={routeActual.includes(menu.path)}
+            sx={{
+              ...(opended && { margin: '10px 20px' }),
+            }}
+          >
+            <ListItemIcon>{menu.component}</ListItemIcon>
+            <ListItemText primary={menu.title} style={{ color: 'white' }} />
+          </ListItemButton>
+>>>>>>> 580c85f (Fix Context)
         )
       })}
     </React.Fragment>

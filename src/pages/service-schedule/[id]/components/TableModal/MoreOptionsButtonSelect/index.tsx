@@ -23,9 +23,11 @@ export function MoreOptionsButtonSelect({
   }
   const router = useRouter()
 
-  const { companyId, id } = router.query
+<<<<<<< HEAD
+=======
 
-  console.log({ companyId, id })
+>>>>>>> 580c85f (Fix Context)
+  const { companyId, id } = router.query
 
   const handleClose = () => {
     setAnchorEl(null)
