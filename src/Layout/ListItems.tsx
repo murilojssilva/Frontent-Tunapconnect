@@ -47,11 +47,13 @@ export const MainListItems = ({ opended }: { opended: boolean }) => {
     },
     {
       path: '/service-schedule',
-      href: `/service-schedule?company_id=${contexto.empresaSelecionada}`,
+      href: `/service-schedule?company_id=${contexto.companySelected}`,
       component: <CalendarMonthIcon />,
       title: 'Agendamento',
     },
   ]
+
+  console.log(contexto)
 
   useEffect(() => {
     setRouteActual(router.pathname)
