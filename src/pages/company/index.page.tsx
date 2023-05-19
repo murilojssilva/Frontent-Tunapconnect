@@ -95,5 +95,6 @@ export default function CompanyList() {
     </>
   )
 }
+console.log('================================')
 
 CompanyList.auth = true
