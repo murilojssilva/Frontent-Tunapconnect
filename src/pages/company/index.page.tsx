@@ -3,84 +3,38 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 
 import { useContext } from 'react'
-import { ApiCore } from '@/lib/api'
 import { Skeleton, Typography } from '@mui/material'
 import Title from '@/components/Title'
 import { ContainerItem } from './styles'
 
-// import { useRouter } from 'next/router'
-
-import { useSession } from 'next-auth/react'
+import { getSession } from 'next-auth/react'
 import { useQuery } from 'react-query'
 import { CompanyContext } from '@/contexts/CompanyContext'
 
 interface companyProps {
-  id: string
+  id: number
   name: string
-  cnpj: string | null
-  cpf: string | null
+  cnpj: string
+  cpf: string
+  active?: boolean
 }
 export default function CompanyList() {
-  // eslint-disable-next-line no-unused-vars
-  const { data: session } = useSession()
-
-  // eslint-disable-next-line new-cap
-  const api = new ApiCore()
-  // const router = useRouter()
   const { handleCompanySelected } = useContext(CompanyContext)
 
   function handleSelectCompany(newCompany: companyProps) {
     handleCompanySelected(newCompany)
   }
 
-  // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
-  //   companyProps[] | null
-  // >(['company-page-list-company'],
-  //   queryFn: async () => {
-  //     let resp
-  //     console.log('entrou')
-  //     try {
-  //       resp = await api.get(`/user/companies`)
-  //       console.log(resp.data.data)
-
-  //       return resp.data.data
-  //     } catch (error) {
-  //       console.log(error)
-  //       return error
-  //     }
-  //   },
-  //   // initialData: [],
-  // refetchOnWindowFocus: false,
-  // retry: false,
-  // })
-  const { data, isSuccess, isLoading } = useQuery<companyProps[] | null>(
+  const { data, isSuccess, isLoading } = useQuery<companyProps[] | []>(
     ['company-page-list-company'],
-    () =>
-      api.get(`/user/companies`).then((response) => {
-        return response.data.data
-      }),
+    () => getSession().then((resp) => resp?.user.companies as companyProps[]),
     {
       refetchOnWindowFocus: false,
       retry: false,
     },
   )
 
-  // useEffect(() => {
-  //   api
-  //     .get(`/user/companies`)
-  //     .then((response) => {
-  //       console.log(response.data.data)
-
-  //       return response.data.data
-  //     })
-  //     .catch((error) => console.error(error))
-  // }, [])
-
-  // console.log(data)
-  // console.log(isSuccess)
-  // console.log(isLoading)
-
-  // if (error) return <p>erro</p>
+  console.log(data)
 
   return (
     <>
@@ -141,20 +95,6 @@ export default function CompanyList() {
     </>
   )
 }
+console.log('================================')
 
 CompanyList.auth = true
-// function useQuery<T>(arg0: {
-//   queryKey: string[]
-//   queryFn: () => Promise<any>
-//   // initialData: [],
-//   refetchOnWindowFocus: boolean
-//   retry: boolean
-// }): {
-//   data: any
-//   isSuccess: any
-//   isLoading: any
-//   isFetching: any
-//   isFetched: any
-// } {
-//   throw new Error('Function not implemented.')
-// }
