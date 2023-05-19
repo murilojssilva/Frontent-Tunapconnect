@@ -15,6 +15,7 @@ import {
   Grid,
   Stack,
   Tab,
+  useMediaQuery,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import {
@@ -414,10 +415,13 @@ export default function ModalInspectCar({
     }
   }, [])
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const fullX = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
     <Dialog
       open={isOpen}
-      // fullScreen={true}
+      fullScreen={fullScreen}
       onClose={handleClose}
       fullWidth={true}
       maxWidth="md"
@@ -428,8 +432,10 @@ export default function ModalInspectCar({
         sx={{
           paddingX: 0,
           paddingTop: 0,
-          height: 440,
-          overflowY: 'hidden',
+          justifyContent: 'center',
+          width: '100%',
+          height: fullX ? '100%' : 440,
+          overflowY: 'auto',
         }}
       >
         <AppBar position="static">
@@ -441,228 +447,827 @@ export default function ModalInspectCar({
             variant="fullWidth"
             aria-label="full width tabs"
           >
-            <Tab label="Frente" {...a11yProps(0)} />
+            <Tab
+              label="Frente"
+              {...a11yProps(0)}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 5,
+                fontSize: { xl: 16, lg: 14, md: 12, sm: 10, xs: 8 },
+              }}
+            />
             <Tab
               label="Lateral esquerdo"
-              sx={{ whiteSpace: 'nowrap', px: 5 }}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 5,
+                fontSize: { xl: 16, lg: 14, md: 12, sm: 10, xs: 8 },
+              }}
               {...a11yProps(1)}
             />
             <Tab
               label="Lateral direita"
-              sx={{ whiteSpace: 'nowrap', px: 4 }}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 5,
+                fontSize: { xl: 16, lg: 14, md: 12, sm: 10, xs: 8 },
+              }}
               {...a11yProps(2)}
             />
-            <Tab label="Traseira" {...a11yProps(3)} />
-            <Tab label="Teto" {...a11yProps(4)} />
+            <Tab
+              label="Traseira"
+              {...a11yProps(3)}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 5,
+                fontSize: { xl: 16, lg: 14, md: 12, sm: 10, xs: 8 },
+              }}
+            />
+            <Tab
+              label="Teto"
+              {...a11yProps(4)}
+              sx={{
+                whiteSpace: 'nowrap',
+                px: 5,
+                fontSize: { xl: 16, lg: 14, md: 12, sm: 10, xs: 8 },
+              }}
+            />
           </TabsContainer>
         </AppBar>
-        <Grid container sx={{ padding: 2 }}>
+        <Grid
+          container
+          sx={{
+            padding: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Grid
-            item
-            xs={2}
-            width="100%"
-            display="flex"
-            alignItems="center"
+            display={{
+              xl: 'flex',
+              lg: 'flex',
+              md: 'none',
+              sm: 'none',
+              xs: 'none',
+            }}
             justifyContent="center"
           >
-            <Stack gap={2}>
-              {Object.keys(markupTagTypes).map((item) => (
-                <LabelButtonMarkupType key={item}>
-                  <ButtonMarkupType
-                    selectedActual={markupValue === item}
-                    onClick={() => {
-                      handleChangeMarkupValue(item as markupTypesEnum)
-                    }}
-                  >
-                    {markupTagTypes[item]}
-                  </ButtonMarkupType>
-                  <span>{item}</span>
-                </LabelButtonMarkupType>
-              ))}
-            </Stack>
-          </Grid>
-          <Grid item xs={7}>
-            <TabPanel value={tabsValue} index={0} dir={theme.direction}>
-              <ClickableArea
-                onClick={addMarkup}
-                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.frente}`}
-              />
-              {markups.frente.map((m) => {
-                return (
-                  <ButtonMarkup
-                    key={m.id}
-                    sx={{
-                      position: 'absolute',
-                      top: m?.positions?.top,
-                      left: m?.positions?.left,
-                    }}
-                    onClick={() => removeMarkup(m.id)}
-                  >
-                    <span>{markupTagTypes[m.type]}</span>
-                    <DeleteForeverRoundedIcon
-                      sx={{ zIndex: 10, position: 'fixed' }}
-                    />
-                  </ButtonMarkup>
-                )
-              })}
-              {/* </ClickableSVG> */}
-            </TabPanel>
-            <TabPanel value={tabsValue} index={1} dir={theme.direction}>
-              <ClickableArea
-                onClick={addMarkup}
-                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralEsquerdo}`}
-              />
-              {markups.lateralEsquerdo.map((m) => {
-                return (
-                  <ButtonMarkup
-                    key={m.id}
-                    sx={{
-                      position: 'absolute',
-                      top: m?.positions?.top,
-                      left: m?.positions?.left,
-                    }}
-                    onClick={() => removeMarkup(m.id)}
-                  >
-                    <span>{markupTagTypes[m.type]}</span>
-                    <DeleteForeverRoundedIcon
-                      sx={{ zIndex: 10, position: 'fixed' }}
-                    />
-                  </ButtonMarkup>
-                )
-              })}
-            </TabPanel>
-            <TabPanel value={tabsValue} index={2} dir={theme.direction}>
-              <ClickableArea
-                onClick={addMarkup}
-                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralDireito}`}
-              />
-              {markups.lateralDireito.map((m) => {
-                return (
-                  <ButtonMarkup
-                    key={m.id}
-                    sx={{
-                      position: 'absolute',
-                      top: m?.positions?.top,
-                      left: m?.positions?.left,
-                    }}
-                    onClick={() => removeMarkup(m.id)}
-                  >
-                    <span>{markupTagTypes[m.type]}</span>
-                    <DeleteForeverRoundedIcon
-                      sx={{ zIndex: 10, position: 'fixed' }}
-                    />
-                  </ButtonMarkup>
-                )
-              })}
-            </TabPanel>
-            <TabPanel value={tabsValue} index={3} dir={theme.direction}>
-              <ClickableArea
-                onClick={addMarkup}
-                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.traseira}`}
-              />
-              {markups.traseira.map((m) => {
-                return (
-                  <ButtonMarkup
-                    key={m.id}
-                    sx={{
-                      position: 'absolute',
-                      top: m?.positions?.top,
-                      left: m?.positions?.left,
-                    }}
-                    onClick={() => removeMarkup(m.id)}
-                  >
-                    <span>{markupTagTypes[m.type]}</span>
-                    <DeleteForeverRoundedIcon
-                      sx={{ zIndex: 10, position: 'fixed' }}
-                    />
-                  </ButtonMarkup>
-                )
-              })}
-            </TabPanel>
-            <TabPanel value={tabsValue} index={4} dir={theme.direction}>
-              <ClickableArea
-                onClick={addMarkup}
-                urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.teto}`}
-              />
-              {markups.teto.map((m) => {
-                return (
-                  <ButtonMarkup
-                    key={m.id}
-                    sx={{
-                      position: 'absolute',
-                      top: m?.positions?.top,
-                      left: m?.positions?.left,
-                    }}
-                    onClick={() => removeMarkup(m.id)}
-                  >
-                    <span>{markupTagTypes[m.type]}</span>
-                    <DeleteForeverRoundedIcon
-                      sx={{ zIndex: 10, position: 'fixed' }}
-                    />
-                  </ButtonMarkup>
-                )
-              })}
-            </TabPanel>
-          </Grid>
-          <Grid item xs={3} justifyContent="center">
-            <ContainerInformation direction="column">
+            <Grid
+              item
+              md={2}
+              width="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
               <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                padding={0.7}
+                display="flex"
+                flexDirection={{
+                  xs: 'row',
+                  md: 'column',
+                }}
+                gap={2}
               >
-                <Title>
-                  {/* <IconUpload /> */}
-                  imagem
-                </Title>
-                {/* <IconClose /> */}
+                {Object.keys(markupTagTypes).map((item) => (
+                  <LabelButtonMarkupType key={item}>
+                    <ButtonMarkupType
+                      selectedActual={markupValue === item}
+                      onClick={() => {
+                        handleChangeMarkupValue(item as markupTypesEnum)
+                      }}
+                    >
+                      {markupTagTypes[item]}
+                    </ButtonMarkupType>
+                    <span>{item}</span>
+                  </LabelButtonMarkupType>
+                ))}
               </Stack>
-              <Divider />
-              <Box sx={{ padding: 1 }}>
-                <InspectionDropzone
-                  handleAddImageUrlList={handleAddImageUrlList}
-                  listImagesUpload={listImagesUpload}
-                  positionsCar={positionsCar[tabsValue]}
+            </Grid>
+            <Grid
+              item
+              width="100%"
+              display={{
+                xl: 'flex',
+                lg: 'block',
+                md: 'block',
+                sm: 'block',
+                xs: 'block',
+              }}
+              justifyContent="center"
+            >
+              <TabPanel value={tabsValue} index={0} dir={theme.direction}>
+                <ClickableArea
+                  onClick={addMarkup}
+                  urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.frente}`}
                 />
-              </Box>
-              <Divider />
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                padding={0.7}
-              >
-                <Title>observações</Title>
-                {/* <IconClose /> */}
+                {markups.frente.map((m) => {
+                  return (
+                    <ButtonMarkup
+                      key={m.id}
+                      sx={{
+                        position: 'absolute',
+                        top: m?.positions?.top,
+                        left: m?.positions?.left,
+                      }}
+                      onClick={() => removeMarkup(m.id)}
+                    >
+                      <span>{markupTagTypes[m.type]}</span>
+                      <DeleteForeverRoundedIcon
+                        sx={{ zIndex: 10, position: 'fixed' }}
+                      />
+                    </ButtonMarkup>
+                  )
+                })}
+                {/* </ClickableSVG> */}
+              </TabPanel>
+              <TabPanel value={tabsValue} index={1} dir={theme.direction}>
+                <ClickableArea
+                  onClick={addMarkup}
+                  urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralEsquerdo}`}
+                />
+                {markups.lateralEsquerdo.map((m) => {
+                  return (
+                    <ButtonMarkup
+                      key={m.id}
+                      sx={{
+                        position: 'absolute',
+                        top: m?.positions?.top,
+                        left: m?.positions?.left,
+                      }}
+                      onClick={() => removeMarkup(m.id)}
+                    >
+                      <span>{markupTagTypes[m.type]}</span>
+                      <DeleteForeverRoundedIcon
+                        sx={{ zIndex: 10, position: 'fixed' }}
+                      />
+                    </ButtonMarkup>
+                  )
+                })}
+              </TabPanel>
+              <TabPanel value={tabsValue} index={2} dir={theme.direction}>
+                <ClickableArea
+                  onClick={addMarkup}
+                  urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralDireito}`}
+                />
+                {markups.lateralDireito.map((m) => {
+                  return (
+                    <ButtonMarkup
+                      key={m.id}
+                      sx={{
+                        position: 'absolute',
+                        top: m?.positions?.top,
+                        left: m?.positions?.left,
+                      }}
+                      onClick={() => removeMarkup(m.id)}
+                    >
+                      <span>{markupTagTypes[m.type]}</span>
+                      <DeleteForeverRoundedIcon
+                        sx={{ zIndex: 10, position: 'fixed' }}
+                      />
+                    </ButtonMarkup>
+                  )
+                })}
+              </TabPanel>
+              <TabPanel value={tabsValue} index={3} dir={theme.direction}>
+                <ClickableArea
+                  onClick={addMarkup}
+                  urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.traseira}`}
+                />
+                {markups.traseira.map((m) => {
+                  return (
+                    <ButtonMarkup
+                      key={m.id}
+                      sx={{
+                        position: 'absolute',
+                        top: m?.positions?.top,
+                        left: m?.positions?.left,
+                      }}
+                      onClick={() => removeMarkup(m.id)}
+                    >
+                      <span>{markupTagTypes[m.type]}</span>
+                      <DeleteForeverRoundedIcon
+                        sx={{ zIndex: 10, position: 'fixed' }}
+                      />
+                    </ButtonMarkup>
+                  )
+                })}
+              </TabPanel>
+              <TabPanel value={tabsValue} index={4} dir={theme.direction}>
+                <ClickableArea
+                  onClick={addMarkup}
+                  urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.teto}`}
+                />
+                {markups.teto.map((m) => {
+                  return (
+                    <ButtonMarkup
+                      key={m.id}
+                      sx={{
+                        position: 'absolute',
+                        top: m?.positions?.top,
+                        left: m?.positions?.left,
+                      }}
+                      onClick={() => removeMarkup(m.id)}
+                    >
+                      <span>{markupTagTypes[m.type]}</span>
+                      <DeleteForeverRoundedIcon
+                        sx={{ zIndex: 10, position: 'fixed' }}
+                      />
+                    </ButtonMarkup>
+                  )
+                })}
+              </TabPanel>
+            </Grid>
+            <Grid
+              item
+              marginTop={{ xl: 0, lg: 0, md: 2, sm: 2, xs: 2 }}
+              xs={7.7}
+              lg={3}
+              justifyContent="center"
+            >
+              <ContainerInformation width="100%" direction="column">
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  padding={0.7}
+                >
+                  <Title>
+                    {/* <IconUpload /> */}
+                    imagem
+                  </Title>
+                  {/* <IconClose /> */}
+                </Stack>
+                <Divider />
+                <Box sx={{ padding: 1 }}>
+                  <InspectionDropzone
+                    handleAddImageUrlList={handleAddImageUrlList}
+                    listImagesUpload={listImagesUpload}
+                    positionsCar={positionsCar[tabsValue]}
+                  />
+                </Box>
+                <Divider />
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  padding={0.7}
+                >
+                  <Title>observações</Title>
+                  {/* <IconClose /> */}
+                </Stack>
+                <Divider />
+                <Box sx={{ padding: 1 }}>
+                  {/* @ts-ignore */}
+                  <TextAreaField
+                    id="outlined-multiline-static"
+                    multiline
+                    rows={5}
+                    fullWidth
+                    size="small"
+                    value={observations[positionsCar[tabsValue]]}
+                    onChange={handleObservation}
+                  />
+                </Box>
+              </ContainerInformation>
+              <Stack direction="row" spacing={2} sx={{ marginTop: 1 }}>
+                <ButtonLeft
+                  variant="contained"
+                  onClick={() => {
+                    handleSave()
+                  }}
+                >
+                  salvar
+                </ButtonLeft>
+                <ButtonRight variant="contained" onClick={handleClose}>
+                  sair
+                </ButtonRight>
               </Stack>
-              <Divider />
-              <Box sx={{ padding: 1 }}>
-                {/* @ts-ignore */}
-                <TextAreaField
-                  id="outlined-multiline-static"
-                  multiline
-                  rows={5}
-                  fullWidth
-                  size="small"
-                  value={observations[positionsCar[tabsValue]]}
-                  onChange={handleObservation}
-                />
-              </Box>
-            </ContainerInformation>
-            <Stack direction="row" spacing={2} sx={{ marginTop: 1 }}>
-              <ButtonLeft
-                variant="contained"
-                onClick={() => {
-                  handleSave()
+            </Grid>
+          </Grid>
+          <Grid
+            display={{
+              xl: 'none',
+              lg: 'none',
+              md: 'flex',
+              sm: 'none',
+              xs: 'none',
+            }}
+            flexDirection="column"
+            alignItems="center"
+            width="100%"
+            justifyContent="center"
+          >
+            <Grid
+              display={{
+                xl: 'none',
+                lg: 'flex',
+                md: 'flex',
+                sm: 'none',
+                xs: 'none',
+              }}
+              gap={2}
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid item display="flex">
+                <Stack
+                  display="flex"
+                  flexDirection={{
+                    xs: 'row',
+                    md: 'column',
+                  }}
+                  gap={2}
+                >
+                  {Object.keys(markupTagTypes).map((item) => (
+                    <LabelButtonMarkupType key={item}>
+                      <ButtonMarkupType
+                        selectedActual={markupValue === item}
+                        onClick={() => {
+                          handleChangeMarkupValue(item as markupTypesEnum)
+                        }}
+                      >
+                        {markupTagTypes[item]}
+                      </ButtonMarkupType>
+                      <span>{item}</span>
+                    </LabelButtonMarkupType>
+                  ))}
+                </Stack>
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  display: 'flex',
+                  marginRight: -10,
                 }}
               >
-                salvar
-              </ButtonLeft>
-              <ButtonRight variant="contained" onClick={handleClose}>
-                sair
-              </ButtonRight>
-            </Stack>
+                <TabPanel value={tabsValue} index={0} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.frente}`}
+                  />
+                  {markups.frente.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                  {/* </ClickableSVG> */}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={1} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralEsquerdo}`}
+                  />
+                  {markups.lateralEsquerdo.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={2} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralDireito}`}
+                  />
+                  {markups.lateralDireito.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={3} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.traseira}`}
+                  />
+                  {markups.traseira.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={4} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.teto}`}
+                  />
+                  {markups.teto.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              marginTop={{ xl: 0, lg: 0, md: 2, sm: 2, xs: 2 }}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <ContainerInformation
+                display="flex"
+                width="610px"
+                direction="column"
+              >
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  padding={0.7}
+                >
+                  <Title>
+                    {/* <IconUpload /> */}
+                    imagem
+                  </Title>
+                  {/* <IconClose /> */}
+                </Stack>
+                <Divider />
+                <Box sx={{ padding: 1 }}>
+                  <InspectionDropzone
+                    handleAddImageUrlList={handleAddImageUrlList}
+                    listImagesUpload={listImagesUpload}
+                    positionsCar={positionsCar[tabsValue]}
+                  />
+                </Box>
+                <Divider />
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  padding={0.7}
+                >
+                  <Title>observações</Title>
+                  {/* <IconClose /> */}
+                </Stack>
+                <Divider />
+                <Box sx={{ padding: 1 }}>
+                  {/* @ts-ignore */}
+                  <TextAreaField
+                    id="outlined-multiline-static"
+                    multiline
+                    rows={5}
+                    fullWidth
+                    size="small"
+                    value={observations[positionsCar[tabsValue]]}
+                    onChange={handleObservation}
+                  />
+                </Box>
+              </ContainerInformation>
+              <Stack direction="row" spacing={2} sx={{ marginTop: 1 }}>
+                <ButtonLeft
+                  variant="contained"
+                  onClick={() => {
+                    handleSave()
+                  }}
+                >
+                  salvar
+                </ButtonLeft>
+                <ButtonRight variant="contained" onClick={handleClose}>
+                  sair
+                </ButtonRight>
+              </Stack>
+            </Grid>
+          </Grid>
+          <Grid
+            display={{
+              xl: 'none',
+              lg: 'none',
+              md: 'none',
+              sm: 'flex',
+              xs: 'flex',
+            }}
+            width="100%"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            <Grid
+              item
+              md={2}
+              width="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Stack
+                display="flex"
+                flexDirection={{
+                  xs: 'row',
+                  md: 'column',
+                }}
+                gap={2}
+              >
+                {Object.keys(markupTagTypes).map((item) => (
+                  <LabelButtonMarkupType key={item}>
+                    <ButtonMarkupType
+                      selectedActual={markupValue === item}
+                      onClick={() => {
+                        handleChangeMarkupValue(item as markupTypesEnum)
+                      }}
+                    >
+                      {markupTagTypes[item]}
+                    </ButtonMarkupType>
+                    <span>{item}</span>
+                  </LabelButtonMarkupType>
+                ))}
+              </Stack>
+            </Grid>
+            <Grid
+              display={{
+                xl: 'none',
+                lg: 'none',
+                md: 'none',
+                sm: 'flex',
+                xs: 'flex',
+              }}
+              margin={{
+                xs: '0 auto',
+                sm: '0 auto',
+              }}
+              paddingX={{
+                xs: 0,
+                sm: 2,
+              }}
+              flexDirection="column"
+              justifyContent="center"
+            >
+              <Grid
+                item
+                width="100%"
+                alignItems="center"
+                display={{
+                  xl: 'flex',
+                  lg: 'block',
+                  md: 'block',
+                  sm: 'block',
+                  xs: 'block',
+                }}
+                justifyContent="center"
+              >
+                <TabPanel value={tabsValue} index={0} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.frente}`}
+                  />
+                  {markups.frente.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                  {/* </ClickableSVG> */}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={1} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralEsquerdo}`}
+                  />
+                  {markups.lateralEsquerdo.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={2} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.lateralDireito}`}
+                  />
+                  {markups.lateralDireito.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={3} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.traseira}`}
+                  />
+                  {markups.traseira.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+                <TabPanel value={tabsValue} index={4} dir={theme.direction}>
+                  <ClickableArea
+                    onClick={addMarkup}
+                    urlImg={`${process.env.NEXT_PUBLIC_APP_API_IMAGE_URL}${imgPositionCarUrl.teto}`}
+                  />
+                  {markups.teto.map((m) => {
+                    return (
+                      <ButtonMarkup
+                        key={m.id}
+                        sx={{
+                          position: 'absolute',
+                          top: m?.positions?.top,
+                          left: m?.positions?.left,
+                        }}
+                        onClick={() => removeMarkup(m.id)}
+                      >
+                        <span>{markupTagTypes[m.type]}</span>
+                        <DeleteForeverRoundedIcon
+                          sx={{ zIndex: 10, position: 'fixed' }}
+                        />
+                      </ButtonMarkup>
+                    )
+                  })}
+                </TabPanel>
+              </Grid>
+              <Grid
+                item
+                marginTop={{ xl: 0, lg: 0, md: 2, sm: 2, xs: 2 }}
+                xs={7.7}
+                lg={3}
+                justifyContent="center"
+              >
+                <ContainerInformation width="490px" direction="column">
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    padding={0.7}
+                  >
+                    <Title>
+                      {/* <IconUpload /> */}
+                      imagem
+                    </Title>
+                    {/* <IconClose /> */}
+                  </Stack>
+                  <Divider />
+                  <Box sx={{ padding: 1 }}>
+                    <InspectionDropzone
+                      handleAddImageUrlList={handleAddImageUrlList}
+                      listImagesUpload={listImagesUpload}
+                      positionsCar={positionsCar[tabsValue]}
+                    />
+                  </Box>
+                  <Divider />
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    padding={0.7}
+                  >
+                    <Title>observações</Title>
+                    {/* <IconClose /> */}
+                  </Stack>
+                  <Divider />
+                  <Box sx={{ padding: 1 }}>
+                    {/* @ts-ignore */}
+                    <TextAreaField
+                      id="outlined-multiline-static"
+                      multiline
+                      rows={5}
+                      fullWidth
+                      size="small"
+                      value={observations[positionsCar[tabsValue]]}
+                      onChange={handleObservation}
+                    />
+                  </Box>
+                </ContainerInformation>
+                <Stack
+                  direction="row"
+                  spacing={4}
+                  sx={{
+                    marginTop: 1,
+                    width: '134%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <ButtonLeft
+                    variant="contained"
+                    onClick={() => {
+                      handleSave()
+                    }}
+                  >
+                    salvar
+                  </ButtonLeft>
+                  <ButtonRight variant="contained" onClick={handleClose}>
+                    sair
+                  </ButtonRight>
+                </Stack>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </DialogContent>
