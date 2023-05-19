@@ -3,6 +3,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 
 import { parseCookies, setCookie } from 'nookies'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
 // import { ApiCore } from '@/lib/api'
 // import { useQuery } from '@tanstack/react-query'
@@ -28,7 +29,15 @@ type cookieCompany = {
 type CompanyContextType = {
   companyData: CompanyProps | null
   companySelected: string | null
-  createCompany: (value: companyProps) => Promise<void>
+  companyList: {
+    id: number
+    name: string | null
+    cnpj: string | null
+    cpf: string | null
+    active: boolean | null
+  }[]
+  createCompany: (value: companyProps) => void
+  handleCompanySelected: (value: companyProps) => Promise<void>
 }
 
 type GeralProviderProps = {
@@ -40,11 +49,13 @@ export const CompanyContext = createContext({} as CompanyContextType)
 export function CompanyProvider({ children }: GeralProviderProps) {
   const [companyData, setCompanyData] = useState<CompanyProps | null>(null)
   const [companySelected, setCompanySelected] = useState<string | null>(null)
+  const { data: session } = useSession()
+
+  const companyList = session?.user.companies ?? []
 
   const router = useRouter()
 
-  async function createCompany(company: companyProps) {
-    console.log(company)
+  function createCompany(company: companyProps) {
     const newCompany = {
       id: company.id,
       name: company.name,
@@ -65,11 +76,14 @@ export function CompanyProvider({ children }: GeralProviderProps) {
         path: '/',
       },
     )
-    await router.push(`/service-schedule?company=${companySelected}`)
+  }
+
+  async function handleCompanySelected(company: companyProps) {
+    createCompany(company)
+    await router.push(`/service-schedule?company_id=${companySelected}`)
   }
 
   useEffect(() => {
-    console.log(companySelected)
     if (companySelected === null) {
       const cookies = parseCookies()
       console.log(cookies)
@@ -77,7 +91,6 @@ export function CompanyProvider({ children }: GeralProviderProps) {
         const companySelectedCookie: cookieCompany = JSON.parse(
           cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
         )
-        console.log(companySelectedCookie.companySelected)
         setCompanySelected(companySelectedCookie.companySelected)
       } else {
         router.push('/company')
@@ -85,9 +98,26 @@ export function CompanyProvider({ children }: GeralProviderProps) {
     }
   }, [])
 
+  useEffect(() => {
+    if (router.query.company_id) {
+      const isExistCompany = companyList.some(
+        (company) => company.id === parseInt(router.query.company_id as string),
+      )
+      if (!isExistCompany) {
+        router.push('/company')
+      }
+    }
+  }, [router.query])
+
   return (
     <CompanyContext.Provider
-      value={{ companyData, companySelected, createCompany }}
+      value={{
+        companyData,
+        companySelected,
+        createCompany,
+        handleCompanySelected,
+        companyList,
+      }}
     >
       {children}
     </CompanyContext.Provider>

@@ -23,32 +23,56 @@ type memuListProps = Array<{
   title: string
 }>
 
-const memuList: memuListProps = [
-  {
-    path: '/company',
-    href: '/company',
-    component: <AccountBalanceIcon />,
-    title: 'Empresas',
-  },
-  {
-    path: '/service-schedule',
-    href: '/service-schedule',
-    component: <CalendarMonthIcon />,
-    title: 'Agendamento',
-  },
-  // {
-  //   path: '/checklist',
-  //   href: '/checklist',
-  //   component: <AccessTimeFilledOutlinedIcon />,
-  //   title: 'Checklist',
-  // },
-]
+// const memuList: memuListProps = [
+//   {
+//     path: '/company',
+//     href: '/company',
+//     component: <AccountBalanceIcon />,
+//     title: 'Empresas',
+//   },
+//   {
+//     path: '/service-schedule',
+//     href: '/service-schedule?company=:companyId',
+//     component: <CalendarMonthIcon />,
+//     title: 'Agendamento',
+//   },
+//   {
+//     path: '/checklist',
+//     href: '/checklist',
+//     component: <AccessTimeFilledOutlinedIcon />,
+//     title: 'Checklist',
+//   },
+// ]
 
 export const MainListItems = ({ opended }: { opended: boolean }) => {
   const [routeActual, setRouteActual] = useState('')
   const router = useRouter()
   const { companySelected } = useContext(CompanyContext)
   // console.log('aberto',opended)
+
+  const memuList: memuListProps = useMemo(
+    () => [
+      {
+        path: '/company',
+        href: '/company',
+        component: <AccountBalanceIcon />,
+        title: 'Empresas',
+      },
+      {
+        path: '/service-schedule',
+        href: `/service-schedule?company_id=${companySelected}`,
+        component: <CalendarMonthIcon />,
+        title: 'Agendamento',
+      },
+      // {
+      //   path: '/checklist',
+      //   href: '/checklist',
+      //   component: <AccessTimeFilledOutlinedIcon />,
+      //   title: 'Checklist',
+      // },
+    ],
+    [],
+  )
 
   const menuListCompanyId = useMemo(
     () =>

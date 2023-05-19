@@ -39,7 +39,6 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await res?.json()
-        console.log(user)
         if (res?.ok && user) {
           return user
         }
@@ -54,6 +53,7 @@ export const authOptions: NextAuthOptions = {
         token.privilege = user.privilege
         token.accessToken = user.token
         token.id = user.id
+        token.companies = user.companies
       }
       return token
     },
@@ -65,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         session.user.privilege = token.privilege
         session.user.email = 'não informado'
         session.user.image = 'não informado'
+        session.user.companies = token.companies ?? []
       }
       return session
     },

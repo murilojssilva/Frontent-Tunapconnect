@@ -19,23 +19,6 @@ export default function SignIn() {
   return null
 }
 
-// export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
-//   const { 'next-auth.session-token': token } = parseCookies(ctx)
-
-//   if (!token) {
-//     return {
-//       redirect: {
-//         destination: '/auth/login',
-//         permanent: false,
-//       },
-//     }
-//   }
-
-//   return {
-//     props: {},
-//   }
-// }
-
 export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
   return {
