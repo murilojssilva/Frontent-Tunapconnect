@@ -1,20 +1,15 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
-// import { useRouter } from 'next/router'
 
 import { parseCookies, setCookie } from 'nookies'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-
-// import { ApiCore } from '@/lib/api'
-// import { useQuery } from '@tanstack/react-query'
-// import { useSession } from 'next-auth/react'
-// import { useQuery } from '@tanstack/react-query'
+import { getSession } from 'next-auth/react'
 
 interface companyProps {
-  id: string
-  name: string
+  id: number
+  name: string | null
   cnpj: string | null
   cpf: string | null
+  active?: boolean | null
 }
 
 type CompanyProps = {
@@ -28,16 +23,9 @@ type cookieCompany = {
 
 type CompanyContextType = {
   companyData: CompanyProps | null
-  companySelected: string | null
-  companyList: {
-    id: number
-    name: string | null
-    cnpj: string | null
-    cpf: string | null
-    active: boolean | null
-  }[]
-  createCompany: (value: companyProps) => void
-  handleCompanySelected: (value: companyProps) => Promise<void>
+  companySelected: number | null
+  createCompany: (value: companyProps, isRedirect: boolean) => void
+  handleCompanySelected: (value: companyProps) => void
 }
 
 type GeralProviderProps = {
@@ -48,14 +36,10 @@ export const CompanyContext = createContext({} as CompanyContextType)
 
 export function CompanyProvider({ children }: GeralProviderProps) {
   const [companyData, setCompanyData] = useState<CompanyProps | null>(null)
-  const [companySelected, setCompanySelected] = useState<string | null>(null)
-  const { data: session } = useSession()
-
-  const companyList = session?.user.companies ?? []
+  const [companySelected, setCompanySelected] = useState<number | null>(null)
 
   const router = useRouter()
-
-  function createCompany(company: companyProps) {
+  async function createCompany(company: companyProps, isRedirect: boolean) {
     const newCompany = {
       id: company.id,
       name: company.name,
@@ -64,34 +48,72 @@ export function CompanyProvider({ children }: GeralProviderProps) {
     }
     // @ts-ignore
     setCompanyData(newCompany)
+
     setCompanySelected(company.id)
     setCookie(
       null,
       process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string,
       JSON.stringify({
-        companySelected,
+        companySelected: company.id,
       }),
       {
         maxAge: 30 * 24 * 60 * 60,
         path: '/',
       },
     )
+    isRedirect &&
+      (await router.push(`/service-schedule?company_id=${company.id}`))
   }
 
-  async function handleCompanySelected(company: companyProps) {
-    createCompany(company)
-    await router.push(`/service-schedule?company_id=${companySelected}`)
+  function handleCompanySelected(company: companyProps) {
+    createCompany(company, true)
+  }
+
+  async function verifiyCompany(company_id: string) {
+    const getSessionData = await getSession()
+
+    if (getSessionData?.user.companies) {
+      if (getSessionData?.user.companies.length > 0) {
+        const companies = getSessionData.user.companies
+        const isExistCompany = companies.filter((company) => {
+          return company.id === parseInt(company_id as string)
+        })
+        if (isExistCompany.length === 0) {
+          router.push('/companies')
+        }
+        const cookies = parseCookies()
+        if (
+          cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]
+        ) {
+          const companySelectedCookie: cookieCompany = JSON.parse(
+            cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
+          )
+          if (`${companySelectedCookie.companySelected}` !== company_id) {
+            createCompany(
+              {
+                id: isExistCompany[0].id,
+                name: isExistCompany[0].name,
+                cnpj: isExistCompany[0].cnpj,
+                cpf: isExistCompany[0].cpf,
+                active: isExistCompany[0].active,
+              },
+              false,
+            )
+          }
+        }
+      }
+    }
   }
 
   useEffect(() => {
     if (companySelected === null) {
       const cookies = parseCookies()
-      console.log(cookies)
       if (cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string]) {
         const companySelectedCookie: cookieCompany = JSON.parse(
           cookies[process.env.NEXT_PUBLIC_APP_COOKIE_STORAGE_NAME as string],
         )
-        setCompanySelected(companySelectedCookie.companySelected)
+        if (!companySelectedCookie.companySelected) router.push('/company')
+        setCompanySelected(parseInt(companySelectedCookie.companySelected))
       } else {
         router.push('/company')
       }
@@ -100,12 +122,7 @@ export function CompanyProvider({ children }: GeralProviderProps) {
 
   useEffect(() => {
     if (router.query.company_id) {
-      const isExistCompany = companyList.some(
-        (company) => company.id === parseInt(router.query.company_id as string),
-      )
-      if (!isExistCompany) {
-        router.push('/company')
-      }
+      verifiyCompany(router.query.company_id as string)
     }
   }, [router.query])
 
@@ -116,7 +133,6 @@ export function CompanyProvider({ children }: GeralProviderProps) {
         companySelected,
         createCompany,
         handleCompanySelected,
-        companyList,
       }}
     >
       {children}
