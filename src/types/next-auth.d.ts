@@ -14,6 +14,13 @@ declare module 'next-auth' {
     id: string
     accessToken?: string
     expires: string
+    companies: {
+      id: number
+      name: string | null
+      cnpj: string | null
+      cpf: string | null
+      active: boolean | null
+    }[]
     // iat: number
     // exp: number
     // jti: string
@@ -33,5 +40,12 @@ declare module 'next-auth/jwt' {
     privilege: string
     accessToken: string
     id: string
+    companies: {
+      id: number
+      name: string | null
+      cnpj: string | null
+      cpf: string | null
+      active: boolean | null
+    }[]
   }
 }

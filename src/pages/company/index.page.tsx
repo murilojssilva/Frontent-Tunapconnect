@@ -27,10 +27,10 @@ export default function CompanyList() {
   // eslint-disable-next-line new-cap
   const api = new ApiCore()
   // const router = useRouter()
-  const { createCompany } = useContext(CompanyContext)
+  const { handleCompanySelected } = useContext(CompanyContext)
 
   function handleSelectCompany(newCompany: companyProps) {
-    createCompany(newCompany)
+    handleCompanySelected(newCompany)
   }
 
   // const { data, isSuccess, isLoading, isFetching, isFetched } = useQuery<
